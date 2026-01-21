@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuda-Memoria: Funciones | EPN</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Matemáticas Computacionales</h1>
+        <h2>Tema: Funciones</h2>
+        <p>Proyecto Interactivo - Samuel Esteban Robayo Morcillo</p>
+    </header>
+
+    <nav>
+        <a href="#prod-cartesiano">Producto Cartesiano</a>
+        <a href="#clasificacion">Clasificación</a>
+        <a href="#discretas">Funciones Discretas</a>
+    </nav>
+
+    <main>
+        <section id="prod-cartesiano" class="card">
+            <h3>1. Producto Cartesiano ($A \times B$)</h3>
+            <p>Es el conjunto de todos los pares ordenados $(a,b)$ tal que $a \in A$ y $b \in B$[cite: 7, 9].</p>
+            
+            <div class="interactive">
+                <input type="text" id="setA" placeholder="Conjunto A (ej: 1,2,3)">
+                <input type="text" id="setB" placeholder="Conjunto B (ej: u,v)">
+                <button onclick="calcCartesian()">Calcular Producto</button>
+                <div id="resCartesiano" class="result"></div>
+            </div>
+
+            <div class="matlab-box">
+                <h4>Código MATLAB:</h4>
+                <pre>
+A = [1, 2, 3]; B = {'u', 'v'};
+[X, Y] = ndgrid(A, B);
+producto = [X(:), Y(:)];
+disp(producto);
+                </pre>
+            </div>
+        </section>
+
+        <section id="clasificacion" class="card">
+            <h3>2. Clasificación de Funciones</h3>
+            <p>Una función es un "mapeo" donde a cada elemento de $A$ le corresponde un <b>único</b> elemento de $B$[cite: 18, 19].</p>
+            
+            <div class="theory-grid">
+                <div>
+                    <strong>Inyectiva:</strong> Cada elemento de B tiene a lo sumo una anti-imagen[cite: 136].
+                </div>
+                <div>
+                    <strong>Sobreyectiva:</strong> El rango es igual al codominio[cite: 137, 160].
+                </div>
+            </div>
+
+            <div class="matlab-box">
+                <h4>Validación en MATLAB (Inyectividad):</h4>
+                <pre>
+% Si f(n) = 2n + 1 es inyectiva
+n = 1:10; y = 2*n + 1;
+if length(unique(y)) == length(y)
+    disp('Es Inyectiva');
+end
+                </pre>
+            </div>
+        </section>
+
+        <section id="discretas" class="card">
+            <h3>3. Funciones Discretas</h3>
+            <p>Dominio en los enteros ($\mathbb{Z}$) y codominio en los reales ($\mathbb{R}$)[cite: 222, 223].</p>
+            
+            <div class="interactive">
+                <label>Calcular Factorial $f(n) = n!$[cite: 226]:</label>
+                <input type="number" id="numN" placeholder="n">
+                <button onclick="calcFactorial()">Calcular</button>
+                <div id="resFactorial" class="result"></div>
+            </div>
+
+            <div class="matlab-box">
+                <h4>Código MATLAB:</h4>
+                <pre>
+n = 5;
+resultado = factorial(n);
+disp(resultado);
+                </pre>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Escuela Politécnica Nacional | Quito - 2026</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
