@@ -3,115 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funciones | EPN Project</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Permanent+Marker&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Matemáticas Computacionales | EPN</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-    <nav class="glass-nav">
-        <div class="logo-container">
-            <img src="img/logo-epn.png" alt="EPN" class="epn-logo"> <span class="graffiti-text">MathComp</span>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>MATH<span class="highlight">COMP</span></h3>
         </div>
-        <div class="nav-links">
-            <a href="#inicio">Inicio</a>
-            <a href="#maquina">Máquina F.</a>
-            <a href="#composicion">Composición</a>
-            <a href="#redes">Contacto</a>
+        <nav>
+            <ul>
+                <li><a href="#prod-cartesiano" class="active"><i class="fas fa-shapes"></i> Producto Cartesiano</a></li>
+                <li><a href="#funciones"><i class="fas fa-project-diagram"></i> Funciones</a></li>
+                <li><a href="#ejercicios"><i class="fas fa-pencil-ruler"></i> Ejemplos / Hojas</a></li>
+                <li><a href="#clasificacion"><i class="fas fa-check-double"></i> Inyec / Sobre / Biyec</a></li>
+                <li><a href="#inversa"><i class="fas fa-exchange-alt"></i> Función Inversa</a></li>
+                <li><a href="#compuesta"><i class="fas fa-layer-group"></i> Función Compuesta</a></li>
+                <li><a href="#discreta"><i class="fas fa-chart-bar"></i> Función Discreta</a></li>
+                <li><a href="#video"><i class="fas fa-play-circle"></i> VIDEO EXPLICATIVO</a></li>
+                <li><a href="#resenas"><i class="fas fa-comments"></i> Reseñas</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <p>EPN 2026</p>
         </div>
-    </nav>
+    </aside>
 
-    <header id="inicio">
-        <h1 class="graffiti-title">FUNCIONES</h1>
-        <p class="subtitle">Teoría de la Computación y Matemáticas</p>
-        <p class="author">Por: Samuel Esteban Robayo Morcillo</p>
-    </header>
-
-    <main>
-        <section id="maquina" class="card glass-card">
-            <h2 class="graffiti-subtitle">1. La Máquina Funcional</h2>
-            <p>Una función puede verse como una máquina: entra un insumo $x$ (Input), se transforma, y sale un producto $f(x)$ (Output)[cite: 18, 45, 50].</p>
-            
-            <div class="control-panel">
-                <div class="machine-interface">
-                    <label>Entrada ($x$):</label>
-                    <input type="number" id="inputX" placeholder="Ej: 5" value="5">
-                    
-                    <label>Elegir Máquina:</label>
-                    <select id="funcType">
-                        <option value="square">Función Cuadrática ($x^2$)</option>
-                        <option value="successor">Función Sucesor ($n+1$)</option>
-                        <option value="double">Doble ($2x$)</option>
-                    </select>
-
-                    <button onclick="runMachine()" class="apple-btn">Procesar</button>
-                </div>
-                <div class="machine-output" id="machineResult">
-                    Waiting for input...
+    <main class="main-content">
+        
+        <header class="top-header">
+            <div class="header-overlay">
+                <div class="logo-area">
+                    <img src="img/logo-epn.png" alt="Escudo EPN">
+                    <div class="university-info">
+                        <h1>ESCUELA POLITÉCNICA NACIONAL</h1>
+                        <h2>FACULTAD DE INGENIERÍA DE SISTEMAS</h2>
+                        <p class="motto">"La técnica al servicio de la patria"</p>
+                    </div>
                 </div>
             </div>
+        </header>
 
-            <div class="code-block">
-                <span>MATLAB Code</span>
-                <pre>
-% Simulación de Máquina
-x = input('Ingrese valor: ');
-f = x^2; % Ejemplo cuadrático
-fprintf('Output: %d', f);</pre>
+        <section class="welcome-section">
+            <div class="bot-card">
+                <div class="bot-text">
+                    <h3>BIENVENIDOS</h3>
+                    <div class="separator"></div>
+                    <p>
+                        ¡Hola! Soy <strong>MathBot</strong>, tu asistente virtual en este recorrido.
+                        Esta plataforma ha sido diseñada bajo un concepto <strong>minimalista y profesional</strong>, 
+                        eliminando distracciones para que te enfoques en lo importante: 
+                        dominar la <em>Teoría de la Computación</em>.
+                    </p>
+                    <p>
+                        Aquí encontrarás teoría clara, calculadoras interactivas y código real.
+                        Usa el menú de la izquierda para navegar. <strong>¡Solo aprendiendo, vencerás!</strong>
+                    </p>
+                    <button class="cta-button">Conoce el Proyecto</button>
+                </div>
+                <div class="bot-image-container">
+                    <img src="img/bot.png" alt="Asistente Virtual" class="floating-bot">
+                </div>
             </div>
         </section>
 
-        <section class="card glass-card">
-            <h2 class="graffiti-subtitle">2. Producto Cartesiano</h2>
-            <p>El conjunto de todos los pares ordenados $(a,b)$ donde $a \in A$ y $b \in B$[cite: 7, 9].</p>
+        <div class="content-container">
             
-            <div class="control-panel">
-                <input type="text" id="setA" placeholder="A = {1, 2}" class="glass-input">
-                <input type="text" id="setB" placeholder="B = {a, b}" class="glass-input">
-                <button onclick="calcCartesian()" class="apple-btn">Calcular $A \times B$</button>
-                <div id="resCartesiano" class="result-box"></div>
-            </div>
-        </section>
+            <section id="prod-cartesiano" class="topic-card">
+                <h2>1. Producto Cartesiano</h2>
+                <p>El conjunto de pares ordenados...</p>
+                </section>
 
-        <section id="composicion" class="card glass-card">
-            <h2 class="graffiti-subtitle">3. Composición $(f \circ g)(x)$</h2>
-            <p>La composición aplica una función dentro de otra: $(f \circ g)(x) = f(g(x))$.</p>
-            <p><strong>Ejemplo:</strong> Sea $f(x) = x^2$ y $g(x) = x + 1$.</p>
-            
-            <div class="control-panel">
-                <input type="number" id="compInput" placeholder="Valor de x" class="glass-input">
-                <button onclick="calcComposition()" class="apple-btn">Calcular $f(g(x))$</button>
-                <div id="resComposicion" class="result-box">Resultado aparecerá aquí</div>
             </div>
-
-            <div class="code-block">
-                <span>MATLAB Code</span>
-                <pre>
-% Composición f(g(x))
-g = @(x) x + 1;
-f = @(x) x.^2;
-resultado = f(g(x));</pre>
-            </div>
-        </section>
-
-        <section id="redes" class="social-section">
-            <h2 class="graffiti-subtitle">Connect With Me</h2>
-            <div class="social-icons">
-                <a href="#" target="_blank" class="social-btn github"><i class="fab fa-github"></i></a>
-                <a href="#" target="_blank" class="social-btn linkedin"><i class="fab fa-linkedin"></i></a>
-                <a href="#" target="_blank" class="social-btn instagram"><i class="fab fa-instagram"></i></a>
-            </div>
-        </section>
 
     </main>
-
-    <footer>
-        <p>Escuela Politécnica Nacional | 2026</p>
-    </footer>
-
-    <script src="script.js"></script>
 </body>
 </html>
