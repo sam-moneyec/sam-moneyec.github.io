@@ -1,0 +1,79 @@
+:root {
+    --primary: #003366; /* Azul Politécnica */
+    --accent: #d32f2f;
+    --bg: #f4f7f6;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: var(--bg);
+    color: #333;
+}
+
+header {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+nav {
+    background: #222;
+    padding: 10px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.card {
+    background: white;
+    margin: 20px auto;
+    padding: 25px;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.matlab-box {
+    background: #eef2f3;
+    border-left: 5px solid #2e7d32;
+    padding: 15px;
+    margin-top: 20px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.result {
+    margin-top: 15px;
+    padding: 10px;
+    background: #fff9c4;
+    border: 1px dashed #fbc02d;
+    font-weight: bold;
+}
+
+input, button {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    background: var(--accent);
+}
