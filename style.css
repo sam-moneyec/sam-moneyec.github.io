@@ -1,79 +1,211 @@
 :root {
-    --primary: #003366; /* Azul Politécnica */
-    --accent: #d32f2f;
-    --bg: #f4f7f6;
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --blur: 20px;
+    --primary: #007AFF; /* Azul Apple */
+    --text-main: #1d1d1f;
+    --graffiti-color: #FF2D55; /* Rosa Neon */
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
     margin: 0;
-    background-color: var(--bg);
-    color: #333;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: var(--text-main);
+    min-height: 100vh;
 }
 
-header {
-    background: var(--primary);
-    color: white;
-    text-align: center;
-    padding: 2rem 1rem;
-}
-
-nav {
-    background: #222;
-    padding: 10px;
-    text-align: center;
+/* --- Navegación Glassmorphism --- */
+.glass-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
     position: sticky;
-    top: 0;
+    top: 20px;
+    margin: 0 20px;
+    border-radius: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
     z-index: 1000;
 }
 
-nav a {
-    color: white;
-    margin: 0 15px;
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.epn-logo {
+    height: 40px;
+}
+
+.nav-links a {
     text-decoration: none;
-    font-weight: bold;
+    color: var(--text-main);
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s;
 }
 
-.card {
-    background: white;
-    margin: 20px auto;
-    padding: 25px;
-    max-width: 800px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.nav-links a:hover {
+    color: var(--primary);
 }
 
-.matlab-box {
-    background: #eef2f3;
-    border-left: 5px solid #2e7d32;
-    padding: 15px;
-    margin-top: 20px;
-    font-family: 'Courier New', Courier, monospace;
+/* --- Tipografía Graffiti --- */
+.graffiti-text {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.5rem;
+    color: #333;
 }
 
-.result {
-    margin-top: 15px;
-    padding: 10px;
-    background: #fff9c4;
-    border: 1px dashed #fbc02d;
-    font-weight: bold;
+.graffiti-title {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 5rem;
+    text-align: center;
+    margin-top: 60px;
+    background: -webkit-linear-gradient(45deg, #007AFF, #FF2D55);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
 }
 
-input, button {
-    padding: 10px;
+.graffiti-subtitle {
+    font-family: 'Permanent Marker', cursive;
+    color: var(--text-main);
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.subtitle, .author {
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+/* --- Tarjetas Glassmorphism --- */
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 40px;
+    border: 1px solid white;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+}
+
+/* --- Elementos Interactivos --- */
+.control-panel {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 16px;
+    margin: 20px 0;
+}
+
+input, select {
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background: rgba(255,255,255,0.8);
+    font-family: 'Inter', sans-serif;
     margin: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    width: 200px;
 }
 
-button {
-    background: var(--primary);
+.apple-btn {
+    background: var(--text-main);
     color: white;
-    cursor: pointer;
     border: none;
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-button:hover {
-    background: var(--accent);
+.apple-btn:hover {
+    background: var(--primary);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,122,255,0.3);
+}
+
+.result-box, .machine-output {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #fff;
+    border-left: 4px solid var(--primary);
+    font-weight: 500;
+}
+
+/* --- Bloques de Código --- */
+.code-block {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: 20px;
+    position: relative;
+    font-family: 'Courier New', monospace;
+}
+
+.code-block span {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+/* --- Redes Sociales --- */
+.social-section {
+    text-align: center;
+    margin: 50px 0;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #333;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.social-btn:hover {
+    transform: translateY(-5px);
+    color: var(--primary);
+}
+
+footer {
+    text-align: center;
+    padding: 40px;
+    color: #888;
 }

@@ -3,96 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayuda-Memoria: Funciones | EPN</title>
+    <title>Funciones | EPN Project</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Matemáticas Computacionales</h1>
-        <h2>Tema: Funciones</h2>
-        <p>Proyecto Interactivo - Samuel Esteban Robayo Morcillo</p>
-    </header>
-
-    <nav>
-        <a href="#prod-cartesiano">Producto Cartesiano</a>
-        <a href="#clasificacion">Clasificación</a>
-        <a href="#discretas">Funciones Discretas</a>
+    
+    <nav class="glass-nav">
+        <div class="logo-container">
+            <img src="img/logo-epn.png" alt="EPN" class="epn-logo"> <span class="graffiti-text">MathComp</span>
+        </div>
+        <div class="nav-links">
+            <a href="#inicio">Inicio</a>
+            <a href="#maquina">Máquina F.</a>
+            <a href="#composicion">Composición</a>
+            <a href="#redes">Contacto</a>
+        </div>
     </nav>
 
+    <header id="inicio">
+        <h1 class="graffiti-title">FUNCIONES</h1>
+        <p class="subtitle">Teoría de la Computación y Matemáticas</p>
+        <p class="author">Por: Samuel Esteban Robayo Morcillo</p>
+    </header>
+
     <main>
-        <section id="prod-cartesiano" class="card">
-            <h3>1. Producto Cartesiano ($A \times B$)</h3>
-            <p>Es el conjunto de todos los pares ordenados $(a,b)$ tal que $a \in A$ y $b \in B$[cite: 7, 9].</p>
+        <section id="maquina" class="card glass-card">
+            <h2 class="graffiti-subtitle">1. La Máquina Funcional</h2>
+            <p>Una función puede verse como una máquina: entra un insumo $x$ (Input), se transforma, y sale un producto $f(x)$ (Output)[cite: 18, 45, 50].</p>
             
-            <div class="interactive">
-                <input type="text" id="setA" placeholder="Conjunto A (ej: 1,2,3)">
-                <input type="text" id="setB" placeholder="Conjunto B (ej: u,v)">
-                <button onclick="calcCartesian()">Calcular Producto</button>
-                <div id="resCartesiano" class="result"></div>
-            </div>
+            <div class="control-panel">
+                <div class="machine-interface">
+                    <label>Entrada ($x$):</label>
+                    <input type="number" id="inputX" placeholder="Ej: 5" value="5">
+                    
+                    <label>Elegir Máquina:</label>
+                    <select id="funcType">
+                        <option value="square">Función Cuadrática ($x^2$)</option>
+                        <option value="successor">Función Sucesor ($n+1$)</option>
+                        <option value="double">Doble ($2x$)</option>
+                    </select>
 
-            <div class="matlab-box">
-                <h4>Código MATLAB:</h4>
-                <pre>
-A = [1, 2, 3]; B = {'u', 'v'};
-[X, Y] = ndgrid(A, B);
-producto = [X(:), Y(:)];
-disp(producto);
-                </pre>
-            </div>
-        </section>
-
-        <section id="clasificacion" class="card">
-            <h3>2. Clasificación de Funciones</h3>
-            <p>Una función es un "mapeo" donde a cada elemento de $A$ le corresponde un <b>único</b> elemento de $B$[cite: 18, 19].</p>
-            
-            <div class="theory-grid">
-                <div>
-                    <strong>Inyectiva:</strong> Cada elemento de B tiene a lo sumo una anti-imagen[cite: 136].
+                    <button onclick="runMachine()" class="apple-btn">Procesar</button>
                 </div>
-                <div>
-                    <strong>Sobreyectiva:</strong> El rango es igual al codominio[cite: 137, 160].
+                <div class="machine-output" id="machineResult">
+                    Waiting for input...
                 </div>
             </div>
 
-            <div class="matlab-box">
-                <h4>Validación en MATLAB (Inyectividad):</h4>
+            <div class="code-block">
+                <span>MATLAB Code</span>
                 <pre>
-% Si f(n) = 2n + 1 es inyectiva
-n = 1:10; y = 2*n + 1;
-if length(unique(y)) == length(y)
-    disp('Es Inyectiva');
-end
-                </pre>
+% Simulación de Máquina
+x = input('Ingrese valor: ');
+f = x^2; % Ejemplo cuadrático
+fprintf('Output: %d', f);</pre>
             </div>
         </section>
 
-        <section id="discretas" class="card">
-            <h3>3. Funciones Discretas</h3>
-            <p>Dominio en los enteros ($\mathbb{Z}$) y codominio en los reales ($\mathbb{R}$)[cite: 222, 223].</p>
+        <section class="card glass-card">
+            <h2 class="graffiti-subtitle">2. Producto Cartesiano</h2>
+            <p>El conjunto de todos los pares ordenados $(a,b)$ donde $a \in A$ y $b \in B$[cite: 7, 9].</p>
             
-            <div class="interactive">
-                <label>Calcular Factorial $f(n) = n!$[cite: 226]:</label>
-                <input type="number" id="numN" placeholder="n">
-                <button onclick="calcFactorial()">Calcular</button>
-                <div id="resFactorial" class="result"></div>
-            </div>
-
-            <div class="matlab-box">
-                <h4>Código MATLAB:</h4>
-                <pre>
-n = 5;
-resultado = factorial(n);
-disp(resultado);
-                </pre>
+            <div class="control-panel">
+                <input type="text" id="setA" placeholder="A = {1, 2}" class="glass-input">
+                <input type="text" id="setB" placeholder="B = {a, b}" class="glass-input">
+                <button onclick="calcCartesian()" class="apple-btn">Calcular $A \times B$</button>
+                <div id="resCartesiano" class="result-box"></div>
             </div>
         </section>
+
+        <section id="composicion" class="card glass-card">
+            <h2 class="graffiti-subtitle">3. Composición $(f \circ g)(x)$</h2>
+            <p>La composición aplica una función dentro de otra: $(f \circ g)(x) = f(g(x))$.</p>
+            <p><strong>Ejemplo:</strong> Sea $f(x) = x^2$ y $g(x) = x + 1$.</p>
+            
+            <div class="control-panel">
+                <input type="number" id="compInput" placeholder="Valor de x" class="glass-input">
+                <button onclick="calcComposition()" class="apple-btn">Calcular $f(g(x))$</button>
+                <div id="resComposicion" class="result-box">Resultado aparecerá aquí</div>
+            </div>
+
+            <div class="code-block">
+                <span>MATLAB Code</span>
+                <pre>
+% Composición f(g(x))
+g = @(x) x + 1;
+f = @(x) x.^2;
+resultado = f(g(x));</pre>
+            </div>
+        </section>
+
+        <section id="redes" class="social-section">
+            <h2 class="graffiti-subtitle">Connect With Me</h2>
+            <div class="social-icons">
+                <a href="#" target="_blank" class="social-btn github"><i class="fab fa-github"></i></a>
+                <a href="#" target="_blank" class="social-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                <a href="#" target="_blank" class="social-btn instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+        </section>
+
     </main>
 
     <footer>
-        <p>Escuela Politécnica Nacional | Quito - 2026</p>
+        <p>Escuela Politécnica Nacional | 2026</p>
     </footer>
 
     <script src="script.js"></script>
