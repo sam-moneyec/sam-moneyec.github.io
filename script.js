@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 const sectionColors = {
     'inicio': '#FFD700',          // Dorado (Original)
     'prod-cartesiano': '#00FF00', // Verde Matrix
-    'funciones': '#FF0033',       // <--- CAMBIO AQUÍ: ROJO NEÓN
+    'funciones': '#ff001e',       // <--- CAMBIO AQUÍ: ROJO NEÓN
     'ejercicios': '#00FFFF',      // Turquesa Neón
     'clasificacion': '#BC13FE',   // Púrpura Eléctrico
     'inversa': '#006aff',         // Rojo Neón Intenso
