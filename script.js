@@ -66,3 +66,25 @@ function calcFactorial() {
     
     resDiv.innerHTML = `f(${n}) = ${n}! = ${result}`;
 }
+// 3. Composición (f o g)(x)
+function calcComposition() {
+    const x = parseFloat(document.getElementById('compInput').value);
+    const resDiv = document.getElementById('resComposicion');
+    
+    if(isNaN(x)) {
+        resDiv.innerHTML = "Por favor ingresa un número.";
+        return;
+    }
+
+    // Definición de funciones según el ejemplo
+    // g(x) = x + 1
+    const gx = x + 1;
+    // f(u) = u^2
+    const fgx = gx * gx;
+
+    resDiv.innerHTML = `
+        <strong>Paso 1 (g):</strong> g(${x}) = ${x} + 1 = ${gx} <br>
+        <strong>Paso 2 (f):</strong> f(${gx}) = (${gx})^2 = ${fgx} <br>
+        <strong>Resultado:</strong> ${fgx}
+    `;
+}

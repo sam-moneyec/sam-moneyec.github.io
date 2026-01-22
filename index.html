@@ -50,7 +50,270 @@
         </header>
 
         <div class="content-body">
+<div id="inicio" class="tab-content" style="display: block;">
+    <section class="welcome-section">
+        <div class="bot-card">
+            <div class="bot-text">
+                <h3>BIENVENIDOS CADETES</h3>
+                <div class="separator"></div>
+                <p>
+                    Soy <strong>MathBot</strong>, tu instructor virtual. Esta plataforma resume los conceptos clave de 
+                    <em>Matemáticas Computacionales</em> basados en el material del <strong>Ing. Gabriel Macías</strong>.
+                </p>
+                <p>
+                    Explora los módulos a la izquierda para dominar desde el Producto Cartesiano hasta las Funciones Discretas.
+                    <strong>"Solo venciéndote, vencerás."</strong>
+                </p>
+                <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Iniciar Instrucción</button>
+            </div>
+            <div class="bot-image-container">
+                <img src="img/bot.png" alt="Asistente Virtual" class="floating-bot">
+            </div>
+        </div>
+    </section>
+</div>
 
+<div id="prod-cartesiano" class="tab-content">
+    <div class="topic-header">
+        <h2>Producto Cartesiano ($A \times B$)</h2>
+        <span class="badge">Slide 2</span>
+    </div>
+    <div class="card">
+        <h3>Definición Formal</h3>
+        [cite_start]<p>Dados dos conjuntos $A$ y $B$, el producto cartesiano es el conjunto de todos los pares ordenados $(a,b)$ tal que $a \in A$ y $b \in B$[cite: 7].</p>
+        <div class="formula-box">
+            $$A \times B = \{(a,b) | a \in A \land b \in B\}$$
+            <br>
+            <strong>Cardinalidad:</strong> $|A \times B| = |A| * [cite_start]|B|$ [cite: 9]
+        </div>
+
+        <h3>Ejemplo Práctico</h3>
+        [cite_start]<p>Sea $A=\{1,2,3\}$ y $B=\{u,v\}$[cite: 10].</p>
+        
+        <div class="interactive-box">
+            <h4><i class="fas fa-calculator"></i> Calculadora de Pares</h4>
+            <input type="text" id="setA" placeholder="A (ej: 1, 2, 3)" value="1, 2, 3">
+            <input type="text" id="setB" placeholder="B (ej: u, v)" value="u, v">
+            <button class="run-btn" onclick="calcCartesian()">Calcular A x B</button>
+            <div id="resCartesiano" class="result-display"></div>
+        </div>
+    </div>
+</div>
+
+<div id="funciones" class="tab-content">
+    <div class="topic-header">
+        <h2>Concepto de Función</h2>
+        <span class="badge">Slides 4-5</span>
+    </div>
+    <div class="card">
+        <h3>Definición (Mapeo)</h3>
+        [cite_start]<p>Una función $f: A \rightarrow B$ es una asignación donde a <strong>cada</strong> elemento $x \in A$ se le asigna un <strong>único</strong> elemento $y = f(x) \in B$[cite: 19].</p>
+        
+        <div class="diagram-container">
+            <div class="set-oval">
+                <h4>Dominio (A)</h4>
+                <ul><li>1</li><li>2</li><li>3</li></ul>
+            </div>
+            <div class="arrow-connector"><i class="fas fa-long-arrow-alt-right fa-3x"></i><br>f</div>
+            <div class="set-oval">
+                <h4>Codominio (B)</h4>
+                <ul><li>a</li><li>b</li><li>c</li></ul>
+            </div>
+        </div>
+        [cite_start]<p class="note"><strong>Rango $\subseteq$ Codominio:</strong> El rango son solo los elementos de B que "reciben" flecha[cite: 29].</p>
+
+        <h3>La Máquina Funcional</h3>
+        [cite_start]<p>Podemos ver una función como una máquina que transforma entradas (Inputs) en salidas (Outputs)[cite: 45].</p>
+        <div class="grid-3">
+            <div class="machine-card">
+                <i class="fas fa-cog fa-spin"></i>
+                <h4>Cuadrática</h4>
+                <p>$f(x) = x^2$</p>
+            </div>
+            <div class="machine-card">
+                <i class="fas fa-plus-circle"></i>
+                <h4>Sucesor</h4>
+                <p>$g(n) = n + 1$</p>
+            </div>
+            <div class="machine-card">
+                <i class="fas fa-equals"></i>
+                <h4>Constante</h4>
+                <p>$h(r) = 2$</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ejercicios" class="tab-content">
+    <div class="topic-header">
+        <h2>Ejemplos: ¿Es Función?</h2>
+        <span class="badge">Slides 6-8</span>
+    </div>
+    <div class="card">
+        <h3>Criterio de la Línea Vertical (en Diagramas de Flechas)</h3>
+        <p>Para que sea función, de cada elemento del conjunto de salida (izq) debe salir <strong>exactamente una flecha</strong>.</p>
+        
+        <div class="comparison-box">
+            <div class="example-case bad">
+                <h4>NO es Función ❌</h4>
+                [cite_start]<p>Si de un elemento salen dos flechas (ej: del 2 sale a B y C)[cite: 16].</p>
+                <div class="mini-diagram">
+                    2 $\rightarrow$ B<br>
+                    2 $\rightarrow$ C
+                </div>
+            </div>
+            <div class="example-case good">
+                <h4>SÍ es Función ✅</h4>
+                <p>Cada elemento tiene una única salida, aunque lleguen al mismo destino.</p>
+                <div class="mini-diagram">
+                    1 $\rightarrow$ A<br>
+                    2 $\rightarrow$ A
+                </div>
+            </div>
+        </div>
+        
+        <h3>Ejercicio del PDF (Slide 8)</h3>
+        <p>Dados $A=\{2,4,6\}$ y $B=\{1,3,5\}$. [cite_start]La relación $R=\{(2,5), (4,1), (4,3), (6,5)\}$ ¿Es función? [cite: 120]</p>
+        <p><strong>Respuesta:</strong> No, porque el 4 se repite (tiene dos imágenes: 1 y 3).</p>
+    </div>
+</div>
+
+<div id="clasificacion" class="tab-content">
+    <div class="topic-header">
+        <h2>Tipos de Funciones</h2>
+        <span class="badge">Slides 9-10</span>
+    </div>
+    <div class="card">
+        <div class="grid-3">
+            <div class="type-card">
+                <h3>Inyectiva (1-a-1)</h3>
+                [cite_start]<p>Cada elemento de B tiene <strong>a lo sumo</strong> una anti-imagen en A. No "sobran" flechas llegando al mismo punto[cite: 136].</p>
+                <div class="visual-cue">$\forall x_1, x_2: f(x_1)=f(x_2) \implies x_1=x_2$</div>
+            </div>
+            <div class="type-card">
+                <h3>Sobreyectiva</h3>
+                <p>El Rango es igual al Codominio. [cite_start]No sobra ningún elemento en B sin recibir flecha[cite: 137].</p>
+                <div class="visual-cue">$\forall y \in B, \exists x \in A$</div>
+            </div>
+            <div class="type-card">
+                <h3>Biyectiva</h3>
+                <p>Es inyectiva y sobreyectiva a la vez. [cite_start]Correspondencia perfecta uno a uno[cite: 138].</p>
+                <div class="visual-cue">$|A| = |B|$</div>
+            </div>
+        </div>
+
+        <div class="matlab-block">
+            <h5><i class="fas fa-laptop-code"></i> Ejemplo de Validación (Slide 10)</h5>
+            <p>Probar si $f(n) = 2n + 1$ es inyectiva:</p>
+            <pre><code>n = 1:10; % Dominio prueba
+y = 2*n + 1;
+if length(unique(y)) == length(n)
+    disp('Es Inyectiva (No hay repetidos)');
+end</code></pre>
+        </div>
+    </div>
+</div>
+
+<div id="inversa" class="tab-content">
+    <div class="topic-header">
+        <h2>Función Inversa ($f^{-1}$)</h2>
+        <span class="badge">Slide 11</span>
+    </div>
+    <div class="card">
+        <div class="alert-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            [cite_start]<strong>Condición:</strong> Para calcular la inversa, la función DEBE ser <strong>Biyectiva</strong>[cite: 164].
+        </div>
+        <p>Gráficamente, es invertir el sentido de las flechas. El dominio se vuelve codominio y viceversa.</p>
+        
+        <div class="diagram-container inverse-flow">
+            <span>A $\xrightarrow{f}$ B</span>
+            <hr>
+            <span>A $\xleftarrow{f^{-1}}$ B</span>
+        </div>
+    </div>
+</div>
+
+<div id="compuesta" class="tab-content">
+    <div class="topic-header">
+        <h2>Función Compuesta</h2>
+        <span class="badge">Slide 12</span>
+    </div>
+    <div class="card">
+        <h3>Definición</h3>
+        [cite_start]<p>La composición de $f$ con $g$ se denota $(f \circ g)(x) = f(g(x))$[cite: 179].</p>
+        <p>Primero actúa $g$ sobre $x$, y luego $f$ actúa sobre el resultado de $g$.</p>
+
+        <h3>Teorema Importante</h3>
+        [cite_start]<p>Si $f$ y $g$ son biyectivas, entonces la composición $f \circ g$ también es biyectiva[cite: 205].</p>
+
+        <div class="interactive-box">
+            <h4><i class="fas fa-cogs"></i> Máquina de Composición</h4>
+            <p>Sea $g(x) = x+1$ y $f(x) = x^2$. Calcula $(f \circ g)(x)$:</p>
+            <input type="number" id="compInput" placeholder="Valor de x">
+            <button class="run-btn" onclick="calcComposition()">Calcular</button>
+            <div id="resComposicion" class="result-display"></div>
+        </div>
+    </div>
+</div>
+
+<div id="discreta" class="tab-content">
+    <div class="topic-header">
+        <h2>Funciones Discretas</h2>
+        <span class="badge">Slide 14</span>
+    </div>
+    <div class="card">
+        <h3>Diferencia Clave</h3>
+        <ul class="clean-list">
+            [cite_start]<li><strong>Dominio:</strong> Números Enteros ($\mathbb{Z}$)[cite: 222].</li>
+            <li><strong>Codominio:</strong> Números Reales ($\mathbb{R}$).</li>
+            [cite_start]<li><strong>Notación:</strong> Se usa $n$ en lugar de $x$[cite: 230].</li>
+        </ul>
+
+        <div class="grid-3">
+            <div class="formula-card">
+                <h5>Factorial</h5>
+                $$f(n) = n!$$
+            </div>
+            <div class="formula-card">
+                <h5>Vectores Binarios</h5>
+                $$f(n) = 2^n$$
+            </div>
+            <div class="formula-card">
+                <h5>Inversa</h5>
+                $$f(n) = 1/n$$
+            </div>
+        </div>
+
+        <div class="interactive-box">
+            <h4>Calcular Factorial</h4>
+            <input type="number" id="numFactorial" placeholder="Ingresa n">
+            <button class="run-btn" onclick="calcFactorial()">Calcular n!</button>
+            <div id="resFactorial" class="result-display"></div>
+        </div>
+    </div>
+</div>
+
+<div id="video" class="tab-content">
+    <div class="topic-header">
+        <h2>Explicación en Video</h2>
+    </div>
+    <div class="card" style="text-align: center;">
+        <p>Video resumen del proyecto y funcionamiento.</p>
+        <iframe width="100%" height="400" src="https://www.youtube.com/embed/TU_ID_AQUI" title="Video explicativo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 10px;"></iframe>
+    </div>
+</div>
+
+<div id="resenas" class="tab-content">
+    <div class="topic-header">
+        <h2>Comentarios y Feedback</h2>
+    </div>
+    <div class="card">
+        <p>Déjanos tus observaciones sobre la plataforma.</p>
+        <textarea style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Poppins';" rows="4" placeholder="Escribe aquí..."></textarea>
+        <button class="cta-button" style="margin-top: 15px;">Enviar Comentario</button>
+    </div>
+</div>
             <div id="inicio" class="tab-content" style="display: block;">
                 <section class="welcome-section">
                     <div class="bot-card">
