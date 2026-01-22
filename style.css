@@ -25,7 +25,8 @@ body {
 }
 
 /* --- TIPOGRAFÍA Y COLORES DINÁMICOS --- */
-h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
+/* CORRECCIÓN: Quitamos .badge de aquí para que no se pinte de dorado */
+h1, h2, h3, h4, h5, h6, .urban-title, .mega-title {
     font-family: var(--font-headers); 
     text-transform: uppercase; 
     letter-spacing: 2px;
@@ -231,7 +232,19 @@ pre code.hljs { padding: 25px !important; background: #050505 !important; border
 /* Extras */
 .topic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 2px solid rgba(255,255,255,0.1); }
 .topic-header h2 { font-size: 3rem; text-shadow: 0 0 15px var(--gold-primary); }
-.badge { background: var(--gold-primary); color: black; padding: 12px 30px; border-radius: 25px; font-weight: 900; font-size: 1.1rem; box-shadow: 0 0 20px var(--gold-primary); }
+
+/* --- CORRECCIÓN FINAL: NIVEL EN NEGRO --- */
+.badge { 
+    background: var(--gold-primary); 
+    color: black !important; /* AHORA SÍ: NEGRO OBLIGATORIO */
+    padding: 12px 30px; 
+    border-radius: 25px; 
+    font-weight: 900; 
+    font-size: 1.1rem; 
+    box-shadow: 0 0 20px var(--gold-primary); 
+    font-family: var(--font-headers); /* Aseguramos la fuente también */
+}
+
 .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
 .type-card, .machine-card { background: rgba(255,255,255,0.03); padding: 35px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.1); text-align: center; }
 .type-card h3 { font-size: 1.8rem; margin-bottom: 15px; }
@@ -243,7 +256,7 @@ pre code.hljs { padding: 25px !important; background: #050505 !important; border
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background-color: #d3c425; /* Verde Oficial */
+    background-color: #be9e1e; /* Verde Oficial */
     color: white;
     width: 60px;
     height: 60px;
@@ -260,5 +273,5 @@ pre code.hljs { padding: 25px !important; background: #050505 !important; border
 
 .whatsapp-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 20px #d3d325; /* Pequeño brillo verde al pasar el mouse */
+    box-shadow: 0 0 20px #be9e1e; /* Pequeño brillo verde al pasar el mouse */
 }
