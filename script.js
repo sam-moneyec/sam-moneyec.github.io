@@ -1,6 +1,5 @@
 /**
  * SISTEMA DE GESTIÓN DE PESTAÑAS
- * Oculta todos los contenidos y muestra solo el seleccionado.
  */
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
@@ -35,7 +34,7 @@ function calcCartesian() {
     const resDiv = document.getElementById('resCartesiano');
 
     if (!rawA || !rawB) {
-        resDiv.innerHTML = "<span style='color:red;'>⚠️ Error: Ingresa datos en ambos campos.</span>";
+        resDiv.innerHTML = "<span style='color: #ff5555;'>⚠️ Error: Ingresa datos en ambos campos.</span>";
         return;
     }
 
@@ -77,8 +76,6 @@ function calcFactorial() {
 
 /**
  * CALCULADORA: COMPOSICIÓN f(g(x))
- * g(x) = x + 1
- * f(u) = u^2
  */
 function calcComposition() {
     const x = parseFloat(document.getElementById('compInput').value);

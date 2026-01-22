@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matemáticas Computacionales | EPN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -15,7 +15,7 @@
     <aside class="sidebar">
         <div class="sidebar-header" onclick="openTab(event, 'inicio')">
             <h3>MATH<span class="highlight">COMP</span></h3>
-            <p>EPN v2.0</p>
+            <p style="font-size: 0.7rem; color: #888; letter-spacing: 2px;">LUXURY EDITION</p>
         </div>
         <nav>
             <ul>
@@ -60,10 +60,10 @@
                             <p>
                                 <strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>, tu instructor virtual. 
                                 Esta plataforma ha sido diseñada para dominar la <em>Teoría de la Computación</em> 
-                                [cite_start]bajo los estándares de la <strong>EPN</strong>[cite: 3].
+                                bajo los estándares de la <strong>EPN</strong>.
                             </p>
                             <p>
-                                Aquí encontrarás teoría rigurosa, calculadoras en tiempo real y código MATLAB.
+                                Hemos adoptado un estilo <strong>Minimalista & Dorado</strong> para que te enfoques en lo esencial.
                                 Selecciona un módulo a la izquierda para comenzar.
                             </p>
                             <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Comenzar Instrucción</button>
@@ -77,29 +77,53 @@
 
             <div id="prod-cartesiano" class="tab-content">
                 <div class="topic-header">
-                    <h2>Producto Cartesiano ($A \times B$)</h2>
-                    <span class="badge">Slide 2</span>
+                    <h2>TEORÍA DE CONJUNTOS</h2>
+                    <span class="badge">Capítulo 1</span>
                 </div>
+                
                 <div class="card">
-                    <h3>Definición Formal</h3>
-                    [cite_start]<p>Dados dos conjuntos A y B, el producto cartesiano es el conjunto de todos los pares ordenados $(a,b)$ tal que $a \in A$ y $b \in B$[cite: 7].</p>
+                    <h1 class="urban-title">¿QUÉ ES?</h1>
+                    
+                    <div class="definition-text">
+                        <p>
+                            El <strong>Producto Cartesiano</strong> es una operación matemática que toma dos conjuntos y los mezcla para crear uno nuevo. 
+                            Su idea central es formar <em>pares ordenados</em>, donde el primer elemento proviene del primer conjunto y el segundo del segundo conjunto.
+                        </p>
+                        <br>
+                        <p>
+                            Cada elemento del primer conjunto se combina <strong>sin excepción</strong> con todos los del segundo. 
+                            El resultado se escribe como:
+                        </p>
+                    </div>
+
                     <div class="formula-box">
-                        $$A \times B = \{(a,b) | a \in A \land b \in B\}$$
-                        $$|A \times B| = |A| * |B|$$
+                        $$A \times B$$
+                    </div>
+
+                    <div class="definition-text">
+                        <p>
+                            Y refleja todas las combinaciones posibles. Eso sí, <strong>el orden manda</strong>: 
+                            cambiar los elementos cambia completamente el par.
+                        </p>
+                    </div>
+
+                    <div class="formula-box">
+                        $$A \times B = \{(a,b) \mid a \in A \land b \in B\}$$
+                        <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">Cardinalidad: $|A \times B| = |A| * |B|$</p>
                     </div>
 
                     <div class="interactive-box">
                         <h4><i class="fas fa-calculator"></i> Generador de Pares</h4>
                         <div class="input-group">
-                            <input type="text" id="setA" placeholder="A (ej: 1, 2, 3)">
-                            <input type="text" id="setB" placeholder="B (ej: u, v)">
+                            <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2, 3)">
+                            <input type="text" id="setB" placeholder="Conjunto B (ej: u, v)">
                         </div>
-                        <button class="run-btn" onclick="calcCartesian()">Calcular Producto</button>
+                        <button class="run-btn" onclick="calcCartesian()">Mezclar Conjuntos</button>
                         <div id="resCartesiano" class="result-display">Esperando datos...</div>
                     </div>
 
                     <div class="matlab-block">
-                        <h5><i class="fas fa-code"></i> Código MATLAB (Slide 2)</h5>
+                        <h5><i class="fas fa-code"></i> Código MATLAB</h5>
                         <pre><code>A = [1, 2, 3]; B = [10, 20];
 [X, Y] = ndgrid(A, B);
 producto = [X(:), Y(:)];
@@ -110,12 +134,14 @@ disp(producto);</code></pre>
 
             <div id="funciones" class="tab-content">
                 <div class="topic-header">
-                    <h2>Concepto de Función</h2>
+                    <h2>CONCEPTO DE FUNCIÓN</h2>
                     <span class="badge">Slides 4-5</span>
                 </div>
                 <div class="card">
-                    <h3>Definición (Mapeo)</h3>
-                    [cite_start]<p>Una función $f: A \rightarrow B$ es una asignación donde a cada elemento $x$ de $A$ se le asigna un <strong>único</strong> elemento $y = f(x)$ de $B$[cite: 19].</p>
+                    <h1 class="urban-title">LA MÁQUINA</h1>
+                    <div class="definition-text">
+                        <p>Una función $f: A \rightarrow B$ es una asignación donde a cada elemento $x$ de $A$ se le asigna un <strong>único</strong> elemento $y = f(x)$ de $B$.</p>
+                    </div>
                     
                     <div class="diagram-container">
                         <div class="set-oval">
@@ -132,8 +158,7 @@ disp(producto);</code></pre>
                         </div>
                     </div>
 
-                    <h3>La Máquina Funcional</h3>
-                    [cite_start]<p>Una función actúa como una máquina que transforma entradas en salidas[cite: 18].</p>
+                    <h3 style="color: var(--gold-primary); margin-top: 30px;">Tipos de Máquinas</h3>
                     <div class="grid-3">
                         <div class="machine-card">
                             <i class="fas fa-cog fa-spin"></i>
@@ -156,21 +181,23 @@ disp(producto);</code></pre>
 
             <div id="ejercicios" class="tab-content">
                 <div class="topic-header">
-                    <h2>Ejemplos y Validación</h2>
+                    <h2>VALIDACIÓN</h2>
                     <span class="badge">Slide 8</span>
                 </div>
                 <div class="card">
-                    <h3>¿Es Función?</h3>
-                    [cite_start]<p>Analicemos la relación $R=\{(2,5), (4,1), (4,3), (6,5)\}$ con $A=\{2,4,6\}$ y $B=\{1,3,5\}$[cite: 120].</p>
+                    <h1 class="urban-title">¿ES FUNCIÓN?</h1>
+                    <p>Analicemos la relación $R=\{(2,5), (4,1), (4,3), (6,5)\}$ con $A=\{2,4,6\}$ y $B=\{1,3,5\}$.</p>
                     
-                    <div class="comparison-box">
-                        <div class="example-case bad">
-                            <h4><i class="fas fa-times-circle"></i> No es Función</h4>
-                            <p>El elemento <strong>4</strong> tiene dos salidas (1 y 3). En una función, cada entrada debe tener una ÚNICA salida.</p>
-                        </div>
-                        <div class="example-case good">
-                            <h4><i class="fas fa-check-circle"></i> Sí es Función</h4>
-                            <p>Si tuviéramos $\{(2,5), (4,1), (6,5)\}$. No importa que el 5 se repita en la llegada, lo importante es que la salida sea única.</p>
+                    <div class="interactive-box">
+                        <div style="display: flex; gap: 20px;">
+                            <div class="type-card" style="flex: 1; border-color: red;">
+                                <h4 style="color: red;"><i class="fas fa-times-circle"></i> CASO ERROR</h4>
+                                <p>El elemento <strong>4</strong> tiene dos salidas (1 y 3). ¡Esto rompe la regla de unicidad!</p>
+                            </div>
+                            <div class="type-card" style="flex: 1; border-color: green;">
+                                <h4 style="color: green;"><i class="fas fa-check-circle"></i> CASO VÁLIDO</h4>
+                                <p>Si eliminamos $(4,3)$, cada elemento tendría una sola flecha. No importa si el 5 recibe dos flechas.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -178,32 +205,32 @@ disp(producto);</code></pre>
 
             <div id="clasificacion" class="tab-content">
                 <div class="topic-header">
-                    <h2>Clasificación de Funciones</h2>
+                    <h2>CLASIFICACIÓN</h2>
                     <span class="badge">Slides 9-10</span>
                 </div>
                 <div class="card">
                     <div class="grid-3">
                         <div class="type-card">
                             <h3>Inyectiva</h3>
-                            [cite_start]<p>Cada elemento de B tiene a lo sumo una anti-imagen en A (Uno a Uno)[cite: 136].</p>
+                            <p>Cada elemento de B tiene a lo sumo una anti-imagen. (1 a 1).</p>
                             <div class="visual-cue">Si $f(x_1)=f(x_2) \implies x_1=x_2$</div>
                         </div>
                         <div class="type-card">
                             <h3>Sobreyectiva</h3>
-                            <p>El Rango es igual al Codominio. [cite_start]Todo elemento de B recibe flecha[cite: 137].</p>
+                            <p>El Rango es igual al Codominio. No sobran elementos en B.</p>
                             <div class="visual-cue">$f(A) = B$</div>
                         </div>
                         <div class="type-card">
                             <h3>Biyectiva</h3>
-                            [cite_start]<p>Es inyectiva y sobreyectiva simultáneamente[cite: 138].</p>
+                            <p>Es inyectiva y sobreyectiva simultáneamente. Perfecta.</p>
                             <div class="visual-cue">$|A| = |B|$</div>
                         </div>
                     </div>
 
                     <div class="matlab-block">
-                        <h5><i class="fas fa-laptop-code"></i> Validación Inyectividad (MATLAB)</h5>
-                        <pre><code>n = 1:10; % Dominio
-y = 2*n + 1; % Función f(n)
+                        <h5><i class="fas fa-laptop-code"></i> Validación Inyectividad</h5>
+                        <pre><code>n = 1:10; 
+y = 2*n + 1; 
 if length(unique(y)) == length(y)
     disp('Es Inyectiva: No hay colisiones');
 end</code></pre>
@@ -213,37 +240,40 @@ end</code></pre>
 
             <div id="inversa" class="tab-content">
                 <div class="topic-header">
-                    <h2>Función Inversa ($f^{-1}$)</h2>
+                    <h2>FUNCIÓN INVERSA</h2>
                     <span class="badge">Slide 11</span>
                 </div>
                 <div class="card">
                     <div class="alert-box">
                         <i class="fas fa-exclamation-triangle"></i>
-                        [cite_start]<strong>Requisito:</strong> Para que exista inversa, la función debe ser <strong>Biyectiva</strong>[cite: 164].
+                        <strong>Requisito:</strong> Para que exista inversa $f^{-1}$, la función debe ser <strong>Biyectiva</strong>.
                     </div>
-                    <p>La inversa invierte el "flujo" de la máquina. Lo que antes era salida, ahora es entrada.</p>
                     
-                    <div class="diagram-container inverse-flow">
-                        <span>A $\xrightarrow{f}$ B</span>
-                        <div class="divider"></div>
-                        <span>A $\xleftarrow{f^{-1}}$ B</span>
+                    <div class="diagram-container">
+                        <span style="font-size: 2rem;">A $\xrightarrow{f}$ B</span>
+                        <div style="width: 2px; height: 50px; background: var(--gold-primary); margin: 0 20px;"></div>
+                        <span style="font-size: 2rem;">A $\xleftarrow{f^{-1}}$ B</span>
                     </div>
                 </div>
             </div>
 
             <div id="compuesta" class="tab-content">
                 <div class="topic-header">
-                    <h2>Función Compuesta</h2>
+                    <h2>FUNCIÓN COMPUESTA</h2>
                     <span class="badge">Slide 12</span>
                 </div>
                 <div class="card">
-                    <h3>Definición y Teorema</h3>
-                    <p>La composición se denota $(f \circ g)(x) = f(g(x))$. [cite_start]Si $f$ y $g$ son biyectivas, su composición también lo es[cite: 179, 205].</p>
+                    <h1 class="urban-title">COMPOSICIÓN</h1>
+                    <div class="definition-text">
+                        <p>La composición se denota $(f \circ g)(x) = f(g(x))$. Si $f$ y $g$ son biyectivas, su composición también lo es.</p>
+                    </div>
 
                     <div class="interactive-box">
-                        <h4><i class="fas fa-cogs"></i> Calculadora de Composición</h4>
-                        <p>Sea $g(x) = x+1$ y $f(u) = u^2$. Calcula $(f \circ g)(x)$:</p>
-                        <input type="number" id="compInput" placeholder="Ingresa valor de x">
+                        <h4><i class="fas fa-cogs"></i> Calculadora (f o g)(x)</h4>
+                        <p>Sea $g(x) = x+1$ y $f(u) = u^2$.</p>
+                        <div class="input-group">
+                            <input type="number" id="compInput" placeholder="Ingresa valor de x">
+                        </div>
                         <button class="run-btn" onclick="calcComposition()">Calcular f(g(x))</button>
                         <div id="resComposicion" class="result-display">Esperando entrada...</div>
                     </div>
@@ -252,16 +282,18 @@ end</code></pre>
 
             <div id="discreta" class="tab-content">
                 <div class="topic-header">
-                    <h2>Funciones Discretas</h2>
+                    <h2>FUNCIONES DISCRETAS</h2>
                     <span class="badge">Slide 14</span>
                 </div>
                 <div class="card">
-                    <h3>Características</h3>
-                    <ul class="clean-list">
-                        [cite_start]<li><strong>Dominio:</strong> Números Enteros ($\mathbb{Z}$)[cite: 222].</li>
-                        [cite_start]<li><strong>Codominio:</strong> Números Reales ($\mathbb{R}$)[cite: 222].</li>
-                        [cite_start]<li><strong>Notación:</strong> Se usa $n$ en lugar de $x$[cite: 230].</li>
-                    </ul>
+                    <h1 class="urban-title">DISCRETA</h1>
+                    <div class="definition-text">
+                        <ul style="list-style: none;">
+                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Dominio:</strong> Números Enteros ($\mathbb{Z}$).</li>
+                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Codominio:</strong> Números Reales ($\mathbb{R}$).</li>
+                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Notación:</strong> Se usa $n$ en lugar de $x$.</li>
+                        </ul>
+                    </div>
 
                     <div class="grid-3">
                         <div class="formula-card">
@@ -289,25 +321,25 @@ end</code></pre>
 
             <div id="video" class="tab-content">
                 <div class="topic-header">
-                    <h2>Video Explicativo</h2>
+                    <h2>VIDEO EXPLICATIVO</h2>
                 </div>
-                <div class="card video-card">
-                    <p>Aquí se mostrará el video del proyecto.</p>
-                    <div class="video-placeholder">
-                        <i class="fab fa-youtube fa-5x"></i>
-                        <p>Video no disponible aún</p>
+                <div class="card video-card" style="text-align: center;">
+                    <p>Resumen del proyecto.</p>
+                    <div class="interactive-box" style="padding: 100px;">
+                        <i class="fab fa-youtube fa-5x" style="color: red;"></i>
+                        <p style="margin-top: 20px;">Video Próximamente</p>
                     </div>
                 </div>
             </div>
 
             <div id="resenas" class="tab-content">
                 <div class="topic-header">
-                    <h2>Comentarios</h2>
+                    <h2>FEEDBACK</h2>
                 </div>
                 <div class="card">
-                    <p>Deja tu opinión sobre la plataforma.</p>
-                    <textarea class="feedback-area" rows="4" placeholder="Escribe tu comentario..."></textarea>
-                    <button class="cta-button">Enviar Reseña</button>
+                    <p>Tu opinión es vital para mejorar el sistema.</p>
+                    <textarea style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; padding: 15px; border-radius: 8px; margin-top: 15px;" rows="4" placeholder="Escribe tu comentario..."></textarea>
+                    <button class="cta-button">Enviar Reporte</button>
                 </div>
             </div>
 
