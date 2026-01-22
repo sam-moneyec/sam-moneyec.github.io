@@ -89,7 +89,6 @@
 
                 <div class="card">
                     <h1 class="urban-title">1. DEFINICIÓN TÉCNICA</h1>
-                    
                     <div class="definition-text">
                         <p>
                             En matemáticas, el producto cartesiano es una operación crítica que fusiona dos conjuntos para generar un nuevo espacio dimensional.
@@ -116,14 +115,14 @@
                         
                         <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
                             <h3 style="color: var(--gold-primary); margin-bottom: 20px; font-size: 1.5rem;">Diagrama de Flechas</h3>
-                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 2px solid var(--gold-dark); border-radius: 15px; overflow: hidden;">
-                                <img src="img/image_0.png" alt="Diagrama Producto Cartesiano" style="width: 100%; height: 100%; object-fit: cover; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+                            <div class="diagram-box">
+                                <img src="img/image_0.png" alt="Diagrama Producto Cartesiano">
                             </div>
                         </div>
 
                         <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
                             <h3 style="color: var(--gold-primary); margin-bottom: 20px; font-size: 1.5rem;">Código Generador</h3>
-                            <pre style="flex: 1; margin: 0; border-radius: 15px; overflow: hidden; border: 2px solid var(--gold-dark); display: flex;"><code class="language-matlab giant-code" style="flex: 1;">% Definimos los conjuntos
+                            <pre style="flex: 1; margin: 0; display: flex;"><code class="language-matlab giant-code" style="flex: 1;">% Definimos los conjuntos
 A = [1, 2, 3];
 B = [4, 5];
 
@@ -138,58 +137,44 @@ disp('--- A x B ---');
 disp(Pares);
 % Resultado esperado:
 % 1  4
-% 2  4
-% 3  4
-% 1  5 ...</code></pre>
+% 2  4 ...</code></pre>
                         </div>
                     </div>
-                    
-                    <p style="margin-top: 25px; font-size: 1.1rem; color: var(--text-gray); text-align: center; border-top: 1px solid #333; padding-top: 20px;">
-                        <em>Nota: El diagrama visualiza la ejecución exacta del código matricial.</em>
-                    </p>
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">APLICACIONES DEL MUNDO REAL</h1>
+                    <h1 class="urban-title">APLICACIONES REALES</h1>
                     <p style="margin-bottom: 30px; color: #ccc; font-size: 1.2rem;">Esto no es teoría. Es el motor de la tecnología que usas:</p>
                     
-                    <div style="display: flex; gap: 25px; margin-bottom: 30px; align-items: center; background: rgba(255,215,0,0.05); padding: 25px; border-radius: 15px; border: 1px solid var(--border-gold);">
-                        <i class="fas fa-desktop fa-4x" style="color: var(--gold-primary); filter: drop-shadow(0 0 10px var(--gold-primary));"></i>
+                    <div class="tech-item">
+                        <i class="fas fa-desktop fa-4x" style="color: var(--gold-primary);"></i>
                         <div>
                             <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">1. Resolución de Pantalla</h3>
-                            <p style="color: #bbb; font-size: 1.1rem;">
-                                Tu monitor Full HD es un Producto Cartesiano gigante de 1920 columnas x 1080 filas. Cada píxel es un par ordenado (x, y).
-                            </p>
+                            <p style="color: #bbb; font-size: 1.1rem;">Tu monitor Full HD es un Producto Cartesiano de 1920x1080.</p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 25px; margin-bottom: 30px; align-items: center; background: rgba(255,215,0,0.05); padding: 25px; border-radius: 15px; border: 1px solid var(--border-gold);">
-                        <i class="fas fa-database fa-4x" style="color: var(--gold-primary); filter: drop-shadow(0 0 10px var(--gold-primary));"></i>
+                    <div class="tech-item">
+                        <i class="fas fa-database fa-4x" style="color: var(--gold-primary);"></i>
                         <div>
                             <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">2. Bases de Datos (SQL)</h3>
-                            <p style="color: #bbb; font-size: 1.1rem;">
-                                Un <code>CROSS JOIN</code> en SQL es un producto cartesiano. Si se usa mal, combina cada fila de una tabla con todas las de otra, colapsando el servidor.
-                            </p>
+                            <p style="color: #bbb; font-size: 1.1rem;">Un <code>CROSS JOIN</code> mal hecho colapsa servidores al crear un producto cartesiano masivo.</p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 25px; align-items: center; background: rgba(255,215,0,0.05); padding: 25px; border-radius: 15px; border: 1px solid var(--border-gold);">
-                        <i class="fas fa-user-secret fa-4x" style="color: var(--gold-primary); filter: drop-shadow(0 0 10px var(--gold-primary));"></i>
+                    <div class="tech-item">
+                        <i class="fas fa-user-secret fa-4x" style="color: var(--gold-primary);"></i>
                         <div>
-                            <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">3. Criptografía y Hacking</h3>
-                            <p style="color: #bbb; font-size: 1.1rem;">
-                                Un ataque de fuerza bruta recorre el producto cartesiano de todos los caracteres posibles para romper una contraseña.
-                            </p>
+                            <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">3. Criptografía</h3>
+                            <p style="color: #bbb; font-size: 1.1rem;">Ataques de fuerza bruta recorren el espacio cartesiano de caracteres.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h1 class="urban-title">SIMULADOR Y CÓDIGO</h1>
-                    
                     <div style="display: flex; gap: 40px; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 350px;">
                              <div class="interactive-box" style="height: 100%;">
                                 <h4><i class="fas fa-cogs"></i> Simulador Web (JS)</h4>
-                                <p style="color: #aaa; margin-bottom: 20px; font-size: 1rem;">Prueba ingresando datos reales. Ej: [S, M, L] y [Rojo, Azul]</p>
                                 <div class="input-group">
                                     <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
                                     <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
@@ -198,73 +183,49 @@ disp(Pares);
                                 <div id="resCartesiano" class="result-display giant-code">Esperando entrada...</div>
                             </div>
                         </div>
-
                         <div style="flex: 1; min-width: 350px;">
-                            <div style="background: #1e1e1e; border: 2px solid var(--gold-dark); border-radius: 15px; overflow: hidden; height: 100%;">
-                                <h5 style="background: #252526; color: var(--gold-primary); padding: 15px; margin: 0; font-weight: bold; border-bottom: 1px solid #333; font-size: 1.2rem;"><i class="fas fa-code"></i> Lógica Equivalente en MATLAB</h5>
-                                <pre style="margin: 0;"><code class="language-matlab giant-code" style="padding: 25px; display: block; overflow-x: auto;">% Código para generar combinaciones (Bucles Clásicos)
-
-SetA_Datos = {'S', 'M', 'L'};
-SetB_Datos = {'Rojo', 'Azul'};
-
-disp('Generando combinaciones...');
-contador = 1;
-for i = 1:length(SetA_Datos)
-    for j = 1:length(SetB_Datos)
-        % Crear el par
-        elementoA = SetA_Datos{i};
-        elementoB = SetB_Datos{j};
-        
-        % Mostrar en formato de par ordenado
-        fprintf('Par %d: (%s, %s)\n', contador, elementoA, elementoB);
-        contador = contador + 1;
+                            <div style="background: #1e1e1e; border: 2px solid var(--gold-primary); border-radius: 15px; overflow: hidden; height: 100%;">
+                                <h5 style="background: #252526; color: var(--gold-primary); padding: 15px; margin: 0; font-weight: bold; border-bottom: 1px solid #333; font-size: 1.2rem;">MATLAB LOOP</h5>
+                                <pre style="margin: 0;"><code class="language-matlab giant-code" style="padding: 25px; display: block; overflow-x: auto;">for i = 1:length(A)
+    for j = 1:length(B)
+        fprintf('(%s, %s)\n', A{i}, B{j});
     end
-end
-fprintf('Total generado: %d pares.\n', contador-1);
-                                </code></pre>
+end</code></pre>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div id="funciones" class="tab-content">
-                 <div class="topic-header"><h2>CONCEPTO DE FUNCIÓN</h2><span class="badge">NIVEL 2</span></div>
-                 <div class="card"><h1 class="urban-title">LA MÁQUINA</h1><p style="font-size: 1.2rem;">Contenido de funciones con letra más grande...</p></div>
-            </div>
-            
-             <div id="ejercicios" class="tab-content">
-                <div class="topic-header">
-                    <h2>VALIDACIÓN VISUAL</h2>
-                    <span class="badge">Slide 8</span>
+                <div class="topic-header"><h2>CONCEPTO DE FUNCIÓN</h2><span class="badge">NIVEL 2</span></div>
+                <div class="card">
+                    <h1 class="urban-title">LA MÁQUINA</h1>
+                    <div class="definition-text"><p>Una función asigna a cada entrada una única salida.</p></div>
+                    <div class="diagram-container">
+                        <div class="set-oval"><h4>Dominio</h4></div>
+                        <div class="arrow-connector"><i class="fas fa-long-arrow-alt-right fa-3x"></i><br><strong>f</strong></div>
+                        <div class="set-oval"><h4>Codominio</h4></div>
+                    </div>
                 </div>
-                
+            </div>
+
+            <div id="ejercicios" class="tab-content">
+                <div class="topic-header"><h2>VALIDACIÓN VISUAL</h2><span class="badge">Slide 8</span></div>
                 <div class="card">
                     <h1 class="urban-title">ANÁLISIS DE ERRORES</h1>
-                    <p style="margin-bottom: 20px; font-size: 1.2rem;">Una imagen vale más que mil palabras. Analicemos el siguiente diagrama para determinar si cumple con la definición rigurosa de función.</p>
-                
                     <div style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap; background: rgba(255,0,0,0.1); border: 3px solid red; padding: 30px; border-radius: 20px;">
                         <div style="flex: 1; min-width: 250px; text-align: center;">
-                            <img src="img/image_1.png" alt="Diagrama de relación que no es función" style="max-width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(255,0,0,0.5); border: 2px solid red; transform: scale(1.1);">
+                            <img src="img/image_1.png" alt="Error Función" style="max-width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(255,0,0,0.5); border: 2px solid red;">
                         </div>
                         <div style="flex: 1.5;">
-                            <h2 style="color: red; margin-bottom: 20px; font-weight: 900; letter-spacing: 1px; font-size: 2rem; font-family: 'Orbitron', sans-serif;"><i class="fas fa-times-circle"></i> VIOLACIÓN DE UNICIDAD</h2>
-                            <div class="definition-text" style="border-left-color: red; padding-left: 25px;">
-                                <p style="font-size: 1.3rem;">
-                                    Observa atentamente el elemento <strong>2</strong> en el conjunto de partida (A).
-                                </p>
-                                <p style="margin-top: 15px; color: white; font-size: 1.3rem;">
-                                    Este elemento tiene <strong>DOS flechas salientes</strong>: una apunta al elemento 'y' y otra apunta al elemento 'z'.
-                                </p>
-                                <div style="margin-top: 25px; background: red; color: white; padding: 15px 30px; border-radius: 10px; display: inline-block; font-weight: 900; font-size: 1.5rem; font-family: 'Orbitron', sans-serif;">
-                                    VEREDICTO: NO ES UNA FUNCIÓN
-                                </div>
-                            </div>
+                            <h2 style="color: red; font-size: 2rem;"><i class="fas fa-times-circle"></i> VIOLACIÓN DE UNICIDAD</h2>
+                            <p style="font-size: 1.3rem; margin-top: 15px;">El elemento <strong>2</strong> tiene dos salidas. ¡FATAL ERROR!</p>
                         </div>
                     </div>
                 </div>
             </div>
+
             </div>
     </main>
     <script src="script.js"></script>
