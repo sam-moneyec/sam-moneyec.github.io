@@ -164,13 +164,13 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge, .urban-title, .mega-title {
     border: 3px solid var(--gold-primary); 
     border-radius: 15px; 
     overflow: hidden;
-    min-height: 70%; /* Ocupa al menos el 100% de la altura del padre flex */
+    min-height: 6%0; /* Ocupa al menos el 100% de la altura del padre flex */
     box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
 .diagram-box img {
-    width: 70%; 
-    height: 70%; 
+    width: 50%; 
+    height: 50%; 
     object-fit: fill; /* ESTIRAR: Obliga a la imagen a llenar todo el cuadro exactamente */
     display: block;
 }
