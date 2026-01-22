@@ -1,17 +1,15 @@
 :root {
-    /* PALETA PROFESIONAL: NEGRO Y GRIS */
-    --bg-obsidian: #050505;     /* Fondo Sidebar (Negro) */
-    --bg-carbon: #1c1c1c;       /* Fondo Contenido (Gris Oscuro) */
-    --gold-primary: #FFD700;    /* Dorado Principal */
+    /* PALETA PROFESIONAL */
+    --bg-obsidian: #050505;     
+    --bg-carbon: #1c1c1c;       
+    --gold-primary: #FFD700;    
     --gold-dark: #B8860B;
-    --orange-accent: #ff8c00;   /* Nuevo tono naranja para los rayos */
     --text-white: #ffffff;
     --text-gray: #cccccc;
     --sidebar-width: 280px;
-    --border-gold: rgba(255, 215, 0, 0.2);
+    --border-gold: rgba(255, 215, 0, 0.3);
 }
 
-/* RESET GENERAL */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
 body { 
@@ -21,7 +19,7 @@ body {
     overflow-x: hidden; 
 }
 
-/* --- SIDEBAR (BARRA LATERAL) --- */
+/* --- SIDEBAR --- */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--bg-obsidian);
@@ -41,7 +39,6 @@ body {
 }
 
 .sidebar-header h3 { color: var(--gold-primary); font-size: 1.8rem; font-weight: 800; }
-.subtitle { font-size: 0.7rem; color: #888; letter-spacing: 2px; margin-top: 5px; }
 .highlight { color: white; }
 
 .sidebar nav { flex: 1; overflow-y: auto; }
@@ -66,23 +63,22 @@ body {
 .sidebar nav ul li a i { margin-right: 15px; width: 25px; text-align: center; }
 .sidebar-footer { padding: 20px; text-align: center; font-size: 0.75rem; color: #666; }
 
-/* --- MAIN CONTENT (CONTENIDO) --- */
+/* --- CONTENIDO PRINCIPAL --- */
 .main-content {
     margin-left: var(--sidebar-width);
     width: calc(100% - var(--sidebar-width));
     min-height: 100vh;
     background-color: var(--bg-carbon);
-    background-image: radial-gradient(var(--border-gold) 1px, transparent 1px);
+    /* Patrón sutil de fondo para el resto de la página */
+    background-image: radial-gradient(rgba(255, 215, 0, 0.1) 1px, transparent 1px);
     background-size: 40px 40px;
 }
 
-/* --- TOP HEADER (ENCABEZADO) --- */
 .top-header {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-gold);
     padding: 15px 40px;
-    display: flex; align-items: center;
 }
 
 .logo-area { display: flex; align-items: center; gap: 20px; }
@@ -91,122 +87,126 @@ body {
 .university-info h2 { font-size: 0.85rem; font-weight: 400; color: white; }
 .motto { font-size: 0.75rem; font-style: italic; color: #aaa; }
 
-/* --- PESTAÑAS Y TARJETAS --- */
 .content-body { padding: 40px; }
 .tab-content { display: none; animation: fadeIn 0.5s; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.card {
-    background: rgba(20, 20, 20, 0.9);
+/* --- SECCIÓN DE BIENVENIDA (ESTILO NUEVO) --- */
+.welcome-section {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 40px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 40px;
     border: 1px solid var(--border-gold);
+    
+    /* AQUÍ ESTÁ LA IMAGEN DE FONDO DE LAS ONDAS */
+    background-image: url('img/fondo_intro.jpg'); 
+    background-size: cover;
+    background-position: center;
+}
+
+/* Capa oscura para que el texto resalte sobre la imagen */
+.welcome-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Oscurece la imagen un 60% */
+    z-index: 1;
+}
+
+/* LA TARJETA DEL BOT (ESTILO EXACTO QUE PEDISTE) */
+.bot-card {
+    position: relative;
+    z-index: 2; /* Encima del fondo */
+    
+    /* Fondo Negro Sólido y Borde Dorado */
+    background: #000000; 
+    border: 2px solid var(--gold-primary);
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.2); /* Resplandor dorado */
+    
+    border-radius: 15px;
+    padding: 50px;
+    width: 100%;
+    max-width: 900px;
+    display: flex; 
+    align-items: center;
+    gap: 40px;
+}
+
+.bot-text { flex: 2; }
+.bot-text h3 { 
+    font-size: 2.2rem; 
+    color: var(--gold-primary); 
+    font-weight: 800; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+.separator { width: 60px; height: 4px; background: var(--gold-primary); margin-bottom: 25px; }
+.bot-text p { color: #e0e0e0; line-height: 1.6; margin-bottom: 15px; }
+
+.cta-button { 
+    background: linear-gradient(45deg, var(--gold-primary), var(--gold-dark)); 
+    color: black; 
+    padding: 14px 35px; 
+    border: none; 
+    border-radius: 5px; 
+    font-weight: 800; 
+    cursor: pointer; 
+    margin-top: 25px; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+}
+.cta-button:hover { transform: scale(1.05); color: #fff; }
+
+.bot-image-container { flex: 1; text-align: center; }
+.floating-bot { width: 100%; max-width: 200px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.4)); animation: float 3s ease-in-out infinite; }
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+
+
+/* --- TARJETAS GENÉRICAS --- */
+.card {
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     padding: 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     margin-bottom: 30px;
 }
 
-/* --- ESTILOS INTERNOS --- */
+/* Títulos */
 .urban-title {
-    font-size: 3rem; font-weight: 900;
-    background: linear-gradient(to right, var(--gold-primary), #fff);
-    -webkit-background-clip: text; color: transparent;
-    margin-bottom: 20px;
+    font-size: 2.5rem; font-weight: 900;
+    color: var(--gold-primary);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
 }
 
-.definition-text { border-left: 3px solid var(--gold-primary); padding-left: 20px; margin-bottom: 20px; line-height: 1.6; }
-.formula-box { background: rgba(255,255,255,0.05); padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0; font-size: 1.2rem; color: var(--gold-primary); }
+.definition-text { border-left: 3px solid var(--gold-primary); padding-left: 20px; margin-bottom: 20px; line-height: 1.7; color: #ddd; }
 
-/* --- INTERACTIVOS --- */
-.interactive-box { background: rgba(0,0,0,0.3); border: 1px solid var(--gold-dark); padding: 25px; border-radius: 10px; margin-top: 20px; }
-input { background: rgba(255,255,255,0.1); border: 1px solid #333; color: white; padding: 10px; width: 100%; border-radius: 5px; margin-bottom: 10px; }
-.run-btn { background: var(--gold-primary); color: black; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-.run-btn:hover { background: white; }
-.result-display { margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.5); border-left: 3px solid var(--gold-primary); font-family: monospace; }
-
-/* --- MATHBOT Y BIENVENIDA --- */
-.chatbot-tip { display: flex; align-items: center; background: rgba(255,215,0,0.05); border: 1px solid var(--border-gold); padding: 15px; border-radius: 10px; margin-top: 20px; }
-.bot-mini { width: 40px; height: 40px; margin-right: 15px; }
-
-/* NUEVA ANIMACIÓN: RAYOS DE LUZ EN BIENVENIDA */
-.welcome-section {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    /* Importante para contener los rayos */
-    overflow: hidden; 
-    padding: 50px 0;
-}
-
-.welcome-section.with-rays::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200%; /* Más grande que el contenedor */
-    height: 200%;
-    background: conic-gradient(
-        from 0deg at 50% 50%,
-        transparent 0deg,
-        var(--gold-primary) 20deg,
-        transparent 40deg,
-        var(--orange-accent) 60deg,
-        transparent 80deg,
-        var(--gold-primary) 100deg,
-        transparent 120deg,
-        var(--orange-accent) 140deg,
-        transparent 160deg
-        /* ... el patrón se repite visualmente ... */
-    );
-    transform: translate(-50%, -50%);
-    animation: rotateRays 25s linear infinite;
-    filter: blur(40px); /* Desenfoque para efecto de luz */
-    opacity: 0.25; /* Sutil */
-    z-index: 0; /* Detrás de la tarjeta */
-    pointer-events: none;
-}
-
-@keyframes rotateRays {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.bot-card {
-    display: flex; align-items: center;
-    border-top: 4px solid var(--gold-primary);
-    background: rgba(20,20,20,0.95); /* Fondo más sólido para tapar los rayos detrás */
-    padding: 40px; border-radius: 15px;
-    position: relative;
-    z-index: 1; /* Asegura que la tarjeta esté delante de los rayos */
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-}
-.bot-text { flex: 1; padding-right: 20px; }
-.cta-button { background: var(--gold-primary); padding: 12px 30px; border: none; border-radius: 30px; font-weight: bold; margin-top: 20px; cursor: pointer; }
-
-/* --- DIAGRAMAS Y GRIDS --- */
-.diagram-container { display: flex; justify-content: center; align-items: center; gap: 40px; margin: 30px 0; }
-.set-oval { border: 2px solid var(--gold-primary); border-radius: 30px; padding: 15px 30px; text-align: center; background: rgba(255,255,255,0.05); min-width: 100px; }
-.set-oval ul { list-style: none; }
-.arrow-connector { text-align: center; color: var(--gold-primary); }
-
+/* Grid y Diagramas */
 .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-.type-card, .machine-card, .formula-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-.type-card:hover, .machine-card:hover { border-color: var(--gold-primary); transform: translateY(-5px); }
-.type-card h3, .machine-card h4, .formula-card h5 { color: var(--gold-primary); margin-bottom: 10px; }
-.alert-box { background: rgba(255, 215, 0, 0.1); color: var(--gold-primary); padding: 15px; border-radius: 8px; border: 1px solid var(--gold-dark); }
+.type-card, .formula-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 10px; border: 1px solid #333; text-align: center; }
+.type-card h3 { color: var(--gold-primary); margin-bottom: 10px; }
 
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-obsidian); }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }
+/* Inputs */
+.interactive-box { background: rgba(0,0,0,0.3); border: 1px solid #444; padding: 25px; border-radius: 10px; }
+input { background: #111; border: 1px solid #444; color: white; padding: 12px; width: 100%; border-radius: 5px; margin-bottom: 15px; }
+.run-btn { background: var(--gold-primary); color: black; border: none; padding: 10px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+.result-display { margin-top: 20px; padding: 15px; background: #000; border-left: 3px solid var(--gold-primary); font-family: monospace; }
 
-/* AJUSTES PARA HIGHLIGHT.JS (CÓDIGO BONITO) */
-pre code.hljs {
-    display: block;
-    overflow-x: auto;
-    padding: 1.5em !important; /* Más espacio interno */
-    background: #1e1e1e !important; /* Fondo oscuro para el código */
-    font-family: 'Consolas', 'Monaco', monospace !important;
-    font-size: 0.9rem !important;
-    line-height: 1.5 !important;
-}
+/* Código Bonito */
+pre code.hljs { padding: 20px !important; background: #111 !important; border-radius: 10px; font-family: 'Consolas', monospace !important; font-size: 0.9rem; }
+
+/* Diagrama de Función */
+.diagram-container { display: flex; justify-content: center; align-items: center; gap: 40px; margin: 30px 0; }
+.set-oval { border: 2px solid var(--gold-primary); border-radius: 30px; padding: 15px 30px; text-align: center; background: rgba(255,255,255,0.05); }
+.set-oval ul { list-style: none; }

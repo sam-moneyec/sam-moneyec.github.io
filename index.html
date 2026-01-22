@@ -58,19 +58,17 @@
         <div class="content-body">
 
             <div id="inicio" class="tab-content" style="display: block;">
-                <section class="welcome-section with-rays">
+                <section class="welcome-section">
                     <div class="bot-card">
                         <div class="bot-text">
                             <h3>SISTEMA INICIADO</h3>
                             <div class="separator"></div>
                             <p>
-                                <strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>, tu instructor virtual. 
-                                Esta plataforma ha sido diseñada para dominar la <em>Teoría de la Computación</em> 
-                                bajo los estándares de la <strong>EPN</strong>.
+                                <strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>. 
+                                He detectado tu presencia en el sistema. Prepárate para dominar la <em>Teoría de la Computación</em>.
                             </p>
                             <p>
-                                Hemos adoptado un estilo <strong>Minimalista & Dorado</strong> para que te enfoques en lo esencial.
-                                Selecciona un módulo a la izquierda para comenzar.
+                                Protocolo de enseñanza activado. Estilo visual de alto contraste cargado.
                             </p>
                             <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Comenzar Instrucción</button>
                         </div>
@@ -88,28 +86,13 @@
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">1. INTRODUCCIÓN: EL MENÚ</h1>
-                    <div class="definition-text">
-                        <p>
-                            Antes de entrar en la matemática formal y las definiciones abstractas, imaginemos un escenario cotidiano para comprender la naturaleza de esta operación.
-                            Supón que vas a un restaurante y ofrecen un "Menú del Día" que te permite elegir entre dos categorías distintas.
-                        </p>
-                        <p style="margin-top: 15px;">
-                            Primero, tienes el conjunto de <strong>Platos Principales</strong>, donde las opciones son únicamente Hamburguesa o Pizza. 
-                            Segundo, tienes el conjunto de <strong>Postres</strong>, que ofrece Helado, Pastel o Fruta.
-                            La pregunta lógica es: ¿Cuántas combinaciones diferentes de menú completo puedes pedir?
-                        </p>
-                        <p style="margin-top: 15px;">
-                            Si las listamos una por una (Hamburguesa con Helado, Hamburguesa con Pastel, etc.), descubriremos que hay un total de 6 combinaciones posibles. 
-                            Sin saberlo, hemos realizado una operación matemática fundamental: hemos calculado el <strong>Producto Cartesiano</strong> de dos conjuntos.
-                            El resultado no es una suma, sino una multiplicación de posibilidades que crea un nuevo conjunto de parejas.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h1 class="urban-title">2. DEFINICIÓN TÉCNICA</h1>
+                    <h1 class="urban-title">1. DEFINICIÓN TÉCNICA</h1>
                     
+                    <div style="margin-bottom: 30px; text-align: center;">
+                        <img src="img/img_2.png" alt="Definición del Producto Cartesiano" style="max-width: 100%; border-radius: 15px; border: 2px solid var(--gold-primary); box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);">
+                        <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Figura 1: Representación conceptual del cruce de conjuntos.</p>
+                    </div>
+
                     <div class="definition-text">
                         <p>
                             En matemáticas, específicamente en la teoría de conjuntos, el producto cartesiano es una operación que se realiza entre dos conjuntos para crear un tercero.
@@ -134,38 +117,41 @@
                 <div class="card">
                     <h1 class="urban-title">VISUALIZACIÓN Y CÓMPUTO</h1>
                     
-                    <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 300px; text-align: center;">
-                            <h3 style="color: var(--gold-primary); margin-bottom: 15px; text-align: left;">Diagrama de Flechas</h3>
-                            
-                            <img src="img/image_0.png" alt="Diagrama Producto Cartesiano" style="max-width: 70%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 10px; border: 1px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-                            
-                            <p style="text-align: left;">Este diagrama ilustra perfectamente el concepto: cada elemento del conjunto A (izquierda) lanza una "flecha" a <strong>todos</strong> los elementos del conjunto B (derecha).</p>
-                            <p style="margin-top: 10px; text-align: left;">El total de flechas (3 x 2 = 6) representa los pares ordenados resultantes.</p>
+                    <div style="display: flex; gap: 20px; align-items: stretch; flex-wrap: wrap;">
+                        
+                        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
+                            <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Diagrama de Flechas</h3>
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 1px solid #333; border-radius: 10px; padding: 10px;">
+                                <img src="img/image_0.png" alt="Diagrama Producto Cartesiano" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 5px;">
+                            </div>
                         </div>
 
-                        <div style="flex: 1; min-width: 300px;">
-                            <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Generación Matricial en MATLAB</h3>
-                            <pre style="border-radius: 10px; overflow: hidden; border: 1px solid #333;"><code class="language-matlab">% Definimos los conjuntos como vectores
+                        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
+                            <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Código Generador</h3>
+                            <pre style="flex: 1; margin: 0; border-radius: 10px; overflow: hidden; border: 1px solid #333; display: flex;"><code class="language-matlab" style="flex: 1;">% Definimos los conjuntos
 A = [1, 2, 3];
 B = [4, 5];
 
-% Usamos ndgrid: la forma eficiente en ingeniería
-% para crear las rejillas de combinaciones
+% Generación eficiente (Ingeniería)
 [GridA, GridB] = ndgrid(A, B);
 
-% 'Aplanamos' las rejillas en columnas y las unimos
-ParesOrdenados = [GridA(:), GridB(:)];
+% Aplanado y Unión
+Pares = [GridA(:), GridB(:)];
 
-% Mostramos el resultado en consola
-disp('--- Pares Ordenados Generados (A x B) ---');
-disp(ParesOrdenados);
-                                </code></pre>
-                                <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">
-                                    <strong>Nota de Ingeniería:</strong> La función <code>ndgrid</code> es fundamental en simulaciones numéricas para generar espacios de coordenadas n-dimensionales de manera vectorizada, evitando bucles lentos.
-                                </p>
+% Resultado
+disp('--- A x B ---');
+disp(Pares);
+% Resultado esperado:
+% 1  4
+% 2  4
+% 3  4
+% 1  5 ...</code></pre>
                         </div>
                     </div>
+                    
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #888; text-align: center;">
+                        <em>Nota: El diagrama de la izquierda representa visualmente la operación que ejecuta el código de la derecha.</em>
+                    </p>
                 </div>
 
                 <div class="card">
