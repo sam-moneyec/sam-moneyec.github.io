@@ -77,64 +77,84 @@
 
             <div id="prod-cartesiano" class="tab-content">
                 <div class="topic-header">
-                    <h2>FUNDAMENTOS DE SISTEMAS</h2>
-                    <span class="badge">Lógica Computacional</span>
+                    <h2>TEORÍA DE CONJUNTOS</h2>
+                    <span class="badge">Capítulo 1</span>
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">LA LÓGICA DEL "BUCLE ANIDADO"</h1>
+                    <h1 class="urban-title">1. INTRODUCCIÓN: EL MENÚ</h1>
                     <div class="definition-text">
                         <p>
-                            Olvídate por un momento de las definiciones abstractas. Como estudiante de ingeniería, ya has usado el Producto Cartesiano mil veces sin saber su nombre formal. 
-                            En programación, <strong>el Producto Cartesiano es simplemente un "Bucle For Anidado" (Nested Loop).</strong>
+                            Antes de entrar en la matemática formal y las definiciones abstractas, imaginemos un escenario cotidiano para comprender la naturaleza de esta operación.
+                            Supón que vas a un restaurante y ofrecen un "Menú del Día" que te permite elegir entre dos categorías distintas.
                         </p>
                         <p style="margin-top: 15px;">
-                            Imagina que tienes que recorrer dos listas de datos al mismo tiempo. Tienes un iterador <code>i</code> para la primera lista y un iterador <code>j</code> para la segunda. 
-                            El Producto Cartesiano es el resultado de combinar cada <code>i</code> con cada <code>j</code>.
+                            Primero, tienes el conjunto de <strong>Platos Principales</strong>, donde las opciones son únicamente Hamburguesa o Pizza. 
+                            Segundo, tienes el conjunto de <strong>Postres</strong>, que ofrece Helado, Pastel o Fruta.
+                            La pregunta lógica es: ¿Cuántas combinaciones diferentes de menú completo puedes pedir?
                         </p>
-                    </div>
-                    
-                    <div class="matlab-block" style="background: #1e1e1e; border: 1px solid #333;">
-                        <h5 style="color: #6a9955;">// Ejemplo en C++ / Java</h5>
-                        <pre><code style="font-family: 'Consolas', monospace; color: #d4d4d4;">
-List<String> A = {"Rojo", "Azul"};
-List<String> B = {"Grande", "Pequeño"};
-
-// Esto ES un Producto Cartesiano:
-for (String color : A) {
-    for (String talla : B) {
-        System.out.println(color + " - " + talla);
-    }
-}
-                        </code></pre>
-                        <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">
-                            <strong>Salida:</strong> (Rojo, Grande), (Rojo, Pequeño), (Azul, Grande), (Azul, Pequeño).
+                        <p style="margin-top: 15px;">
+                            Si las listamos una por una (Hamburguesa con Helado, Hamburguesa con Pastel, etc.), descubriremos que hay un total de 6 combinaciones posibles. 
+                            Sin saberlo, hemos realizado una operación matemática fundamental: hemos calculado el <strong>Producto Cartesiano</strong> de dos conjuntos.
+                            El resultado no es una suma, sino una multiplicación de posibilidades que crea un nuevo conjunto de parejas.
                         </p>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">DEFINICIÓN CLARA</h1>
+                    <h1 class="urban-title">2. DEFINICIÓN TÉCNICA</h1>
                     <div class="definition-text">
-                        <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Mezclar "Todo con Todo"</h3>
                         <p>
-                            Formalmente, si tienes dos conjuntos (o colecciones de datos) A y B, su Producto Cartesiano (escrito como <strong>A × B</strong>) es una nueva colección que contiene <strong>todas las parejas posibles</strong> que se pueden formar tomando el primer elemento de A y el segundo de B.
+                            En matemáticas, específicamente en la teoría de conjuntos, el producto cartesiano es una operación que se realiza entre dos conjuntos para crear un tercero.
+                            Recibe su nombre en honor a René Descartes, el creador de la geometría analítica y del famoso plano cartesiano.
+                        </p>
+                        <h3 style="color: var(--gold-primary); margin: 20px 0 10px 0;">La Fórmula Explicada</h3>
+                        <p>
+                            Dados dos conjuntos, el conjunto A y el conjunto B, el producto cartesiano (denotado como A x B) es el conjunto de todos los <strong>pares ordenados (a, b)</strong>, 
+                            donde el primer elemento 'a' pertenece obligatoriamente al conjunto A, y el segundo elemento 'b' pertenece al conjunto B.
+                        </p>
+                        <p style="margin-top: 15px; border-left: 3px solid #FFD700; padding-left: 15px; color: #ccc;">
+                            A x B = { (a, b) tal que a está en A y b está en B }
+                        </p>
+                        <p style="margin-top: 15px;">
+                            Es vital entender la diferencia entre un pequeño conjunto {a, b} y un par ordenado (a, b). 
+                            En un conjunto normal, el orden no importa; {1, 2} es lo mismo que {2, 1}. 
+                            Sin embargo, en el producto cartesiano, el orden es fundamental y estricto: el par (1, 2) <strong>NO</strong> es lo mismo que el par (2, 1).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h1 class="urban-title">3. EJEMPLOS Y VISUALIZACIÓN</h1>
+                    
+                    <h3 style="color: white; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">Ejemplo 1: Conjuntos Finitos</h3>
+                    <div class="definition-text">
+                        <p>
+                            Volvamos al ejemplo del restaurante usando notación matemática. 
+                            Sea A = { Hamburguesa, Pizza } y Sea B = { Helado, Pastel, Fruta }.
+                            Al realizar la operación A x B, obtenemos un conjunto de pares ordenados que agota todas las posibilidades:
+                        </p>
+                        <p style="margin-top: 10px; color: var(--gold-primary);">
+                            { (Hamburguesa, Helado), (Hamburguesa, Pastel), (Hamburguesa, Fruta), <br>
+                              (Pizza, Helado), (Pizza, Pastel), (Pizza, Fruta) }
+                        </p>
+                        <p style="margin-top: 10px;">
+                            Podemos visualizar esto como una tabla de doble entrada, donde las filas representan los elementos del primer conjunto y las columnas los del segundo.
                         </p>
                     </div>
 
-                    <div class="grid-3" style="margin-top: 30px;">
-                        <div class="formula-card">
-                            <h5><i class="fas fa-layer-group"></i> 1. El Origen</h5>
-                            <p>Tomas dos listas separadas. Ejemplo: [A, B] y [1, 2].</p>
-                        </div>
-                        <div class="formula-card">
-                            <h5><i class="fas fa-random"></i> 2. El Cruce</h5>
-                            <p>Cruzas cada elemento sin excepción. No dejas ninguno fuera.</p>
-                        </div>
-                        <div class="formula-card">
-                            <h5><i class="fas fa-box-open"></i> 3. El Resultado</h5>
-                            <p>Obtienes pares ordenados: (A,1), (A,2), (B,1), (B,2).</p>
-                        </div>
+                    <h3 style="color: white; border-bottom: 1px solid #333; padding-bottom: 10px; margin: 40px 0 20px 0;">Ejemplo 2: Geometría y el Plano</h3>
+                    <div class="definition-text">
+                        <p>
+                            Este es el ejemplo que conecta directamente con el álgebra.
+                            Sea X = { 1, 2, 3 } y Sea Y = { 2, 4 }.
+                            El producto cartesiano X x Y crea puntos específicos en un plano bidimensional:
+                            (1, 2), (1, 4), (2, 2), (2, 4), (3, 2) y (3, 4).
+                        </p>
+                        <p style="margin-top: 10px;">
+                            Si tomaras el producto cartesiano de todos los números reales contra todos los números reales, obtendrías el <strong>Plano Cartesiano</strong> completo e infinito, 
+                            donde cada punto del espacio está definido por una coordenada X y una coordenada Y.
+                        </p>
                     </div>
                 </div>
 
@@ -179,43 +199,46 @@ for (String color : A) {
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">REGLAS DEL JUEGO</h1>
+                    <h1 class="urban-title">PROPIEDADES CLAVE</h1>
                     <div class="grid-3">
                         <div class="type-card">
-                            <h3><i class="fas fa-sort-amount-up"></i> El Orden Importa</h3>
-                            <p>No es lo mismo decir "Coordenada (Latitud, Longitud)" que "(Longitud, Latitud)". Si las inviertes, apareces en otro lado del mundo. En pares ordenados, (A,B) es distinto de (B,A).</p>
+                            <h3>A. Cardinalidad</h3>
+                            <p>
+                                Si el conjunto A tiene 'm' elementos y el conjunto B tiene 'n' elementos, entonces el producto A x B tendrá exactamente <strong>m multiplicado por n</strong> elementos.
+                                Es una forma rápida de predecir el tamaño del resultado.
+                            </p>
                         </div>
                         <div class="type-card">
-                            <h3><i class="fas fa-calculator"></i> Cálculo de Tamaño</h3>
-                            <p>Para saber cuántos elementos tendrás al final, solo multiplica el tamaño de los conjuntos. Si tienes 5 camisas y 4 pantalones, tendrás 5 x 4 = 20 outfits diferentes.</p>
+                            <h3>B. No Conmutativo</h3>
+                            <p>
+                                En la multiplicación de números, 2x3 es lo mismo que 3x2. En el producto cartesiano, esto NO es cierto.
+                                A x B es diferente de B x A, porque los pares resultantes tendrán el orden invertido.
+                            </p>
                         </div>
                         <div class="type-card">
-                            <h3><i class="fas fa-ban"></i> El Vacío</h3>
-                            <p>Si intentas combinar un conjunto de datos con un conjunto vacío (sin datos), el resultado es... nada. El Producto Cartesiano con el vacío siempre es vacío.</p>
+                            <h3>C. El Vacío</h3>
+                            <p>
+                                Si uno de los conjuntos no tiene elementos (es vacío), el producto cartesiano también será vacío, pues no hay elementos con los cuales formar parejas.
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">SIMULADOR</h1>
+                    <h1 class="urban-title">GENERADOR</h1>
                     <div class="interactive-box">
-                        <h4><i class="fas fa-cogs"></i> Generador de Combinaciones</h4>
-                        <p style="color: #aaa; margin-bottom: 15px;">Prueba ingresando datos reales. Ej: [S, M, L] y [Rojo, Azul]</p>
-                        
+                        <h4><i class="fas fa-cogs"></i> Simulador de Pares</h4>
                         <div class="input-group">
-                            <input type="text" id="setA" placeholder="Lista 1 (ej: 1, 2, 3)">
-                            <input type="text" id="setB" placeholder="Lista 2 (ej: A, B)">
+                            <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
+                            <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
                         </div>
                         <button class="run-btn" onclick="calcCartesian()">GENERAR PARES</button>
                         <div id="resCartesiano" class="result-display">Esperando entrada de datos...</div>
                     </div>
                 </div>
 
-                <div class="chatbot-tip" style="display: flex; align-items: center; background: rgba(255,215,0,0.05); border-left: 4px solid #FFD700; padding: 15px; margin-top: 25px; border-radius: 5px;">
-                    <img src="img/bot.png" alt="MathBot" style="width: 40px; margin-right: 15px;">
-                    <p><strong>MathBot dice:</strong> Ingeniero, recuerda esto: Un plano cartesiano (donde graficas funciones) no es más que el producto de la recta X con la recta Y. ¡Todo está conectado! 🤖</p>
-                </div>
             </div>
+
             <div id="funciones" class="tab-content">
                 <div class="topic-header">
                     <h2>CONCEPTO DE FUNCIÓN</h2>
@@ -224,7 +247,7 @@ for (String color : A) {
                 <div class="card">
                     <h1 class="urban-title">LA MÁQUINA</h1>
                     <div class="definition-text">
-                        <p>Una función $f: A \rightarrow B$ es una asignación donde a cada elemento $x$ de $A$ se le asigna un <strong>único</strong> elemento $y = f(x)$ de $B$.</p>
+                        <p>Una función f: A -> B es una asignación donde a cada elemento x de A se le asigna un <strong>único</strong> elemento y = f(x) de B.</p>
                     </div>
                     
                     <div class="diagram-container">
@@ -247,17 +270,17 @@ for (String color : A) {
                         <div class="machine-card">
                             <i class="fas fa-cog fa-spin"></i>
                             <h4>Cuadrática</h4>
-                            <p>$f(x) = x^2$</p>
+                            <p>f(x) = x²</p>
                         </div>
                         <div class="machine-card">
                             <i class="fas fa-plus-circle"></i>
                             <h4>Sucesor</h4>
-                            <p>$g(n) = n + 1$</p>
+                            <p>g(n) = n + 1</p>
                         </div>
                         <div class="machine-card">
                             <i class="fas fa-equals"></i>
                             <h4>Constante</h4>
-                            <p>$h(r) = 2$</p>
+                            <p>h(r) = 2</p>
                         </div>
                     </div>
                 </div>
@@ -270,7 +293,7 @@ for (String color : A) {
                 </div>
                 <div class="card">
                     <h1 class="urban-title">¿ES FUNCIÓN?</h1>
-                    <p>Analicemos la relación $R=\{(2,5), (4,1), (4,3), (6,5)\}$ con $A=\{2,4,6\}$ y $B=\{1,3,5\}$.</p>
+                    <p>Analicemos la relación R={(2,5), (4,1), (4,3), (6,5)} con A={2,4,6} y B={1,3,5}.</p>
                     
                     <div class="interactive-box">
                         <div style="display: flex; gap: 20px;">
@@ -280,7 +303,7 @@ for (String color : A) {
                             </div>
                             <div class="type-card" style="flex: 1; border-color: green;">
                                 <h4 style="color: green;"><i class="fas fa-check-circle"></i> CASO VÁLIDO</h4>
-                                <p>Si eliminamos $(4,3)$, cada elemento tendría una sola flecha. No importa si el 5 recibe dos flechas.</p>
+                                <p>Si eliminamos (4,3), cada elemento tendría una sola flecha. No importa si el 5 recibe dos flechas.</p>
                             </div>
                         </div>
                     </div>
@@ -297,17 +320,14 @@ for (String color : A) {
                         <div class="type-card">
                             <h3>Inyectiva</h3>
                             <p>Cada elemento de B tiene a lo sumo una anti-imagen. (1 a 1).</p>
-                            <div class="visual-cue">Si $f(x_1)=f(x_2) \implies x_1=x_2$</div>
                         </div>
                         <div class="type-card">
                             <h3>Sobreyectiva</h3>
                             <p>El Rango es igual al Codominio. No sobran elementos en B.</p>
-                            <div class="visual-cue">$f(A) = B$</div>
                         </div>
                         <div class="type-card">
                             <h3>Biyectiva</h3>
                             <p>Es inyectiva y sobreyectiva simultáneamente. Perfecta.</p>
-                            <div class="visual-cue">$|A| = |B|$</div>
                         </div>
                     </div>
 
@@ -330,13 +350,7 @@ end</code></pre>
                 <div class="card">
                     <div class="alert-box">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Requisito:</strong> Para que exista inversa $f^{-1}$, la función debe ser <strong>Biyectiva</strong>.
-                    </div>
-                    
-                    <div class="diagram-container">
-                        <span style="font-size: 2rem;">A $\xrightarrow{f}$ B</span>
-                        <div style="width: 2px; height: 50px; background: var(--gold-primary); margin: 0 20px;"></div>
-                        <span style="font-size: 2rem;">A $\xleftarrow{f^{-1}}$ B</span>
+                        <strong>Requisito:</strong> Para que exista inversa f-1, la función debe ser <strong>Biyectiva</strong>.
                     </div>
                 </div>
             </div>
@@ -349,12 +363,12 @@ end</code></pre>
                 <div class="card">
                     <h1 class="urban-title">COMPOSICIÓN</h1>
                     <div class="definition-text">
-                        <p>La composición se denota $(f \circ g)(x) = f(g(x))$. Si $f$ y $g$ son biyectivas, su composición también lo es.</p>
+                        <p>La composición se denota (f o g)(x) = f(g(x)). Si f y g son biyectivas, su composición también lo es.</p>
                     </div>
 
                     <div class="interactive-box">
                         <h4><i class="fas fa-cogs"></i> Calculadora (f o g)(x)</h4>
-                        <p>Sea $g(x) = x+1$ y $f(u) = u^2$.</p>
+                        <p>Sea g(x) = x+1 y f(u) = u^2.</p>
                         <div class="input-group">
                             <input type="number" id="compInput" placeholder="Ingresa valor de x">
                         </div>
@@ -373,24 +387,24 @@ end</code></pre>
                     <h1 class="urban-title">DISCRETA</h1>
                     <div class="definition-text">
                         <ul style="list-style: none;">
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Dominio:</strong> Números Enteros ($\mathbb{Z}$).</li>
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Codominio:</strong> Números Reales ($\mathbb{R}$).</li>
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Notación:</strong> Se usa $n$ en lugar de $x$.</li>
+                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Dominio:</strong> Números Enteros.</li>
+                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Codominio:</strong> Números Reales.</li>
+                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Notación:</strong> Se usa 'n' en lugar de 'x'.</li>
                         </ul>
                     </div>
 
                     <div class="grid-3">
                         <div class="formula-card">
                             <h5>Factorial</h5>
-                            $$f(n) = n!$$
+                            f(n) = n!
                         </div>
                         <div class="formula-card">
                             <h5>Binario</h5>
-                            $$f(n) = 2^n$$
+                            f(n) = 2^n
                         </div>
                         <div class="formula-card">
                             <h5>Inverso</h5>
-                            $$f(n) = 1/n$$
+                            f(n) = 1/n
                         </div>
                     </div>
 
