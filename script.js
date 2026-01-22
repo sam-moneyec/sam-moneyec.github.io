@@ -18,47 +18,49 @@ const sectionColors = {
 };
 
 function openTab(evt, tabName) {
-  if (evt) evt.preventDefault();
+  var i, tabcontent, tablinks;
+  var newColor = sectionColors[tabName] || '#FFD700';
+
+  // Evitar salto al inicio SOLO si es un <a href="#">
+  if (evt && evt.currentTarget && evt.currentTarget.tagName === "A") {
+    evt.preventDefault();
+  }
+
+  // Si la sección no existe, NO ocultes todo (para que no quede en blanco)
+  var currentTab = document.getElementById(tabName);
+  if (!currentTab) {
+    console.warn("Tab no existe en HTML:", tabName);
+    return;
+  }
 
   // Ocultar contenidos
-  const tabcontent = document.getElementsByClassName("tab-content");
-  for (let i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
+  tabcontent = document.getElementsByClassName("tab-content");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
 
-  // Resetear botones
-  const tablinks = document.getElementsByClassName("tab-link");
-  for (let i = 0; i < tablinks.length; i++) {
+  // Resetear links del menú
+  tablinks = document.getElementsByClassName("tab-link");
+  for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
     tablinks[i].style.borderColor = "transparent";
     tablinks[i].style.color = "#e0e0e0";
   }
 
-  const currentTab = document.getElementById(tabName);
-
-  // Si no existe esa sección, no dejes la página en blanco:
-  if (!currentTab) {
-    // vuelve a Inicio
-    const inicio = document.getElementById("inicio");
-    if (inicio) inicio.style.display = "block";
-    document.documentElement.style.setProperty('--gold-primary', sectionColors["inicio"] || '#FFD700');
-    alert("Esta sección aún no está creada en el HTML.");
-    return;
-  }
-
+  // Mostrar pestaña actual + color
   currentTab.style.display = "block";
-
-  const newColor = sectionColors[tabName] || '#FFD700';
   document.documentElement.style.setProperty('--gold-primary', newColor);
 
-  if (evt) {
+  // Activar botón/ítem clickeado (si existe)
+  if (evt && evt.currentTarget) {
     evt.currentTarget.className += " active";
     evt.currentTarget.style.borderColor = newColor;
     evt.currentTarget.style.color = newColor;
   }
 
-  // Si usas MathJax en fórmulas dentro de tabs:
+  // Si usas MathJax en tabs (opcional)
   if (window.MathJax && window.MathJax.typeset) window.MathJax.typeset();
 }
-
 }
 
 // --- CALCULADORAS ---
