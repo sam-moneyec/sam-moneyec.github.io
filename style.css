@@ -197,7 +197,7 @@ h1, h2, h3, h4, h5, h6, .urban-title, .mega-title {
     border: 3px solid var(--gold-primary); 
     border-radius: 15px; 
     overflow: hidden;
-    min-height: 6%0;
+    min-height: 360px;
     box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
@@ -274,4 +274,84 @@ pre code.hljs { padding: 25px !important; background: #050505 !important; border
 .whatsapp-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 0 20px #be9e1e; /* Pequeño brillo verde al pasar el mouse */
+}
+
+/* --- NUEVOS COMPONENTES (SECCIONES FALTANTES) --- */
+.plot-box{
+    background: #000;
+    border: 3px solid var(--gold-primary);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+.plot-box canvas{
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    background: #050505;
+}
+
+.video-wrap{
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    border: 3px solid var(--gold-primary);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    background: #000;
+}
+.video-wrap iframe{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.reviews-box{
+    background: rgba(0,0,0,0.6);
+    border: 3px solid var(--gold-primary);
+    padding: 30px;
+    border-radius: 15px;
+}
+.reviews-list{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 520px;
+    overflow: auto;
+    padding-right: 10px;
+}
+.review-card{
+    background: rgba(255,255,255,0.03);
+    border: 2px solid rgba(255,255,255,0.12);
+    border-left: 6px solid var(--gold-primary);
+    border-radius: 15px;
+    padding: 18px 18px;
+}
+.review-top{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.review-name{
+    font-family: var(--font-headers);
+    letter-spacing: 1px;
+    color: white;
+}
+.review-date{
+    color: #9a9a9a;
+    font-size: 0.9rem;
+}
+.review-stars{
+    color: var(--gold-primary);
+    text-shadow: 0 0 10px var(--gold-primary);
+    font-size: 1rem;
+}
+.review-text{
+    color: #d7d7d7;
+    font-size: 1.05rem;
 }
