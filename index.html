@@ -29,7 +29,7 @@
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'discreta')"><i class="fas fa-chart-bar"></i> Función Discreta</a></li>
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'video')"><i class="fas fa-play-circle"></i> Video Explicativo</a></li>
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'resenas')"><i class="fas fa-comments"></i> Reseñas</a></li>
-                <li><a href="https://wa.me/593999999999" target="_blank" class="tab-link whatsapp-link"><i class="fab fa-whatsapp"></i> Contactar Soporte</a></li>
+                <li><a href="https://wa.me/593999999999" target="_blank" class="tab-link whatsapp-sidebar"><i class="fab fa-whatsapp"></i> WhatsApp Soporte</a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -38,7 +38,6 @@
     </aside>
 
     <main class="main-content">
-        
         <header class="top-header">
             <div class="logo-area">
                 <img src="img/logo-epn.png" alt="Escudo EPN">
@@ -58,15 +57,7 @@
                         <div class="bot-text">
                             <h3>SISTEMA INICIADO</h3>
                             <div class="separator"></div>
-                            <p>
-                                <strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>, tu instructor virtual. 
-                                Esta plataforma ha sido diseñada para dominar la <em>Teoría de la Computación</em> 
-                                bajo los estándares de la <strong>EPN</strong>.
-                            </p>
-                            <p>
-                                Hemos adoptado un estilo <strong>Minimalista & Dorado</strong> para que te enfoques en lo esencial.
-                                Selecciona un módulo a la izquierda para comenzar.
-                            </p>
+                            <p><strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>, tu instructor virtual. Selecciona un módulo para comenzar la instrucción técnica.</p>
                             <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Comenzar Instrucción</button>
                         </div>
                         <div class="bot-image-container">
@@ -81,209 +72,45 @@
                     <h2>TEORÍA DE CONJUNTOS</h2>
                     <span class="badge">Capítulo 1</span>
                 </div>
-                
                 <div class="card">
-                    <h1 class="urban-title">¿QUÉ ES?</h1>
-                    
+                    <h1 class="urban-title">PRODUCTO</h1>
                     <div class="definition-text">
-                        <p>
-                            El <strong>Producto Cartesiano</strong> es una operación matemática que toma dos conjuntos y los mezcla para crear uno nuevo. 
-                            Su idea central es formar <em>pares ordenados</em>.
-                        </p>
+                        <p>Mezcla de dos conjuntos para crear pares ordenados $(a,b)$.</p>
                     </div>
-
-                    <div class="formula-box">
-                        $$A \times B = \{(a,b) \mid a \in A \land b \in B\}$$
-                        <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">Cardinalidad: $|A \times B| = |A| * |B|$</p>
-                    </div>
-
+                    <div class="formula-box">$$A \times B = \{(a,b) \mid a \in A \land b \in B\}$$</div>
                     <div class="interactive-box">
-                        <h4><i class="fas fa-calculator"></i> Generador de Pares</h4>
+                        <h4><i class="fas fa-calculator"></i> Generador</h4>
                         <div class="input-group">
-                            <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2, 3)">
-                            <input type="text" id="setB" placeholder="Conjunto B (ej: u, v)">
+                            <input type="text" id="setA" placeholder="Conjunto A">
+                            <input type="text" id="setB" placeholder="Conjunto B">
                         </div>
-                        <button class="run-btn" onclick="calcCartesian()">Mezclar Conjuntos</button>
+                        <button class="run-btn" onclick="calcCartesian()">Calcular</button>
                         <div id="resCartesiano" class="result-display">Esperando datos...</div>
                     </div>
-
                     <div class="chatbot-tip">
-                        <img src="img/bot.png" alt="MathBot Small" class="bot-mini">
-                        <p><strong>Tip de MathBot:</strong> El orden importa. El par (a,b) no es lo mismo que (b,a) a menos que a = b. 🤖</p>
+                        <img src="img/bot.png" alt="MathBot" class="bot-mini">
+                        <p><strong>MathBot:</strong> ¡El orden de los elementos en el par sí importa! 🤖</p>
                     </div>
                 </div>
             </div>
 
             <div id="funciones" class="tab-content">
-                <div class="topic-header">
-                    <h2>CONCEPTO DE FUNCIÓN</h2>
-                    <span class="badge">Slides 4-5</span>
-                </div>
+                <div class="topic-header"><h2>FUNCIONES</h2></div>
                 <div class="card">
-                    <h1 class="urban-title">LA MÁQUINA</h1>
-                    <div class="definition-text">
-                        <p>Una función $f: A \rightarrow B$ asigna a cada elemento $x$ de $A$ un <strong>único</strong> elemento $y = f(x)$ de $B$.</p>
-                    </div>
-                    
+                    <h1 class="urban-title">MÁQUINAS</h1>
                     <div class="diagram-container">
-                        <div class="set-oval">
-                            <h4>Dominio (A)</h4>
-                            <ul><li>1</li><li>2</li><li>3</li></ul>
-                        </div>
-                        <div class="arrow-connector">
-                            <i class="fas fa-long-arrow-alt-right fa-3x"></i><br>
-                            <strong>f</strong>
-                        </div>
-                        <div class="set-oval">
-                            <h4>Codominio (B)</h4>
-                            <ul><li>a</li><li>b</li><li>c</li></ul>
-                        </div>
+                        <div class="set-oval"><h4>Dominio</h4></div>
+                        <div class="arrow-connector"><i class="fas fa-long-arrow-alt-right fa-3x"></i></div>
+                        <div class="set-oval"><h4>Codominio</h4></div>
                     </div>
-
                     <div class="chatbot-tip">
-                        <img src="img/bot.png" alt="MathBot Small" class="bot-mini">
-                        <p><strong>Dato Curioso:</strong> En programación, las funciones puras siempre devuelven el mismo resultado para la misma entrada. 🤖</p>
+                        <img src="img/bot.png" alt="MathBot" class="bot-mini">
+                        <p><strong>MathBot:</strong> Recuerda: cada entrada tiene una única salida. 🤖</p>
                     </div>
                 </div>
             </div>
 
-            <div id="ejercicios" class="tab-content">
-                <div class="topic-header">
-                    <h2>VALIDACIÓN</h2>
-                    <span class="badge">Slide 8</span>
-                </div>
-                <div class="card">
-                    <h1 class="urban-title">¿ES FUNCIÓN?</h1>
-                    <p>Analicemos la relación $R=\{(2,5), (4,1), (4,3), (6,5)\}$ con $A=\{2,4,6\}$ y $B=\{1,3,5\}$.</p>
-                    
-                    <div class="interactive-box">
-                        <div style="display: flex; gap: 20px;">
-                            <div class="type-card" style="flex: 1; border-color: red;">
-                                <h4 style="color: #ff5555;"><i class="fas fa-times-circle"></i> CASO ERROR</h4>
-                                <p>El elemento <strong>4</strong> tiene dos salidas (1 y 3). ¡Esto rompe la regla de unicidad!</p>
-                            </div>
-                            <div class="type-card" style="flex: 1; border-color: #00ff88;">
-                                <h4 style="color: #00ff88;"><i class="fas fa-check-circle"></i> CASO VÁLIDO</h4>
-                                <p>Si cada elemento del dominio tiene exactamente una flecha de salida, es una función válida.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-
-            <div id="clasificacion" class="tab-content">
-                <div class="topic-header">
-                    <h2>CLASIFICACIÓN</h2>
-                    <span class="badge">Slides 9-10</span>
-                </div>
-                <div class="card">
-                    <div class="grid-3">
-                        <div class="type-card">
-                            <h3>Inyectiva</h3>
-                            <p>Elementos distintos de A van a elementos distintos de B.</p>
-                            <div class="visual-cue">Uno a Uno</div>
-                        </div>
-                        <div class="type-card">
-                            <h3>Sobreyectiva</h3>
-                            <p>Todo elemento de B es imagen de al menos uno de A.</p>
-                            <div class="visual-cue">Rango = Codominio</div>
-                        </div>
-                        <div class="type-card">
-                            <h3>Biyectiva</h3>
-                            <p>Es inyectiva y sobreyectiva. Permite la existencia de inversa.</p>
-                            <div class="visual-cue">Correspondencia Perfecta</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="inversa" class="tab-content">
-                <div class="topic-header">
-                    <h2>FUNCIÓN INVERSA</h2>
-                    <span class="badge">Slide 11</span>
-                </div>
-                <div class="card">
-                    <div class="alert-box">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Requisito:</strong> Para que exista inversa $f^{-1}$, la función debe ser <strong>Biyectiva</strong>.
-                    </div>
-                </div>
-            </div>
-
-            <div id="compuesta" class="tab-content">
-                <div class="topic-header">
-                    <h2>FUNCIÓN COMPUESTA</h2>
-                    <span class="badge">Slide 12</span>
-                </div>
-                <div class="card">
-                    <h1 class="urban-title">COMPOSICIÓN</h1>
-                    <div class="interactive-box">
-                        <h4><i class="fas fa-cogs"></i> Calculadora (f o g)(x)</h4>
-                        <p>Sea $g(x) = x+1$ y $f(u) = u^2$.</p>
-                        <div class="input-group">
-                            <input type="number" id="compInput" placeholder="Ingresa valor de x">
-                        </div>
-                        <button class="run-btn" onclick="calcComposition()">Calcular f(g(x))</button>
-                        <div id="resComposicion" class="result-display">Esperando entrada...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="discreta" class="tab-content">
-                <div class="topic-header">
-                    <h2>FUNCIONES DISCRETAS</h2>
-                    <span class="badge">Slide 14</span>
-                </div>
-                <div class="card">
-                    <h1 class="urban-title">DISCRETA</h1>
-                    <div class="grid-3">
-                        <div class="formula-card">
-                            <h5>Factorial</h5>
-                            $$f(n) = n!$$
-                        </div>
-                        <div class="formula-card">
-                            <h5>Binario</h5>
-                            $$f(n) = 2^n$$
-                        </div>
-                        <div class="formula-card">
-                            <h5>Inverso</h5>
-                            $$f(n) = 1/n$$
-                        </div>
-                    </div>
-
-                    <div class="interactive-box">
-                        <h4>Calculadora de Factorial</h4>
-                        <input type="number" id="numFactorial" placeholder="Entero n">
-                        <button class="run-btn" onclick="calcFactorial()">Calcular n!</button>
-                        <div id="resFactorial" class="result-display">Resultado...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="video" class="tab-content">
-                <div class="topic-header">
-                    <h2>VIDEO EXPLICATIVO</h2>
-                </div>
-                <div class="card video-card" style="text-align: center;">
-                    <div class="interactive-box" style="padding: 100px;">
-                        <i class="fab fa-youtube fa-5x" style="color: #ff0000;"></i>
-                        <p style="margin-top: 20px;">Video Próximamente</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="resenas" class="tab-content">
-                <div class="topic-header">
-                    <h2>FEEDBACK</h2>
-                </div>
-                <div class="card">
-                    <p>Tu opinión es vital para mejorar el sistema.</p>
-                    <textarea style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; padding: 15px; border-radius: 8px; margin-top: 15px;" rows="4" placeholder="Escribe tu comentario..."></textarea>
-                    <button class="cta-button">Enviar Reporte</button>
-                </div>
-            </div>
-
-        </div>
     </main>
 
     <a href="https://wa.me/593999999999" class="whatsapp-float" target="_blank">

@@ -1,44 +1,108 @@
 :root {
-    /* Paleta de Contraste Mejorado */
-    --bg-sidebar: #050505;      /* Negro casi puro para el marco */
-    --bg-content: #1c1c1c;      /* Gris oscuro para el área de información */
-    --bg-header: #080808;       /* Tono intermedio para el encabezado */
+    --bg-obsidian: #050505;     /* Fondo navegación (Negro) */
+    --bg-carbon: #1c1c1c;       /* Fondo información (Gris Oscuro) */
+    --bg-card: rgba(10, 10, 10, 0.85);
     --gold-primary: #FFD700;
-    --text-white: #ffffff;
-    --text-gray: #cccccc;
+    --gold-dark: #B8860B;
+    --border-gold: rgba(255, 215, 0, 0.2);
     --sidebar-width: 280px;
-    --border-gold: rgba(255, 215, 0, 0.15);
 }
 
-/* Sidebar: Negro Profundo */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+body { background-color: var(--bg-obsidian); display: flex; color: white; overflow-x: hidden; }
+
+/* BARRA LATERAL (Negro Puro) */
 .sidebar {
-    background: var(--bg-sidebar);
+    width: var(--sidebar-width);
+    background: var(--bg-obsidian);
+    height: 100vh;
+    position: fixed;
     border-right: 2px solid var(--border-gold);
-    /* ... resto de tus estilos ... */
+    z-index: 100;
 }
 
-/* Encabezado: Negro sutil */
-.top-header {
-    background: var(--bg-header);
-    border-bottom: 1px solid var(--border-gold);
+.sidebar nav ul li a:hover, .sidebar nav ul li a.active {
+    background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
+    color: var(--gold-primary);
+    border-left: 4px solid var(--gold-primary);
 }
 
-/* Área de Información: Gris Oscuro Distinguible */
+/* ÁREA DE CONTENIDO (Gris Oscuro Distinguible) */
 .main-content {
     margin-left: var(--sidebar-width);
-    background-color: var(--bg-content);
-    /* Añadimos una textura sutil de malla para mayor profesionalismo */
-    background-image: linear-gradient(rgba(255,215,0,0.02) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255,215,0,0.02) 1px, transparent 1px);
-    background-size: 30px 30px;
     width: calc(100% - var(--sidebar-width));
+    background-color: var(--bg-carbon);
+    /* Trama de ingeniería sutil */
+    background-image: radial-gradient(var(--border-gold) 0.5px, transparent 0.5px);
+    background-size: 30px 30px;
     min-height: 100vh;
 }
 
-/* Ajuste de las tarjetas para que resalten sobre el gris */
+.top-header {
+    background: var(--bg-obsidian);
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border-gold);
+}
+
+/* TARJETAS DE INFORMACIÓN */
 .card {
-    background: rgba(10, 10, 10, 0.7); /* Fondo más oscuro que el gris base */
-    backdrop-filter: blur(10px);
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 40px;
     border: 1px solid var(--border-gold);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    margin-bottom: 30px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+}
+
+/* ASISTENTE MATHBOT EN FUNCIONES */
+.chatbot-tip {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 215, 0, 0.05);
+    border-left: 4px solid var(--gold-primary);
+    padding: 15px;
+    margin-top: 25px;
+    border-radius: 5px;
+}
+
+.bot-mini { width: 40px; margin-right: 15px; filter: drop-shadow(0 0 5px var(--gold-primary)); }
+
+/* WHATSAPP */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #25d366;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+    transition: 0.3s;
+}
+
+.whatsapp-float:hover { transform: scale(1.1) rotate(10deg); }
+
+.whatsapp-sidebar:hover { color: #25d366 !important; }
+
+/* TITULOS URBANO-GOLD */
+.urban-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(to right, #FFD700, #fff);
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: -2px;
 }
