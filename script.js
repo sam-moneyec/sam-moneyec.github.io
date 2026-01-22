@@ -18,49 +18,38 @@ const sectionColors = {
 };
 
 function openTab(evt, tabName) {
-  var i, tabcontent, tablinks;
-  var newColor = sectionColors[tabName] || '#FFD700';
+    var i, tabcontent, tablinks;
 
-  // Evitar salto al inicio SOLO si es un <a href="#">
-  if (evt && evt.currentTarget && evt.currentTarget.tagName === "A") {
-    evt.preventDefault();
-  }
+ // Ocultar contenidos
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
 
-  // Si la sección no existe, NO ocultes todo (para que no quede en blanco)
-  var currentTab = document.getElementById(tabName);
-  if (!currentTab) {
-    console.warn("Tab no existe en HTML:", tabName);
-    return;
-  }
+   // Resetear botones
+    tablinks = document.getElementsByClassName("tab-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tablinks[i].style.borderColor = "transparent"; 
+        tablinks[i].style.color = "#e0e0e0"; 
+    }
 
-  // Ocultar contenidos
-  tabcontent = document.getElementsByClassName("tab-content");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
+ // Mostrar pestaña actual
+    var currentTab = document.getElementById(tabName);
+    if (currentTab) {
+        currentTab.style.display = "block";
+        
+        // --- CAMBIO DE COLOR DINÁMICO ---
+        var newColor = sectionColors[tabName] || '#FFD700';
+        document.documentElement.style.setProperty('--gold-primary', newColor);
+    }
 
-  // Resetear links del menú
-  tablinks = document.getElementsByClassName("tab-link");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-    tablinks[i].style.borderColor = "transparent";
-    tablinks[i].style.color = "#e0e0e0";
-  }
-
-  // Mostrar pestaña actual + color
-  currentTab.style.display = "block";
-  document.documentElement.style.setProperty('--gold-primary', newColor);
-
-  // Activar botón/ítem clickeado (si existe)
-  if (evt && evt.currentTarget) {
-    evt.currentTarget.className += " active";
-    evt.currentTarget.style.borderColor = newColor;
-    evt.currentTarget.style.color = newColor;
-  }
-
-  // Si usas MathJax en tabs (opcional)
-  if (window.MathJax && window.MathJax.typeset) window.MathJax.typeset();
-}
+  // Activar botón
+    if (evt) {
+        evt.currentTarget.className += " active";
+        evt.currentTarget.style.borderColor = newColor;
+        evt.currentTarget.style.color = newColor;
+    }
 }
 
 // --- CALCULADORAS ---
