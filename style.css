@@ -25,7 +25,6 @@ body {
 }
 
 /* --- TIPOGRAFÍA Y COLORES DINÁMICOS --- */
-/* AQUI ESTA LA MAGIA: Forzamos que todos los títulos usen la variable de color */
 h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
     font-family: var(--font-headers); 
     text-transform: uppercase; 
@@ -43,7 +42,7 @@ h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
     box-shadow: 0 0 30px var(--gold-primary);
     text-align: center; border-radius: 15px; margin: 30px 0;
     font-family: 'Orbitron', sans-serif; 
-    color: var(--gold-primary) !important; /* Formula Neon */
+    color: var(--gold-primary) !important;
 }
 
 .giant-code {
@@ -60,20 +59,31 @@ h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
     transition: border-color 0.3s ease;
 }
 
-.sidebar-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+/* --- MODIFICACIÓN: HEADER CON IMAGEN --- */
+.sidebar-header {
+    padding: 30px 20px;        /* Espacio reducido para que cuadre mejor */
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    display: flex;             /* Flexbox para alinear perfectamente */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-/* NUEVO: ESTILO PARA LA IMAGEN DEL LOGO EN SIDEBAR */
+/* --- NUEVO: ESTILO PARA EL BÚHO --- */
 .sidebar-logo {
-    max-width: 140px; 
+    max-width: 120px;          /* TAMAÑO CONTROLADO (Puedes cambiarlo aquí) */
+    width: 100%;
     height: auto;
     display: block;
-    margin: 0 auto; 
-    filter: drop-shadow(0 0 15px var(--gold-primary)); 
+    margin-bottom: 10px;       /* Espacio entre búho y texto */
+    filter: drop-shadow(0 0 15px var(--gold-primary)); /* Brillo neón */
     transition: transform 0.3s ease;
 }
 
 .sidebar-header:hover .sidebar-logo {
-    transform: scale(1.1); 
+    transform: scale(1.05);    /* Pequeño zoom al pasar el mouse */
 }
 
 .sidebar nav { flex: 1; overflow-y: auto; }
@@ -107,7 +117,7 @@ h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
 .logo-area { display: flex; align-items: center; gap: 25px; }
 .logo-area img { height: 70px; filter: drop-shadow(0 0 10px var(--gold-primary)); }
 .university-info h1 { font-size: 1.4rem; font-weight: 900; margin-bottom: 5px; }
-.university-info h2 { font-size: 1rem; color: white !important; /* Excepción para subtítulo blanco */ }
+.university-info h2 { font-size: 1rem; color: white !important; }
 .motto { font-size: 0.9rem; font-style: italic; color: #bbb !important; }
 
 .content-body { padding: 50px; }
@@ -140,10 +150,10 @@ h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
 .separator { width: 150px; height: 6px; background: var(--gold-primary); margin-bottom: 30px; box-shadow: 0 0 20px var(--gold-primary); }
 .bot-text p { color: #fff; font-size: 1.4rem; margin-bottom: 20px; }
 
-/* CAMBIO: FORZAR LETRAS NEGRAS EN EL BOTON */
+/* --- MODIFICACIÓN: BOTÓN CON LETRAS NEGRAS --- */
 .cta-button { 
     background: var(--gold-primary) !important; 
-    color: black !important; 
+    color: black !important; /* Letras negras forzadas */
     padding: 20px 50px; border: none; border-radius: 8px; 
     font-weight: 900; cursor: pointer; margin-top: 30px; font-size: 1.3rem;
     box-shadow: 0 0 30px var(--gold-primary); transition: 0.3s;
@@ -171,7 +181,7 @@ h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
 }
 .definition-text { border-left: 6px solid var(--gold-primary); padding-left: 30px; margin-bottom: 30px; font-size: 1.4rem; color: #ddd; }
 
-/* --- CORRECCIÓN DE IMAGEN MATRICIAL (TAMAÑO MÁXIMO) --- */
+/* --- CORRECCIÓN DE IMAGEN MATRICIAL --- */
 .diagram-box {
     flex: 1; 
     display: flex; 
@@ -200,8 +210,6 @@ h1, h2, h3, h4, h5, h6, .badge, .urban-title, .mega-title {
     transition: transform 0.3s;
 }
 .tech-item:hover { transform: translateX(10px); background: rgba(255,255,255,0.05); }
-
-/* Arreglo de fuente para descripción */
 .tech-item h3 { color: var(--gold-primary) !important; }
 .tech-item p { font-family: 'Exo 2', sans-serif; font-size: 1.2rem; line-height: 1.5; color: #ccc; margin: 0; }
 
