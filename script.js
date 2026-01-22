@@ -1,90 +1,100 @@
-// Función para abrir pestañas
+/**
+ * SISTEMA DE GESTIÓN DE PESTAÑAS
+ * Oculta todos los contenidos y muestra solo el seleccionado.
+ */
 function openTab(evt, tabName) {
-    // 1. Ocultar todos los elementos con clase "tab-content"
     var i, tabcontent, tablinks;
+
+    // 1. Ocultar todo el contenido
     tabcontent = document.getElementsByClassName("tab-content");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
 
-    // 2. Quitar la clase "active" de todos los botones del menú
+    // 2. Desactivar todos los botones del menú
     tablinks = document.getElementsByClassName("tab-link");
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
 
-    // 3. Mostrar la pestaña actual y añadir clase "active" al botón clickeado
+    // 3. Mostrar la pestaña actual
     document.getElementById(tabName).style.display = "block";
-    
-    // Si el evento existe (click), poner la clase activa.
-    // Si no (carga inicial), no hacemos nada con los links.
+
+    // 4. Activar el botón presionado
     if (evt) {
         evt.currentTarget.className += " active";
     }
 }
 
-// --- FUNCIONES MATEMÁTICAS ---
-
-// 1. Producto Cartesiano
+/**
+ * CALCULADORA: PRODUCTO CARTESIANO
+ */
 function calcCartesian() {
     const rawA = document.getElementById('setA').value;
     const rawB = document.getElementById('setB').value;
     const resDiv = document.getElementById('resCartesiano');
 
-    if(!rawA || !rawB) {
-        resDiv.innerHTML = "<span style='color:red'>Por favor llena ambos campos</span>";
+    if (!rawA || !rawB) {
+        resDiv.innerHTML = "<span style='color:red;'>⚠️ Error: Ingresa datos en ambos campos.</span>";
         return;
     }
 
     const A = rawA.split(',').map(s => s.trim());
     const B = rawB.split(',').map(s => s.trim());
-    
     let pairs = [];
+
     A.forEach(a => {
         B.forEach(b => {
             pairs.push(`(${a},${b})`);
         });
     });
 
-    resDiv.innerHTML = `{ ${pairs.join(', ')} } <br> Total de pares: ${pairs.length}`;
+    resDiv.innerHTML = `
+        <strong>Conjunto Resultante:</strong> { ${pairs.join(', ')} } <br>
+        <strong>Cardinalidad:</strong> ${A.length} x ${B.length} = ${pairs.length} pares.
+    `;
 }
 
-// 2. Factorial (Función Discreta)
+/**
+ * CALCULADORA: FACTORIAL (DISCRETA)
+ */
 function calcFactorial() {
     const n = parseInt(document.getElementById('numFactorial').value);
     const resDiv = document.getElementById('resFactorial');
 
-    if(isNaN(n) || n < 0) {
-        resDiv.innerHTML = "Ingresa un entero positivo (N)";
+    if (isNaN(n) || n < 0) {
+        resDiv.innerHTML = "⚠️ Ingresa un número entero positivo.";
         return;
     }
 
     let result = 1;
-    for(let i = 1; i <= n; i++) {
+    for (let i = 1; i <= n; i++) {
         result *= i;
     }
-    
-    resDiv.innerHTML = `f(${n}) = ${n}! = ${result}`;
+
+    resDiv.innerHTML = `<strong>Resultado:</strong> f(${n}) = ${n}! = ${result}`;
 }
-// 3. Composición (f o g)(x)
+
+/**
+ * CALCULADORA: COMPOSICIÓN f(g(x))
+ * g(x) = x + 1
+ * f(u) = u^2
+ */
 function calcComposition() {
     const x = parseFloat(document.getElementById('compInput').value);
     const resDiv = document.getElementById('resComposicion');
-    
-    if(isNaN(x)) {
-        resDiv.innerHTML = "Por favor ingresa un número.";
+
+    if (isNaN(x)) {
+        resDiv.innerHTML = "⚠️ Por favor ingresa un número.";
         return;
     }
 
-    // Definición de funciones según el ejemplo
-    // g(x) = x + 1
-    const gx = x + 1;
-    // f(u) = u^2
-    const fgx = gx * gx;
+    const gx = x + 1;      // Paso 1
+    const fgx = gx * gx;   // Paso 2
 
     resDiv.innerHTML = `
-        <strong>Paso 1 (g):</strong> g(${x}) = ${x} + 1 = ${gx} <br>
-        <strong>Paso 2 (f):</strong> f(${gx}) = (${gx})^2 = ${fgx} <br>
-        <strong>Resultado:</strong> ${fgx}
+        1. <strong>g(${x})</strong> = ${x} + 1 = ${gx} <br>
+        2. <strong>f(${gx})</strong> = (${gx})² = ${fgx} <br>
+        🏁 <strong>Resultado Final:</strong> ${fgx}
     `;
 }
