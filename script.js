@@ -1,54 +1,44 @@
-// 1. MÁQUINA FUNCIONAL (Concepto del PDF)
-function runMachine() {
-    const x = parseFloat(document.getElementById('inputX').value);
-    const type = document.getElementById('funcType').value;
-    const outputDiv = document.getElementById('machineResult');
-
-    if (isNaN(x)) {
-        outputDiv.innerHTML = "⚠️ Por favor ingresa un número válido.";
-        return;
+// Función para abrir pestañas
+function openTab(evt, tabName) {
+    // 1. Ocultar todos los elementos con clase "tab-content"
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
     }
 
-    let result;
-    let formula;
-
-    switch(type) {
-        case 'square':
-            result = x * x;
-            formula = `f(${x}) = ${x}^2`;
-            break;
-        case 'successor':
-            result = x + 1;
-            formula = `f(${x}) = ${x} + 1`;
-            break;
-        case 'double':
-            result = x * 2;
-            formula = `f(${x}) = 2(${x})`;
-            break;
+    // 2. Quitar la clase "active" de todos los botones del menú
+    tablinks = document.getElementsByClassName("tab-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
 
-    // Animación simple de texto
-    outputDiv.style.opacity = 0;
-    setTimeout(() => {
-        outputDiv.innerHTML = `<strong>Proceso:</strong> ${formula} <br> <strong>Salida (Output):</strong> ${result}`;
-        outputDiv.style.opacity = 1;
-    }, 200);
+    // 3. Mostrar la pestaña actual y añadir clase "active" al botón clickeado
+    document.getElementById(tabName).style.display = "block";
+    
+    // Si el evento existe (click), poner la clase activa.
+    // Si no (carga inicial), no hacemos nada con los links.
+    if (evt) {
+        evt.currentTarget.className += " active";
+    }
 }
 
-// 2. PRODUCTO CARTESIANO
+// --- FUNCIONES MATEMÁTICAS ---
+
+// 1. Producto Cartesiano
 function calcCartesian() {
     const rawA = document.getElementById('setA').value;
     const rawB = document.getElementById('setB').value;
-    
-    // Convertir y limpiar inputs
-    const A = rawA.split(',').map(s => s.trim()).filter(s => s !== "");
-    const B = rawB.split(',').map(s => s.trim()).filter(s => s !== "");
+    const resDiv = document.getElementById('resCartesiano');
 
-    if(A.length === 0 || B.length === 0) {
-        alert("¡Los conjuntos no pueden estar vacíos!");
+    if(!rawA || !rawB) {
+        resDiv.innerHTML = "<span style='color:red'>Por favor llena ambos campos</span>";
         return;
     }
 
+    const A = rawA.split(',').map(s => s.trim());
+    const B = rawB.split(',').map(s => s.trim());
+    
     let pairs = [];
     A.forEach(a => {
         B.forEach(b => {
@@ -56,35 +46,23 @@ function calcCartesian() {
         });
     });
 
-    const resBox = document.getElementById('resCartesiano');
-    resBox.innerHTML = `
-        <p>Cardinalidad $|A \\times B| = ${A.length} \\times ${B.length} = ${pairs.length}$</p>
-        <p>{ ${pairs.join(', ')} }</p>
-    `;
+    resDiv.innerHTML = `{ ${pairs.join(', ')} } <br> Total de pares: ${pairs.length}`;
 }
 
-// 3. COMPOSICIÓN DE FUNCIONES
-function calcComposition() {
-    const x = parseFloat(document.getElementById('compInput').value);
-    const resBox = document.getElementById('resComposicion');
+// 2. Factorial (Función Discreta)
+function calcFactorial() {
+    const n = parseInt(document.getElementById('numFactorial').value);
+    const resDiv = document.getElementById('resFactorial');
 
-    if (isNaN(x)) {
-        resBox.innerText = "Ingresa un número para x.";
+    if(isNaN(n) || n < 0) {
+        resDiv.innerHTML = "Ingresa un entero positivo (N)";
         return;
     }
 
-    // Funciones definidas internamente
-    // g(x) = x + 1
-    const gx = x + 1;
-    // f(u) = u^2
-    const fgx = gx * gx;
-
-    resBox.innerHTML = `
-        Paso 1: $g(${x}) = ${x} + 1 = ${gx}$ <br>
-        Paso 2: $f(${gx}) = (${gx})^2 = ${fgx}$ <br>
-        <strong>Resultado $(f \\circ g)(${x}) = ${fgx}$</strong>
-    `;
+    let result = 1;
+    for(let i = 1; i <= n; i++) {
+        result *= i;
+    }
     
-    // Renderizar de nuevo las fórmulas matemáticas
-    MathJax.typeset();
+    resDiv.innerHTML = `f(${n}) = ${n}! = ${result}`;
 }

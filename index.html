@@ -14,23 +14,23 @@
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h3>MATH<span class="highlight">COMP</span></h3>
+            <h3 onclick="openTab(event, 'inicio')" style="cursor: pointer;">MATH<span class="highlight">COMP</span></h3>
         </div>
         <nav>
             <ul>
-                <li><a href="#prod-cartesiano" class="active"><i class="fas fa-shapes"></i> Producto Cartesiano</a></li>
-                <li><a href="#funciones"><i class="fas fa-project-diagram"></i> Funciones</a></li>
-                <li><a href="#ejercicios"><i class="fas fa-pencil-ruler"></i> Ejemplos / Hojas</a></li>
-                <li><a href="#clasificacion"><i class="fas fa-check-double"></i> Inyec / Sobre / Biyec</a></li>
-                <li><a href="#inversa"><i class="fas fa-exchange-alt"></i> Función Inversa</a></li>
-                <li><a href="#compuesta"><i class="fas fa-layer-group"></i> Función Compuesta</a></li>
-                <li><a href="#discreta"><i class="fas fa-chart-bar"></i> Función Discreta</a></li>
-                <li><a href="#video"><i class="fas fa-play-circle"></i> VIDEO EXPLICATIVO</a></li>
-                <li><a href="#resenas"><i class="fas fa-comments"></i> Reseñas</a></li>
+                <li><a href="#" class="tab-link active" onclick="openTab(event, 'prod-cartesiano')"><i class="fas fa-shapes"></i> Producto Cartesiano</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'funciones')"><i class="fas fa-project-diagram"></i> Funciones</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'ejercicios')"><i class="fas fa-pencil-ruler"></i> Ejemplos / Hojas</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'clasificacion')"><i class="fas fa-check-double"></i> Inyec / Sobre / Biyec</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'inversa')"><i class="fas fa-exchange-alt"></i> Función Inversa</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'compuesta')"><i class="fas fa-layer-group"></i> Función Compuesta</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'discreta')"><i class="fas fa-chart-bar"></i> Función Discreta</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'video')"><i class="fas fa-play-circle"></i> VIDEO EXPLICATIVO</a></li>
+                <li><a href="#" class="tab-link" onclick="openTab(event, 'resenas')"><i class="fas fa-comments"></i> Reseñas</a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
-            <p>EPN 2026</p>
+            <p>EPN 2026 | Samuel Robayo</p>
         </div>
     </aside>
 
@@ -49,38 +49,157 @@
             </div>
         </header>
 
-        <section class="welcome-section">
-            <div class="bot-card">
-                <div class="bot-text">
-                    <h3>BIENVENIDOS</h3>
-                    <div class="separator"></div>
-                    <p>
-                        ¡Hola! Soy <strong>MathBot</strong>, tu asistente virtual en este recorrido.
-                        Esta plataforma ha sido diseñada bajo un concepto <strong>minimalista y profesional</strong>, 
-                        eliminando distracciones para que te enfoques en lo importante: 
-                        dominar la <em>Teoría de la Computación</em>.
-                    </p>
-                    <p>
-                        Aquí encontrarás teoría clara, calculadoras interactivas y código real.
-                        Usa el menú de la izquierda para navegar. <strong>¡Solo aprendiendo, vencerás!</strong>
-                    </p>
-                    <button class="cta-button">Conoce el Proyecto</button>
-                </div>
-                <div class="bot-image-container">
-                    <img src="img/bot.png" alt="Asistente Virtual" class="floating-bot">
-                </div>
-            </div>
-        </section>
+        <div class="content-body">
 
-        <div class="content-container">
-            
-            <section id="prod-cartesiano" class="topic-card">
-                <h2>1. Producto Cartesiano</h2>
-                <p>El conjunto de pares ordenados...</p>
+            <div id="inicio" class="tab-content" style="display: block;">
+                <section class="welcome-section">
+                    <div class="bot-card">
+                        <div class="bot-text">
+                            <h3>BIENVENIDOS</h3>
+                            <div class="separator"></div>
+                            <p>
+                                ¡Hola! Soy <strong>MathBot</strong>, tu asistente virtual en este recorrido.
+                                Esta plataforma ha sido diseñada bajo un concepto <strong>minimalista y profesional</strong>.
+                            </p>
+                            <p>
+                                Selecciona un tema en el menú de la izquierda para comenzar a aprender sobre 
+                                <strong>Funciones, Lógica y Conjuntos</strong>.
+                            </p>
+                            <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Comenzar Lección</button>
+                        </div>
+                        <div class="bot-image-container">
+                            <img src="img/bot.png" alt="Asistente Virtual" class="floating-bot">
+                        </div>
+                    </div>
                 </section>
-
             </div>
 
+            <div id="prod-cartesiano" class="tab-content">
+                <div class="topic-header">
+                    <h2>Producto Cartesiano</h2>
+                    <span class="badge">Teoría de Conjuntos</span>
+                </div>
+                <div class="card">
+                    <p>Dados dos conjuntos A y B, el producto cartesiano $A \times B$ es el conjunto de todos los pares ordenados (a,b).</p>
+                    [cite_start]<p>$$A \times B = \{(a,b) | a \in A \land b \in B\}$$ [cite: 7, 9]</p>
+                    
+                    <div class="interactive-box">
+                        <h4>Calculadora Interactiva</h4>
+                        <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
+                        <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
+                        <button class="run-btn" onclick="calcCartesian()">Generar Pares</button>
+                        <div id="resCartesiano" class="result-display"></div>
+                    </div>
+
+                    <div class="matlab-block">
+                        <h5><i class="fas fa-code"></i> MATLAB Code</h5>
+                        <pre><code>A = [1, 2]; B = [3, 4];
+[X, Y] = ndgrid(A, B);
+disp([X(:), Y(:)]);</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div id="funciones" class="tab-content">
+                <div class="topic-header">
+                    <h2>Definición de Funciones</h2>
+                </div>
+                <div class="card">
+                    [cite_start]<p>Una función es una asignación donde a cada elemento $x$ de $A$ se le asigna un <strong>único</strong> elemento $y = f(x)$ de $B$[cite: 19].</p>
+                    <div style="text-align: center; margin: 20px;">
+                        <i class="fas fa-project-diagram fa-3x" style="color: var(--epn-blue);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ejercicios" class="tab-content">
+                <div class="topic-header">
+                    <h2>Ejemplos y Ejercicios</h2>
+                </div>
+                <div class="card">
+                    [cite_start]<p>Revisa los siguientes diagramas de flechas para determinar si son funciones o no[cite: 62].</p>
+                    </div>
+            </div>
+
+            <div id="clasificacion" class="tab-content">
+                <div class="topic-header">
+                    <h2>Inyectividad, Sobreyectividad y Biyectividad</h2>
+                </div>
+                <div class="grid-3">
+                    <div class="card small">
+                        <h4>Inyectiva</h4>
+                        [cite_start]<p>Cada elemento de B tiene a lo sumo una imagen en A (Uno a Uno)[cite: 136].</p>
+                    </div>
+                    <div class="card small">
+                        <h4>Sobreyectiva</h4>
+                        [cite_start]<p>El Rango es igual al Codominio[cite: 137].</p>
+                    </div>
+                    <div class="card small">
+                        <h4>Biyectiva</h4>
+                        [cite_start]<p>Es inyectiva y sobreyectiva a la vez[cite: 138].</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inversa" class="tab-content">
+                <div class="topic-header">
+                    <h2>Función Inversa</h2>
+                </div>
+                <div class="card">
+                    [cite_start]<p>Para calcular la inversa de una función, esta tiene que ser obligatoriamente biyectiva[cite: 164].</p>
+                </div>
+            </div>
+
+            <div id="compuesta" class="tab-content">
+                <div class="topic-header">
+                    <h2>Función Compuesta</h2>
+                </div>
+                <div class="card">
+                    [cite_start]<p>La composición se denota $(f \circ g)(x) = f(g(x))$[cite: 179].</p>
+                </div>
+            </div>
+
+            <div id="discreta" class="tab-content">
+                <div class="topic-header">
+                    <h2>Funciones Discretas</h2>
+                </div>
+                <div class="card">
+                    [cite_start]<p>Dominio en Enteros ($\mathbb{Z}$) y Codominio en Reales ($\mathbb{R}$)[cite: 222].</p>
+                    <div class="interactive-box">
+                        <h4>Calcular Factorial $f(n)=n!$</h4>
+                        <input type="number" id="numFactorial" placeholder="n">
+                        <button class="run-btn" onclick="calcFactorial()">Calcular</button>
+                        <div id="resFactorial" class="result-display"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="video" class="tab-content">
+                <div class="topic-header">
+                    <h2>Video Explicativo</h2>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="background: #000; color: white; padding: 100px; border-radius: 10px;">
+                        <i class="fas fa-play fa-2x"></i><br>
+                        Aquí irá tu video incrustado
+                    </div>
+                </div>
+            </div>
+
+            <div id="resenas" class="tab-content">
+                <div class="topic-header">
+                    <h2>Comentarios</h2>
+                </div>
+                <div class="card">
+                    <p>Deja tu opinión sobre este proyecto.</p>
+                    <textarea style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" rows="4"></textarea>
+                    <button class="cta-button" style="margin-top: 10px;">Enviar</button>
+                </div>
+            </div>
+
+        </div>
     </main>
+
+    <script src="script.js"></script>
 </body>
 </html>

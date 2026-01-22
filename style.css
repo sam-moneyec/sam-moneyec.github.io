@@ -1,28 +1,27 @@
 :root {
-    /* Paleta de Colores: Azul Eléctrico Serio (Inspirado en EPN pero moderno) */
     --epn-blue: #004aad; 
     --epn-dark: #002a61;
-    --accent: #00d2ff; /* Azul eléctrico para detalles */
+    --accent: #00d2ff;
     --bg-light: #f4f7f6;
     --text-dark: #333;
-    --white: #ffffff;
     --sidebar-width: 260px;
 }
 
+/* --- BASICS --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-    scroll-behavior: smooth;
 }
 
 body {
     background-color: var(--bg-light);
     display: flex;
+    overflow-x: hidden;
 }
 
-/* --- SIDEBAR IZQUIERDA --- */
+/* --- SIDEBAR --- */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--epn-dark);
@@ -31,7 +30,6 @@ body {
     top: 0;
     left: 0;
     color: white;
-    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
     z-index: 100;
@@ -43,20 +41,9 @@ body {
     background: rgba(0,0,0,0.2);
 }
 
-.sidebar-header h3 {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-}
+.highlight { color: var(--accent); font-weight: 700; }
 
-.highlight {
-    color: var(--accent);
-    font-weight: 700;
-}
-
-.sidebar nav ul {
-    list-style: none;
-    padding-top: 20px;
-}
+.sidebar nav ul { list-style: none; padding-top: 20px; }
 
 .sidebar nav ul li a {
     display: block;
@@ -66,167 +53,126 @@ body {
     font-size: 0.9rem;
     transition: 0.3s;
     border-left: 4px solid transparent;
+    cursor: pointer;
 }
 
-.sidebar nav ul li a:hover {
+.sidebar nav ul li a:hover, .sidebar nav ul li a.active {
     background: rgba(255,255,255,0.1);
     color: white;
     border-left: 4px solid var(--accent);
 }
 
-.sidebar nav ul li a i {
-    margin-right: 10px;
-    width: 20px;
+.sidebar nav ul li a i { margin-right: 10px; width: 20px; text-align: center; }
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 20px;
     text-align: center;
+    font-size: 0.8rem;
+    color: #888;
 }
 
-/* --- MAIN CONTENT --- */
+/* --- MAIN LAYOUT --- */
 .main-content {
     margin-left: var(--sidebar-width);
     width: calc(100% - var(--sidebar-width));
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* --- TOP HEADER (Estilo Militar/Institucional) --- */
+/* --- HEADER --- */
 .top-header {
     background: linear-gradient(90deg, var(--epn-dark) 0%, var(--epn-blue) 100%);
     color: white;
     padding: 20px 40px;
     box-shadow: 0 4px 15px rgba(0,74,173,0.3);
-    position: relative;
-    overflow: hidden;
 }
 
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    z-index: 2;
-    position: relative;
-}
+.logo-area { display: flex; align-items: center; gap: 20px; }
+.logo-area img { height: 80px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.university-info h1 { font-size: 1.4rem; font-weight: 700; }
+.university-info h2 { font-size: 0.9rem; font-weight: 400; opacity: 0.9; }
+.motto { font-style: italic; font-size: 0.85rem; color: var(--accent); margin-top: 5px;}
 
-.logo-area img {
-    height: 80px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-}
-
-.university-info h1 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.university-info h2 {
-    font-size: 0.9rem;
-    font-weight: 400;
-    opacity: 0.9;
-    margin-bottom: 5px;
-}
-
-.motto {
-    font-family: 'Times New Roman', serif;
-    font-style: italic;
-    font-size: 0.85rem;
-    color: var(--accent);
-}
-
-/* --- WELCOME CARD (Bot Section) --- */
-.welcome-section {
+/* --- TABS SYSTEM (LO IMPORTANTE) --- */
+.content-body {
     padding: 40px;
-    display: flex;
-    justify-content: center;
+    flex: 1;
 }
 
-.bot-card {
+/* Ocultar todas las pestañas por defecto */
+.tab-content {
+    display: none;
+    animation: fadeEffect 0.6s; /* Animación suave */
+}
+
+/* Animación de entrada */
+@keyframes fadeEffect {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* --- CARDS & CONTENT --- */
+.topic-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topic-header h2 { color: var(--epn-dark); font-size: 2rem; }
+.badge { background: var(--accent); color: var(--epn-dark); padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+
+.card {
     background: white;
-    width: 100%;
-    max-width: 900px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    padding: 40px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    position: relative;
-    overflow: visible;
-    border-top: 5px solid #FFD700; /* Toque dorado/amarillo sutil del diseño original */
-}
-
-.bot-text {
-    flex: 2;
-    padding-right: 30px;
-}
-
-.bot-text h3 {
-    font-size: 2rem;
-    color: var(--text-dark);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.separator {
-    width: 60px;
-    height: 4px;
-    background: #FFD700;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     margin-bottom: 20px;
 }
 
-.bot-text p {
-    color: #555;
-    line-height: 1.7;
-    margin-bottom: 15px;
-    font-size: 0.95rem;
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
-.cta-button {
-    background: #FFD700;
-    color: var(--epn-dark);
-    border: none;
-    padding: 12px 30px;
-    border-radius: 30px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-top: 10px;
-    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+/* --- INTERACTIVE ELEMENTS --- */
+.interactive-box {
+    background: #eef5ff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #bbdefb;
+    margin-top: 20px;
 }
 
-.cta-button:hover {
-    transform: translateY(-2px);
-    background: #ffcc00;
+.matlab-block {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-family: monospace;
+    position: relative;
 }
 
-.bot-image-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+.matlab-block h5 { color: #aaa; margin-bottom: 10px; }
 
-.floating-bot {
-    width: 100%;
-    max-width: 250px;
-    animation: float 3s ease-in-out infinite;
-    /* Efecto para que se vea integrado */
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
-}
+input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px; }
+.run-btn { background: var(--epn-blue); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+.run-btn:hover { background: var(--accent); color: var(--epn-dark); }
+.result-display { margin-top: 15px; font-weight: bold; color: var(--epn-dark); }
 
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-    100% { transform: translateY(0px); }
-}
-
-/* --- SECTION CARDS --- */
-.content-container {
-    padding: 0 40px 40px 40px;
-}
-
-.topic-card {
-    background: white;
-    padding: 30px;
-    margin-bottom: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
+/* --- WELCOME BOT STYLES --- */
+.welcome-section { display: flex; justify-content: center; }
+.bot-card { background: white; width: 100%; max-width: 900px; border-radius: 15px; display: flex; align-items: center; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 5px solid #FFD700; }
+.bot-text { flex: 2; padding-right: 30px; }
+.separator { width: 60px; height: 4px; background: #FFD700; margin-bottom: 20px; }
+.cta-button { background: #FFD700; color: var(--epn-dark); border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+.cta-button:hover { transform: translateY(-2px); background: #ffcc00; }
+.bot-image-container { flex: 1; display: flex; justify-content: center; }
+.floating-bot { width: 100%; max-width: 250px; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
