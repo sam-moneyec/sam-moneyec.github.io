@@ -21,15 +21,17 @@ body {
     font-family: var(--font-body); 
     line-height: 1.6; 
     overflow-x: hidden; 
-    transition: all 0.5s ease; /* Transición suave de colores */
+    transition: all 0.5s ease;
 }
 
-/* --- TIPOGRAFÍA --- */
-h1, h2, h3, h4, h5, h6, .cta-button, .badge {
+/* --- TIPOGRAFÍA Y COLORES DINÁMICOS --- */
+/* AQUI ESTA LA MAGIA: Forzamos que todos los títulos usen la variable de color */
+h1, h2, h3, h4, h5, h6, .cta-button, .badge, .urban-title, .mega-title {
     font-family: var(--font-headers); 
     text-transform: uppercase; 
     letter-spacing: 2px;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, border-color 0.3s ease, text-shadow 0.3s ease;
+    color: var(--gold-primary) !important; /* FORZAR COLOR NEON */
 }
 
 /* Fórmulas y Código Gigantes */
@@ -40,11 +42,12 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge {
     background: rgba(0,0,0,0.6) !important;
     box-shadow: 0 0 30px var(--gold-primary);
     text-align: center; border-radius: 15px; margin: 30px 0;
-    font-family: 'Orbitron', sans-serif; color: var(--gold-primary);
+    font-family: 'Orbitron', sans-serif; 
+    color: var(--gold-primary) !important; /* Formula Neon */
 }
 
 .giant-code {
-    font-size: 1.2rem !important; /* Código más grande */
+    font-size: 1.2rem !important;
     line-height: 1.5 !important;
 }
 
@@ -58,7 +61,7 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge {
 }
 
 .sidebar-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-.sidebar-header h3 { color: var(--gold-primary); font-size: 2.2rem; font-weight: 900; text-shadow: 0 0 20px var(--gold-primary); }
+.sidebar-header h3 { font-size: 2.2rem; font-weight: 900; text-shadow: 0 0 20px var(--gold-primary); }
 
 .sidebar nav { flex: 1; overflow-y: auto; }
 .sidebar nav ul { list-style: none; padding-top: 20px; }
@@ -90,9 +93,9 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge {
 }
 .logo-area { display: flex; align-items: center; gap: 25px; }
 .logo-area img { height: 70px; filter: drop-shadow(0 0 10px var(--gold-primary)); }
-.university-info h1 { font-size: 1.4rem; color: var(--gold-primary); font-weight: 900; margin-bottom: 5px; }
-.university-info h2 { font-size: 1rem; color: white; }
-.motto { font-size: 0.9rem; font-style: italic; color: #bbb; }
+.university-info h1 { font-size: 1.4rem; font-weight: 900; margin-bottom: 5px; }
+.university-info h2 { font-size: 1rem; color: white !important; /* Excepción para subtítulo blanco */ }
+.motto { font-size: 0.9rem; font-style: italic; color: #bbb !important; }
 
 .content-body { padding: 50px; }
 .tab-content { display: none; animation: slideIn 0.4s ease-out; }
@@ -103,7 +106,7 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge {
     position: relative; display: flex; justify-content: center; align-items: center;
     padding: 120px 50px; border-radius: 25px; overflow: hidden; margin-bottom: 50px;
     border: 4px solid var(--gold-primary);
-    background-image: url('img/fondo_intro.png'); /* FONDO CORREGIDO */
+    background-image: url('img/fondo_intro.png');
     background-size: cover; background-position: center;
     box-shadow: 0 0 60px rgba(0,0,0,0.8);
 }
@@ -120,7 +123,7 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge {
     display: flex; align-items: center; gap: 50px;
 }
 .bot-text { flex: 2; }
-.mega-title { font-size: 3.5rem; color: var(--gold-primary); font-weight: 900; text-shadow: 0 0 25px var(--gold-primary); margin-bottom: 20px; }
+.mega-title { font-size: 3.5rem; font-weight: 900; text-shadow: 0 0 25px var(--gold-primary); margin-bottom: 20px; }
 .separator { width: 150px; height: 6px; background: var(--gold-primary); margin-bottom: 30px; box-shadow: 0 0 20px var(--gold-primary); }
 .bot-text p { color: #fff; font-size: 1.4rem; margin-bottom: 20px; }
 
@@ -144,30 +147,35 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge {
 }
 
 .urban-title {
-    font-size: 4rem; font-weight: 900; color: var(--gold-primary);
+    font-size: 4rem; font-weight: 900;
     text-shadow: 0 0 20px var(--gold-primary);
     margin-bottom: 40px; border-bottom: 4px solid var(--gold-primary); padding-bottom: 20px;
 }
 .definition-text { border-left: 6px solid var(--gold-primary); padding-left: 30px; margin-bottom: 30px; font-size: 1.4rem; color: #ddd; }
 
 /* --- CORRECCIÓN DE IMAGEN MATRICIAL (TAMAÑO MÁXIMO) --- */
+/* Esta sección asegura que la imagen se estire al tamaño del código vecino */
 .diagram-box {
-    flex: 1; display: flex; align-items: center; justify-content: center;
+    flex: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
     background: #000; 
     border: 3px solid var(--gold-primary); 
-    border-radius: 15px; overflow: hidden;
-    height: 100%; /* Forzamos la altura completa */
+    border-radius: 15px; 
+    overflow: hidden;
+    min-height: 100%; /* Ocupa al menos el 100% de la altura del padre flex */
     box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
 .diagram-box img {
     width: 100%; 
-    height: 100%; /* Forzamos que ocupe todo el alto */
-    object-fit: fill; /* Estirar para llenar (sin espacios vacíos) */
-    border-radius: 12px;
+    height: 100%; 
+    object-fit: fill; /* ESTIRAR: Obliga a la imagen a llenar todo el cuadro exactamente */
+    display: block;
 }
 
-/* --- APLICACIONES (ARREGLO DE FORMATO DE LETRA) --- */
+/* --- APLICACIONES --- */
 .tech-item {
     display: flex; gap: 30px; margin-bottom: 35px; align-items: center; 
     background: rgba(255,255,255,0.03); padding: 30px; border-radius: 20px; 
@@ -177,12 +185,12 @@ h1, h2, h3, h4, h5, h6, .cta-button, .badge {
 .tech-item:hover { transform: translateX(10px); background: rgba(255,255,255,0.05); }
 
 /* Arreglo de fuente para descripción */
-.tech-item h3 { font-family: 'Orbitron', sans-serif; }
+.tech-item h3 { color: var(--gold-primary) !important; } /* AHORA ES COLOR NEÓN */
 .tech-item p { font-family: 'Exo 2', sans-serif; font-size: 1.2rem; line-height: 1.5; color: #ccc; margin: 0; }
 
 /* Código y Simuladores */
 .interactive-box { background: rgba(0,0,0,0.6); border: 3px solid var(--gold-primary); padding: 40px; border-radius: 15px; }
-.interactive-box h4 { font-size: 2rem; color: var(--gold-primary); margin-bottom: 25px; }
+.interactive-box h4 { font-size: 2rem; margin-bottom: 25px; }
 input { background: #080808; border: 2px solid #444; color: var(--gold-primary); padding: 20px; font-size: 1.3rem; border-radius: 10px; margin-bottom: 20px; width: 100%; font-family: 'Orbitron', sans-serif; }
 input:focus { border-color: var(--gold-primary); box-shadow: 0 0 20px var(--gold-primary); outline: none; }
 .run-btn { background: var(--gold-primary); color: black; border: none; padding: 18px 40px; font-weight: 900; font-size: 1.3rem; cursor: pointer; border-radius: 10px; width: 100%; box-shadow: 0 0 20px var(--gold-primary); }
@@ -192,10 +200,10 @@ pre code.hljs { padding: 25px !important; background: #050505 !important; border
 
 /* Extras */
 .topic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 2px solid rgba(255,255,255,0.1); }
-.topic-header h2 { font-size: 3rem; color: var(--gold-primary); text-shadow: 0 0 15px var(--gold-primary); }
+.topic-header h2 { font-size: 3rem; text-shadow: 0 0 15px var(--gold-primary); }
 .badge { background: var(--gold-primary); color: black; padding: 12px 30px; border-radius: 25px; font-weight: 900; font-size: 1.1rem; box-shadow: 0 0 20px var(--gold-primary); }
 .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
 .type-card, .machine-card { background: rgba(255,255,255,0.03); padding: 35px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.1); text-align: center; }
-.type-card h3 { color: var(--gold-primary); font-size: 1.8rem; margin-bottom: 15px; }
+.type-card h3 { font-size: 1.8rem; margin-bottom: 15px; }
 .diagram-container { display: flex; justify-content: center; align-items: center; gap: 50px; margin: 40px 0; }
 .set-oval { border: 4px solid var(--gold-primary); border-radius: 40px; padding: 20px 40px; text-align: center; background: rgba(0,0,0,0.5); box-shadow: 0 0 20px var(--gold-primary); }

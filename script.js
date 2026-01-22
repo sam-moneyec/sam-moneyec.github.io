@@ -3,18 +3,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
     hljs.highlightAll();
 });
 
-// --- DICCIONARIO DE COLORES NEÓN POR SECCIÓN ---
+// --- DICCIONARIO DE COLORES NEÓN VIBRANTES ---
 const sectionColors = {
-    'inicio': '#FFD700',          // Dorado (Default)
+    'inicio': '#FFD700',          // Dorado (Original)
     'prod-cartesiano': '#00FF00', // Verde Matrix
     'funciones': '#FFFF00',       // Amarillo Cyberpunk
-    'ejercicios': '#00FFFF',      // Cian Neón
-    'clasificacion': '#BC13FE',   // Púrpura
-    'inversa': '#FF0055',         // Rojo Neón
-    'compuesta': '#FF00FF',       // Magenta
+    'ejercicios': '#00FFFF',      // Turquesa Neón
+    'clasificacion': '#BC13FE',   // Púrpura Eléctrico
+    'inversa': '#FF0055',         // Rojo Neón Intenso
+    'compuesta': '#FF00FF',       // Magenta Láser
     'discreta': '#FF5500',        // Naranja Fuego
-    'video': '#FFFFFF',           // Blanco Glitch
-    'resenas': '#00FF9C'          // Menta
+    'video': '#0088FF',           // Azul Eléctrico (Nuevo)
+    'resenas': '#00FF9C'          // Menta Tóxico
 };
 
 function openTab(evt, tabName) {
@@ -31,7 +31,7 @@ function openTab(evt, tabName) {
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
         tablinks[i].style.borderColor = "transparent"; 
-        tablinks[i].style.color = "#e0e0e0"; // Reset color texto
+        tablinks[i].style.color = "#e0e0e0"; // Reset color texto a gris
     }
 
     // Mostrar pestaña actual
@@ -43,6 +43,7 @@ function openTab(evt, tabName) {
         var newColor = sectionColors[tabName] || '#FFD700';
         
         // Inyectamos el nuevo color en las variables CSS
+        // Al cambiar --gold-primary, TODOS los títulos, bordes y fórmulas cambiarán
         document.documentElement.style.setProperty('--gold-primary', newColor);
     }
 
