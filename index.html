@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matemáticas Computacionales | EPN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -21,7 +23,7 @@
     <aside class="sidebar">
         <div class="sidebar-header" onclick="openTab(event, 'inicio')">
             <h3>MATH<span class="highlight">COMP</span></h3>
-            <p style="font-size: 0.7rem; color: #888; letter-spacing: 2px;">LUXURY EDITION</p>
+            <p style="font-size: 0.8rem; color: var(--gold-primary); letter-spacing: 2px; font-weight: bold;">GAMER EDITION</p>
         </div>
         <nav>
             <ul>
@@ -61,16 +63,16 @@
                 <section class="welcome-section">
                     <div class="bot-card">
                         <div class="bot-text">
-                            <h3>SISTEMA INICIADO</h3>
+                            <h3 class="mega-title">SISTEMA INICIADO</h3>
                             <div class="separator"></div>
                             <p>
-                                <strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>. 
+                                <strong>Bienvenido, Jugador.</strong> Soy <strong>MathBot</strong>. 
                                 He detectado tu presencia en el sistema. Prepárate para dominar la <em>Teoría de la Computación</em>.
                             </p>
                             <p>
-                                Protocolo de enseñanza activado. Estilo visual de alto contraste cargado.
+                                Protocolo de enseñanza activado. Interfaz Gamer de alto rendimiento cargada.
                             </p>
-                            <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Comenzar Instrucción</button>
+                            <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Comenzar Misión</button>
                         </div>
                         <div class="bot-image-container">
                             <img src="img/bot.png" alt="MathBot" class="floating-bot">
@@ -82,34 +84,32 @@
             <div id="prod-cartesiano" class="tab-content">
                 <div class="topic-header">
                     <h2>TEORÍA DE CONJUNTOS</h2>
-                    <span class="badge">Capítulo 1</span>
+                    <span class="badge">NIVEL 1</span>
                 </div>
 
                 <div class="card">
                     <h1 class="urban-title">1. DEFINICIÓN TÉCNICA</h1>
                     
                     <div style="margin-bottom: 30px; text-align: center;">
-                        <img src="img/img_2.png" alt="Definición del Producto Cartesiano" style="max-width: 100%; border-radius: 15px; border: 2px solid var(--gold-primary); box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);">
-                        <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Figura 1: Representación conceptual del cruce de conjuntos.</p>
+                        <img src="img/img_2.png" alt="Definición del Producto Cartesiano" style="max-width: 100%; border-radius: 15px; border: 3px solid var(--gold-primary); box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);">
+                        <p style="color: var(--gold-primary); font-size: 1rem; margin-top: 15px; font-weight: bold;">Figura 1: Representación conceptual del cruce.</p>
                     </div>
 
                     <div class="definition-text">
                         <p>
-                            En matemáticas, específicamente en la teoría de conjuntos, el producto cartesiano es una operación que se realiza entre dos conjuntos para crear un tercero.
-                            Recibe su nombre en honor a René Descartes, el creador de la geometría analítica y del famoso plano cartesiano.
+                            En matemáticas, el producto cartesiano es una operación crítica que fusiona dos conjuntos para generar un nuevo espacio dimensional.
                         </p>
-                        <h3 style="color: var(--gold-primary); margin: 20px 0 10px 0;">La Fórmula Explicada</h3>
+                        <h3 style="color: var(--gold-primary); margin: 30px 0 15px 0; font-size: 1.8rem;">La Fórmula Maestra</h3>
                         <p>
-                            Dados dos conjuntos, el conjunto A y el conjunto B, el producto cartesiano (denotado como A x B) es el conjunto de todos los <strong>pares ordenados (a, b)</strong>, 
-                            donde el primer elemento 'a' pertenece obligatoriamente al conjunto A, y el segundo elemento 'b' pertenece al conjunto B.
+                            Dados los conjuntos A y B, el producto cartesiano (A x B) es el conjunto de todos los <strong>pares ordenados (a, b)</strong> posibles.
                         </p>
-                        <p style="margin-top: 15px; border-left: 3px solid #FFD700; padding-left: 15px; color: #ccc; font-family: monospace; background: rgba(0,0,0,0.2); padding: 10px;">
+                        
+                        <p class="math-highlight giant-math">
                             A x B = { (a, b) | a ∈ A y b ∈ B }
                         </p>
-                        <p style="margin-top: 15px;">
-                            Es vital entender la diferencia entre un pequeño conjunto {a, b} y un par ordenado (a, b). 
-                            En un conjunto normal, el orden no importa; {1, 2} es lo mismo que {2, 1}. 
-                            Sin embargo, en el producto cartesiano, el orden es fundamental y estricto: el par (1, 2) <strong>NO</strong> es lo mismo que el par (2, 1).
+                        
+                        <p style="margin-top: 20px;">
+                            ¡Alerta! El orden es absoluto. El par (1, 2) <strong>NO</strong> es lo mismo que el par (2, 1). Es la diferencia entre coordenadas distintas en el mapa.
                         </p>
                     </div>
                 </div>
@@ -117,18 +117,18 @@
                 <div class="card">
                     <h1 class="urban-title">VISUALIZACIÓN Y CÓMPUTO</h1>
                     
-                    <div style="display: flex; gap: 20px; align-items: stretch; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 40px; align-items: stretch; flex-wrap: wrap;">
                         
                         <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
-                            <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Diagrama de Flechas</h3>
-                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 1px solid #333; border-radius: 10px; padding: 10px;">
-                                <img src="img/image_0.png" alt="Diagrama Producto Cartesiano" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 5px;">
+                            <h3 style="color: var(--gold-primary); margin-bottom: 20px; font-size: 1.5rem;">Diagrama de Flechas</h3>
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 2px solid var(--gold-dark); border-radius: 15px; padding: 30px; overflow: hidden;">
+                                <img src="img/image_0.png" alt="Diagrama Producto Cartesiano" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; transform: scale(1.3); box-shadow: 0 0 30px rgba(0,0,0,0.5);">
                             </div>
                         </div>
 
                         <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
-                            <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Código Generador</h3>
-                            <pre style="flex: 1; margin: 0; border-radius: 10px; overflow: hidden; border: 1px solid #333; display: flex;"><code class="language-matlab" style="flex: 1;">% Definimos los conjuntos
+                            <h3 style="color: var(--gold-primary); margin-bottom: 20px; font-size: 1.5rem;">Código Generador</h3>
+                            <pre style="flex: 1; margin: 0; border-radius: 15px; overflow: hidden; border: 2px solid var(--gold-dark); display: flex;"><code class="language-matlab giant-code" style="flex: 1;">% Definimos los conjuntos
 A = [1, 2, 3];
 B = [4, 5];
 
@@ -149,43 +149,39 @@ disp(Pares);
                         </div>
                     </div>
                     
-                    <p style="margin-top: 15px; font-size: 0.9rem; color: #888; text-align: center;">
-                        <em>Nota: El diagrama de la izquierda representa visualmente la operación que ejecuta el código de la derecha.</em>
+                    <p style="margin-top: 25px; font-size: 1.1rem; color: var(--text-gray); text-align: center; border-top: 1px solid #333; padding-top: 20px;">
+                        <em>Nota: El diagrama visualiza la ejecución exacta del código matricial.</em>
                     </p>
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">CASOS DE USO EN INGENIERÍA</h1>
-                    <p style="margin-bottom: 25px; color: #ccc;">Esto no es solo teoría. Es la base de tecnologías que usas a diario:</p>
+                    <h1 class="urban-title">APLICACIONES DEL MUNDO REAL</h1>
+                    <p style="margin-bottom: 30px; color: #ccc; font-size: 1.2rem;">Esto no es teoría. Es el motor de la tecnología que usas:</p>
                     
-                    <div style="margin-bottom: 30px; text-align: center;">
-                        <img src="img/img_ingenieria.png" alt="Aplicaciones de Ingeniería" style="max-width: 100%; border-radius: 15px; border: 1px solid var(--gold-primary); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                    </div>
-                    
-                    <div style="display: flex; gap: 20px; margin-bottom: 25px; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px;">
-                        <i class="fas fa-desktop fa-3x" style="color: var(--gold-primary);"></i>
+                    <div style="display: flex; gap: 25px; margin-bottom: 30px; align-items: center; background: rgba(255,215,0,0.05); padding: 25px; border-radius: 15px; border: 1px solid var(--border-gold);">
+                        <i class="fas fa-desktop fa-4x" style="color: var(--gold-primary); filter: drop-shadow(0 0 10px var(--gold-primary));"></i>
                         <div>
-                            <h3 style="color: white;">1. Tu Monitor (Resolución)</h3>
-                            <p style="color: #bbb; font-size: 0.95rem;">
-                                Una pantalla Full HD tiene 1920 columnas y 1080 filas. Cada píxel es un par ordenado (x, y). Tu pantalla es el Producto Cartesiano de Columnas x Filas.
+                            <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">1. Resolución de Pantalla</h3>
+                            <p style="color: #bbb; font-size: 1.1rem;">
+                                Tu monitor Full HD es un Producto Cartesiano gigante de 1920 columnas x 1080 filas. Cada píxel es un par ordenado (x, y).
                             </p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 20px; margin-bottom: 25px; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px;">
-                        <i class="fas fa-database fa-3x" style="color: var(--gold-primary);"></i>
+                    <div style="display: flex; gap: 25px; margin-bottom: 30px; align-items: center; background: rgba(255,215,0,0.05); padding: 25px; border-radius: 15px; border: 1px solid var(--border-gold);">
+                        <i class="fas fa-database fa-4x" style="color: var(--gold-primary); filter: drop-shadow(0 0 10px var(--gold-primary));"></i>
                         <div>
-                            <h3 style="color: white;">2. Bases de Datos (SQL CROSS JOIN)</h3>
-                            <p style="color: #bbb; font-size: 0.95rem;">
-                                Si haces <code>SELECT * FROM Usuarios, Pedidos</code> sin condición, la base de datos colapsará al intentar crear un Producto Cartesiano masivo de todos contra todos.
+                            <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">2. Bases de Datos (SQL)</h3>
+                            <p style="color: #bbb; font-size: 1.1rem;">
+                                Un <code>CROSS JOIN</code> en SQL es un producto cartesiano. Si se usa mal, combina cada fila de una tabla con todas las de otra, colapsando el servidor.
                             </p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 20px; align-items: center; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px;">
-                        <i class="fas fa-user-secret fa-3x" style="color: var(--gold-primary);"></i>
+                    <div style="display: flex; gap: 25px; align-items: center; background: rgba(255,215,0,0.05); padding: 25px; border-radius: 15px; border: 1px solid var(--border-gold);">
+                        <i class="fas fa-user-secret fa-4x" style="color: var(--gold-primary); filter: drop-shadow(0 0 10px var(--gold-primary));"></i>
                         <div>
-                            <h3 style="color: white;">3. Ataques de Fuerza Bruta</h3>
-                            <p style="color: #bbb; font-size: 0.95rem;">
-                                Un hacker que intenta adivinar una contraseña está recorriendo el Producto Cartesiano de todos los caracteres posibles para encontrar la combinación correcta.
+                            <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">3. Criptografía y Hacking</h3>
+                            <p style="color: #bbb; font-size: 1.1rem;">
+                                Un ataque de fuerza bruta recorre el producto cartesiano de todos los caracteres posibles para romper una contraseña.
                             </p>
                         </div>
                     </div>
@@ -194,30 +190,28 @@ disp(Pares);
                 <div class="card">
                     <h1 class="urban-title">SIMULADOR Y CÓDIGO</h1>
                     
-                    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 300px;">
+                    <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 350px;">
                              <div class="interactive-box" style="height: 100%;">
                                 <h4><i class="fas fa-cogs"></i> Simulador Web (JS)</h4>
-                                <p style="color: #aaa; margin-bottom: 15px; font-size: 0.9rem;">Prueba ingresando datos reales. Ej: [S, M, L] y [Rojo, Azul]</p>
+                                <p style="color: #aaa; margin-bottom: 20px; font-size: 1rem;">Prueba ingresando datos reales. Ej: [S, M, L] y [Rojo, Azul]</p>
                                 <div class="input-group">
                                     <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
                                     <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
                                 </div>
                                 <button class="run-btn" onclick="calcCartesian()">GENERAR PARES</button>
-                                <div id="resCartesiano" class="result-display">Esperando entrada...</div>
+                                <div id="resCartesiano" class="result-display giant-code">Esperando entrada...</div>
                             </div>
                         </div>
 
-                        <div style="flex: 1; min-width: 300px;">
-                            <div style="background: #1e1e1e; border: 1px solid #333; border-radius: 10px; overflow: hidden; height: 100%;">
-                                <h5 style="background: #252526; color: #ccc; padding: 10px; margin: 0; font-weight: normal; border-bottom: 1px solid #333;"><i class="fas fa-code"></i> Lógica Equivalente en MATLAB</h5>
-                                <pre style="margin: 0;"><code class="language-matlab" style="padding: 20px; display: block; overflow-x: auto;">% Código para generar combinaciones como el simulador
+                        <div style="flex: 1; min-width: 350px;">
+                            <div style="background: #1e1e1e; border: 2px solid var(--gold-dark); border-radius: 15px; overflow: hidden; height: 100%;">
+                                <h5 style="background: #252526; color: var(--gold-primary); padding: 15px; margin: 0; font-weight: bold; border-bottom: 1px solid #333; font-size: 1.2rem;"><i class="fas fa-code"></i> Lógica Equivalente en MATLAB</h5>
+                                <pre style="margin: 0;"><code class="language-matlab giant-code" style="padding: 25px; display: block; overflow-x: auto;">% Código para generar combinaciones (Bucles Clásicos)
 
-% 1. Definir los conjuntos (Arrays o Celdas de texto)
 SetA_Datos = {'S', 'M', 'L'};
 SetB_Datos = {'Rojo', 'Azul'};
 
-% 2. Bucles anidados para recorrer todo (Lógica clásica)
 disp('Generando combinaciones...');
 contador = 1;
 for i = 1:length(SetA_Datos)
@@ -241,52 +235,9 @@ fprintf('Total generado: %d pares.\n', contador-1);
             </div>
 
             <div id="funciones" class="tab-content">
-                <div class="topic-header">
-                    <h2>CONCEPTO DE FUNCIÓN</h2>
-                    <span class="badge">Slides 4-5</span>
-                </div>
-                <div class="card">
-                    <h1 class="urban-title">LA MÁQUINA</h1>
-                    <div class="definition-text">
-                        <p>Una función f: A -> B es una asignación donde a cada elemento x de A se le asigna un <strong>único</strong> elemento y = f(x) de B.</p>
-                    </div>
-                    
-                    <div class="diagram-container">
-                        <div class="set-oval">
-                            <h4>Dominio (A)</h4>
-                            <ul><li>1</li><li>2</li><li>3</li></ul>
-                        </div>
-                        <div class="arrow-connector">
-                            <i class="fas fa-long-arrow-alt-right fa-3x"></i><br>
-                            <strong>f</strong>
-                        </div>
-                        <div class="set-oval">
-                            <h4>Codominio (B)</h4>
-                            <ul><li>a</li><li>b</li><li>c</li></ul>
-                        </div>
-                    </div>
-
-                    <h3 style="color: var(--gold-primary); margin-top: 30px;">Tipos de Máquinas</h3>
-                    <div class="grid-3">
-                        <div class="machine-card">
-                            <i class="fas fa-cog fa-spin"></i>
-                            <h4>Cuadrática</h4>
-                            <p>f(x) = x²</p>
-                        </div>
-                        <div class="machine-card">
-                            <i class="fas fa-plus-circle"></i>
-                            <h4>Sucesor</h4>
-                            <p>g(n) = n + 1</p>
-                        </div>
-                        <div class="machine-card">
-                            <i class="fas fa-equals"></i>
-                            <h4>Constante</h4>
-                            <p>h(r) = 2</p>
-                        </div>
-                    </div>
-                </div>
+                 <div class="topic-header"><h2>CONCEPTO DE FUNCIÓN</h2><span class="badge">NIVEL 2</span></div>
+                 <div class="card"><h1 class="urban-title">LA MÁQUINA</h1><p style="font-size: 1.2rem;">Contenido de funciones con letra más grande...</p></div>
             </div>
-
             <div id="ejercicios" class="tab-content">
                 <div class="topic-header">
                     <h2>VALIDACIÓN VISUAL</h2>
@@ -295,165 +246,30 @@ fprintf('Total generado: %d pares.\n', contador-1);
                 
                 <div class="card">
                     <h1 class="urban-title">ANÁLISIS DE ERRORES</h1>
-                    <p style="margin-bottom: 20px;">Una imagen vale más que mil palabras. Analicemos el siguiente diagrama para determinar si cumple con la definición rigurosa de función.</p>
+                    <p style="margin-bottom: 20px; font-size: 1.2rem;">Una imagen vale más que mil palabras. Analicemos el siguiente diagrama para determinar si cumple con la definición rigurosa de función.</p>
                 
-                    <div style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap; background: rgba(255,0,0,0.05); border: 1px solid red; padding: 30px; border-radius: 20px;">
+                    <div style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap; background: rgba(255,0,0,0.1); border: 3px solid red; padding: 30px; border-radius: 20px;">
                         <div style="flex: 1; min-width: 250px; text-align: center;">
-                            <img src="img/image_1.png" alt="Diagrama de relación que no es función" style="max-width: 100%; border-radius: 10px; box-shadow: 0 0 20px rgba(255,0,0,0.3); border: 2px solid red;">
+                            <img src="img/image_1.png" alt="Diagrama de relación que no es función" style="max-width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(255,0,0,0.5); border: 2px solid red; transform: scale(1.1);">
                         </div>
                         <div style="flex: 1.5;">
-                            <h2 style="color: red; margin-bottom: 20px; font-weight: 900; letter-spacing: 1px;"><i class="fas fa-times-circle"></i> VIOLACIÓN DE UNICIDAD</h2>
+                            <h2 style="color: red; margin-bottom: 20px; font-weight: 900; letter-spacing: 1px; font-size: 2rem; font-family: 'Orbitron', sans-serif;"><i class="fas fa-times-circle"></i> VIOLACIÓN DE UNICIDAD</h2>
                             <div class="definition-text" style="border-left-color: red; padding-left: 25px;">
-                                <p style="font-size: 1.1rem;">
+                                <p style="font-size: 1.3rem;">
                                     Observa atentamente el elemento <strong>2</strong> en el conjunto de partida (A).
                                 </p>
-                                <p style="margin-top: 15px; color: white;">
+                                <p style="margin-top: 15px; color: white; font-size: 1.3rem;">
                                     Este elemento tiene <strong>DOS flechas salientes</strong>: una apunta al elemento 'y' y otra apunta al elemento 'z'.
                                 </p>
-                                <div style="margin-top: 20px; background: red; color: white; padding: 10px 20px; border-radius: 5px; display: inline-block; font-weight: bold;">
+                                <div style="margin-top: 25px; background: red; color: white; padding: 15px 30px; border-radius: 10px; display: inline-block; font-weight: 900; font-size: 1.5rem; font-family: 'Orbitron', sans-serif;">
                                     VEREDICTO: NO ES UNA FUNCIÓN
                                 </div>
-                                <p style="margin-top: 15px; font-size: 0.9rem; color: #ccc;">
-                                    Para que sea una función válida, a cada elemento del dominio le debe corresponder <strong>exactamente una única</strong> imagen en el codominio. El elemento 2 rompe esta regla fundamental.
-                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div id="clasificacion" class="tab-content">
-                <div class="topic-header">
-                    <h2>CLASIFICACIÓN</h2>
-                    <span class="badge">Slides 9-10</span>
-                </div>
-                <div class="card">
-                    <div class="grid-3">
-                        <div class="type-card">
-                            <h3>Inyectiva</h3>
-                            <p>Cada elemento de B tiene a lo sumo una anti-imagen. (1 a 1).</p>
-                        </div>
-                        <div class="type-card">
-                            <h3>Sobreyectiva</h3>
-                            <p>El Rango es igual al Codominio. No sobran elementos en B.</p>
-                        </div>
-                        <div class="type-card">
-                            <h3>Biyectiva</h3>
-                            <p>Es inyectiva y sobreyectiva simultáneamente. Perfecta.</p>
-                        </div>
-                    </div>
-
-                    <div class="matlab-block">
-                        <h5><i class="fas fa-laptop-code"></i> Validación Inyectividad</h5>
-                        <pre><code>n = 1:10; 
-y = 2*n + 1; 
-if length(unique(y)) == length(y)
-    disp('Es Inyectiva: No hay colisiones');
-end</code></pre>
-                    </div>
-                </div>
             </div>
-
-            <div id="inversa" class="tab-content">
-                <div class="topic-header">
-                    <h2>FUNCIÓN INVERSA</h2>
-                    <span class="badge">Slide 11</span>
-                </div>
-                <div class="card">
-                    <div class="alert-box">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Requisito:</strong> Para que exista inversa f-1, la función debe ser <strong>Biyectiva</strong>.
-                    </div>
-                </div>
-            </div>
-
-            <div id="compuesta" class="tab-content">
-                <div class="topic-header">
-                    <h2>FUNCIÓN COMPUESTA</h2>
-                    <span class="badge">Slide 12</span>
-                </div>
-                <div class="card">
-                    <h1 class="urban-title">COMPOSICIÓN</h1>
-                    <div class="definition-text">
-                        <p>La composición se denota (f o g)(x) = f(g(x)). Si f y g son biyectivas, su composición también lo es.</p>
-                    </div>
-
-                    <div class="interactive-box">
-                        <h4><i class="fas fa-cogs"></i> Calculadora (f o g)(x)</h4>
-                        <p>Sea g(x) = x+1 y f(u) = u^2.</p>
-                        <div class="input-group">
-                            <input type="number" id="compInput" placeholder="Ingresa valor de x">
-                        </div>
-                        <button class="run-btn" onclick="calcComposition()">Calcular f(g(x))</button>
-                        <div id="resComposicion" class="result-display">Esperando entrada...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="discreta" class="tab-content">
-                <div class="topic-header">
-                    <h2>FUNCIONES DISCRETAS</h2>
-                    <span class="badge">Slide 14</span>
-                </div>
-                <div class="card">
-                    <h1 class="urban-title">DISCRETA</h1>
-                    <div class="definition-text">
-                        <ul style="list-style: none;">
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Dominio:</strong> Números Enteros.</li>
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Codominio:</strong> Números Reales.</li>
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Notación:</strong> Se usa 'n' en lugar de 'x'.</li>
-                        </ul>
-                    </div>
-
-                    <div class="grid-3">
-                        <div class="formula-card">
-                            <h5>Factorial</h5>
-                            f(n) = n!
-                        </div>
-                        <div class="formula-card">
-                            <h5>Binario</h5>
-                            f(n) = 2^n
-                        </div>
-                        <div class="formula-card">
-                            <h5>Inverso</h5>
-                            f(n) = 1/n
-                        </div>
-                    </div>
-
-                    <div class="interactive-box">
-                        <h4>Calculadora de Factorial</h4>
-                        <input type="number" id="numFactorial" placeholder="Entero n">
-                        <button class="run-btn" onclick="calcFactorial()">Calcular n!</button>
-                        <div id="resFactorial" class="result-display">Resultado...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="video" class="tab-content">
-                <div class="topic-header">
-                    <h2>VIDEO EXPLICATIVO</h2>
-                </div>
-                <div class="card video-card" style="text-align: center;">
-                    <p>Resumen del proyecto.</p>
-                    <div class="interactive-box" style="padding: 100px;">
-                        <i class="fab fa-youtube fa-5x" style="color: red;"></i>
-                        <p style="margin-top: 20px;">Video Próximamente</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="resenas" class="tab-content">
-                <div class="topic-header">
-                    <h2>FEEDBACK</h2>
-                </div>
-                <div class="card">
-                    <p>Tu opinión es vital para mejorar el sistema.</p>
-                    <textarea style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; padding: 15px; border-radius: 8px; margin-top: 15px;" rows="4" placeholder="Escribe tu comentario..."></textarea>
-                    <button class="cta-button">Enviar Reporte</button>
-                </div>
-            </div>
-
-        </div>
     </main>
     <script src="script.js"></script>
 </body>
