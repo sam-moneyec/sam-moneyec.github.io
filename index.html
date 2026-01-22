@@ -76,9 +76,190 @@
             </div>
 
             <div id="prod-cartesiano" class="tab-content">
-                <div class="topic-header">
-                    <h2>TEORÍA DE CONJUNTOS</h2>
-                    <span class="badge">Capítulo 1</span>
+    <div class="topic-header">
+        <h2>TEORÍA DE CONJUNTOS</h2>
+        <span class="badge">Capítulo 1</span>
+    </div>
+
+    <div class="card">
+        <h1 class="urban-title">1. INTUICIÓN</h1>
+        <div class="definition-text">
+            <h3 style="color: var(--gold-primary); margin-bottom: 10px;">El Problema del Menú</h3>
+            <p>Antes de la matemática formal, imagina que vas a un restaurante. Ofrecen:</p>
+            <ul style="margin: 15px 0 15px 40px; list-style: none;">
+                <li>🍔 <strong>Plato Principal:</strong> { Hamburguesa, Pizza }</li>
+                <li>🍰 <strong>Postre:</strong> { Helado, Pastel, Fruta }</li>
+            </ul>
+            <p>¿Cuántas combinaciones únicas puedes pedir? Si las listamos (Hamburguesa con Helado, Pizza con Fruta...), obtenemos <strong>6 combinaciones</strong>.</p>
+            <p style="margin-top: 10px;"><em>Sin saberlo, acabas de calcular un Producto Cartesiano ($2 \times 3 = 6$).</em></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h1 class="urban-title">2. DEFINICIÓN</h1>
+        <div class="definition-text">
+            <p>En honor a <strong>René Descartes</strong>, el producto cartesiano $A \times B$ es el conjunto de todos los pares ordenados posibles.</p>
+        </div>
+
+        <div class="formula-box">
+            $$A \times B = \{ (a, b) \mid a \in A \land b \in B \}$$
+        </div>
+
+        <div class="grid-3" style="margin-top: 20px;">
+            <div class="type-card">
+                <h3>$A \times B$</h3>
+                <p>El conjunto resultante.</p>
+            </div>
+            <div class="type-card">
+                <h3>$(a, b)$</h3>
+                <p>Pares ordenados.</p>
+            </div>
+            <div class="type-card">
+                <h3>$\mid$</h3>
+                <p>"Tal que..."</p>
+            </div>
+        </div>
+
+        <div class="alert-box" style="margin-top: 20px;">
+            <i class="fas fa-exclamation-circle"></i>
+            <strong>Concepto Clave:</strong> No confundas un conjunto $\{a,b\}$ con un par ordenado $(a,b)$. En el par ordenado, <strong>el orden importa</strong>: $(1,2) \neq (2,1)$.
+        </div>
+    </div>
+
+    <div class="card">
+        <h1 class="urban-title">3. EJEMPLOS</h1>
+        
+        <h3 style="color: white; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">Ejemplo 1: Visualización Tabular</h3>
+        <p style="color: #ccc; margin-bottom: 15px;">Si $A = \{H, P\}$ y $B = \{h, p, f\}$, el cruce se ve así:</p>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; color: white; border-collapse: collapse; text-align: center; font-family: monospace;">
+                <thead>
+                    <tr style="background: rgba(255,215,0,0.1); color: var(--gold-primary);">
+                        <th style="padding: 10px; border: 1px solid #333;">A \ B</th>
+                        <th style="padding: 10px; border: 1px solid #333;">Helado (h)</th>
+                        <th style="padding: 10px; border: 1px solid #333;">Pastel (p)</th>
+                        <th style="padding: 10px; border: 1px solid #333;">Fruta (f)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #333; font-weight: bold;">Hamburguesa (H)</td>
+                        <td style="padding: 10px; border: 1px solid #333;">(H, h)</td>
+                        <td style="padding: 10px; border: 1px solid #333;">(H, p)</td>
+                        <td style="padding: 10px; border: 1px solid #333;">(H, f)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #333; font-weight: bold;">Pizza (P)</td>
+                        <td style="padding: 10px; border: 1px solid #333;">(P, h)</td>
+                        <td style="padding: 10px; border: 1px solid #333;">(P, p)</td>
+                        <td style="padding: 10px; border: 1px solid #333;">(P, f)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 style="color: white; border-bottom: 1px solid #333; padding-bottom: 10px; margin: 40px 0 20px 0;">Ejemplo 2: Geometría y Código</h3>
+        <p style="color: #ccc; margin-bottom: 15px;">Sea $X=\{1,2,3\}$ y $Y=\{2,4\}$. Generamos puntos en el plano.</p>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px; background: #000; border: 1px solid #333; border-radius: 10px; padding: 20px; position: relative; height: 300px;">
+                <p style="position: absolute; top: 10px; left: 10px; color: white; font-size: 0.8rem;">Figura 1: X vs Y</p>
+                <div style="position: absolute; bottom: 30px; left: 30px; width: 2px; height: 230px; background: white;"></div> <div style="position: absolute; bottom: 30px; left: 30px; width: 230px; height: 2px; background: white;"></div> <div style="position: absolute; bottom: 100px; left: 80px; width: 8px; height: 8px; background: var(--gold-primary); border-radius: 50%;"></div> <div style="position: absolute; bottom: 180px; left: 80px; width: 8px; height: 8px; background: var(--gold-primary); border-radius: 50%;"></div> <div style="position: absolute; bottom: 100px; left: 140px; width: 8px; height: 8px; background: var(--gold-primary); border-radius: 50%;"></div> <div style="position: absolute; bottom: 180px; left: 140px; width: 8px; height: 8px; background: var(--gold-primary); border-radius: 50%;"></div> <div style="position: absolute; bottom: 100px; left: 200px; width: 8px; height: 8px; background: var(--gold-primary); border-radius: 50%;"></div> <div style="position: absolute; bottom: 180px; left: 200px; width: 8px; height: 8px; background: var(--gold-primary); border-radius: 50%;"></div> <span style="position: absolute; bottom: 10px; left: 80px; color: #888;">1</span>
+                <span style="position: absolute; bottom: 10px; left: 140px; color: #888;">2</span>
+                <span style="position: absolute; bottom: 10px; left: 200px; color: #888;">3</span>
+                <span style="position: absolute; bottom: 100px; left: 10px; color: #888;">2</span>
+                <span style="position: absolute; bottom: 180px; left: 10px; color: #888;">4</span>
+            </div>
+
+            <div style="flex: 1; min-width: 300px;">
+                <div class="matlab-block" style="margin-top: 0; height: 100%;">
+                    <h5><i class="fas fa-code"></i> Script MATLAB</h5>
+                    <pre><code style="color: #a6e22e;">% Definir conjuntos
+X = [1 2 3];
+Y = [2 4];
+
+% Crear rejilla (Producto Cartesiano)
+[x_grid, y_grid] = meshgrid(X, Y);
+
+% Graficar
+figure;
+plot(x_grid, y_grid, 'o', ...
+     'MarkerFaceColor', '#FFD700', ...
+     'MarkerEdgeColor', 'white', ...
+     'MarkerSize', 10);
+
+grid on;
+title('Producto Cartesiano X \times Y');
+xlabel('Conjunto X');
+ylabel('Conjunto Y');
+axis([0 4 0 5]);</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h1 class="urban-title">4. PROPIEDADES</h1>
+        <div class="grid-3">
+            <div class="formula-card">
+                <h5><i class="fas fa-sort-numeric-up"></i> A. Cardinalidad</h5>
+                <p>Si $|A|=m$ y $|B|=n$:</p>
+                <div style="background: rgba(0,0,0,0.3); padding: 5px; margin-top: 5px; border-radius: 4px; color: var(--gold-primary);">
+                    $|A \times B| = m \times n$
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 5px; color: #888;">Ej: 2 platos $\times$ 3 postres = 6 opciones.</p>
+            </div>
+            <div class="formula-card" style="border-color: #ff5555;">
+                <h5 style="color: #ff5555;"><i class="fas fa-times-circle"></i> B. No Conmutativo</h5>
+                <p>El orden de los conjuntos altera el resultado:</p>
+                <div style="background: rgba(0,0,0,0.3); padding: 5px; margin-top: 5px; border-radius: 4px; color: #ff5555;">
+                    $A \times B \neq B \times A$
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 5px; color: #888;">(1,4) no es lo mismo que (4,1).</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h1 class="urban-title">5. APLICACIONES</h1>
+        <div class="grid-3">
+            <div class="type-card">
+                <i class="fas fa-database fa-2x" style="color: var(--gold-primary); margin-bottom: 10px;"></i>
+                <h3>Bases de Datos</h3>
+                <p>SQL JOIN: Combinar tablas de "Clientes" y "Pedidos" es un producto cartesiano filtrado.</p>
+            </div>
+            <div class="type-card">
+                <i class="fas fa-map-marked-alt fa-2x" style="color: var(--gold-primary); margin-bottom: 10px;"></i>
+                <h3>GPS y Mapas</h3>
+                <p>Tu ubicación (Latitud, Longitud) es un par ordenado en el plano terrestre.</p>
+            </div>
+            <div class="type-card">
+                <i class="fas fa-chess-board fa-2x" style="color: var(--gold-primary); margin-bottom: 10px;"></i>
+                <h3>Matrices y Juegos</h3>
+                <p>Coordenadas como "B-4" en Batalla Naval o píxeles en una pantalla (1920x1080).</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h1 class="urban-title">PRÁCTICA</h1>
+        <div class="interactive-box">
+            <h4><i class="fas fa-calculator"></i> Generador de Pares</h4>
+            <div class="input-group">
+                <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
+                <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
+            </div>
+            <button class="run-btn" onclick="calcCartesian()">Mezclar Conjuntos</button>
+            <div id="resCartesiano" class="result-display">Esperando datos...</div>
+        </div>
+    </div>
+
+    <div class="chatbot-tip">
+        <img src="img/bot.png" alt="MathBot Small" class="bot-mini">
+        <p><strong>MathBot:</strong> Recuerda cadete, si tomas el producto cartesiano de los Reales consigo mismos ($\mathbb{R} \times \mathbb{R}$), ¡obtienes el plano infinito completo! 🤖</p>
+    </div>
+</div>
                 </div>
                 
                 <div class="card">
