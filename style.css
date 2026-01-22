@@ -1,108 +1,266 @@
 :root {
-    --bg-obsidian: #050505;     /* Fondo navegación (Negro) */
-    --bg-carbon: #1c1c1c;       /* Fondo información (Gris Oscuro) */
-    --bg-card: rgba(10, 10, 10, 0.85);
-    --gold-primary: #FFD700;
-    --gold-dark: #B8860B;
-    --border-gold: rgba(255, 215, 0, 0.2);
+    /* --- PALETA DE COLORES PROFESIONAL --- */
+    --bg-obsidian: #050505;     /* Fondo Navegación (Negro Puro) */
+    --bg-carbon: #1c1c1c;       /* Fondo Contenido (Gris Mate) */
+    --bg-card: rgba(20, 20, 20, 0.95); /* Fondo Tarjetas */
+    
+    --gold-primary: #FFD700;    /* Dorado Principal */
+    --gold-dark: #B8860B;       /* Dorado Oscuro */
+    
+    --text-white: #ffffff;
+    --text-gray: #cccccc;
+    
     --sidebar-width: 280px;
+    --border-gold: rgba(255, 215, 0, 0.2); /* Bordes sutiles */
 }
 
+/* --- RESET BÁSICO --- */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
-body { background-color: var(--bg-obsidian); display: flex; color: white; overflow-x: hidden; }
+body { 
+    background-color: var(--bg-obsidian); 
+    display: flex; 
+    color: var(--text-white); 
+    overflow-x: hidden; 
+}
 
-/* BARRA LATERAL (Negro Puro) */
+/* --- BARRA LATERAL (SIDEBAR) --- */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--bg-obsidian);
     height: 100vh;
     position: fixed;
-    border-right: 2px solid var(--border-gold);
+    top: 0; left: 0;
     z-index: 100;
+    border-right: 1px solid var(--border-gold);
+    display: flex; flex-direction: column;
 }
 
+.sidebar-header {
+    padding: 30px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(255,215,0,0.05) 0%, transparent 100%);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar-header h3 { 
+    font-size: 1.8rem; 
+    font-weight: 800;
+    color: var(--gold-primary);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.highlight { color: white; }
+
+/* MENÚ DE NAVEGACIÓN */
+.sidebar nav ul { list-style: none; padding-top: 10px; overflow-y: auto; }
+
+.sidebar nav ul li a {
+    display: flex; align-items: center;
+    padding: 15px 25px;
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    border-left: 4px solid transparent;
+}
+
+/* Efecto Hover y Activo */
 .sidebar nav ul li a:hover, .sidebar nav ul li a.active {
-    background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
+    background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%);
     color: var(--gold-primary);
     border-left: 4px solid var(--gold-primary);
 }
 
-/* ÁREA DE CONTENIDO (Gris Oscuro Distinguible) */
+.sidebar nav ul li a i { margin-right: 15px; width: 20px; text-align: center; }
+
+/* ESTILO ESPECIAL PARA WHATSAPP EN EL MENÚ */
+.whatsapp-link { border-top: 1px solid rgba(255,255,255,0.05); margin-top: 10px; }
+.whatsapp-link:hover { color: #25d366 !important; border-left-color: #25d366 !important; }
+
+.sidebar-footer { margin-top: auto; padding: 20px; text-align: center; font-size: 0.75rem; color: #666; }
+
+/* --- CONTENIDO PRINCIPAL (MAIN) --- */
 .main-content {
     margin-left: var(--sidebar-width);
     width: calc(100% - var(--sidebar-width));
-    background-color: var(--bg-carbon);
-    /* Trama de ingeniería sutil */
-    background-image: radial-gradient(var(--border-gold) 0.5px, transparent 0.5px);
-    background-size: 30px 30px;
     min-height: 100vh;
+    background-color: var(--bg-carbon);
+    /* Patrón de ingeniería sutil (cuadrícula) */
+    background-image: 
+        linear-gradient(var(--border-gold) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-gold) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-blend-mode: overlay;
+    display: flex; flex-direction: column;
 }
 
+/* --- ENCABEZADO SUPERIOR (TOP HEADER) --- */
 .top-header {
-    background: var(--bg-obsidian);
-    padding: 20px 40px;
+    background: rgba(5, 5, 5, 0.95); /* Casi negro */
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-gold);
+    padding: 20px 40px;
 }
 
-/* TARJETAS DE INFORMACIÓN */
+.logo-area { display: flex; align-items: center; gap: 20px; }
+
+/* ¡AQUÍ ESTÁ LA REGLA QUE FALTABA PARA EL LOGO GIGANTE! */
+.logo-area img { 
+    height: 70px; 
+    width: auto; /* Mantiene la proporción */
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); 
+}
+
+.university-info h1 { font-size: 1.2rem; font-weight: 700; color: var(--gold-primary); letter-spacing: 1px; }
+.university-info h2 { font-size: 0.9rem; font-weight: 400; color: white; }
+.motto { font-style: italic; font-size: 0.8rem; color: #aaa; margin-top: 5px; }
+
+/* --- CONTENIDO Y PESTAÑAS --- */
+.content-body { padding: 40px; flex: 1; }
+.tab-content { display: none; animation: slideUp 0.5s ease-out; }
+@keyframes slideUp { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
+
+/* --- TARJETAS (CARDS) --- */
 .card {
     background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    padding: 40px; 
     border-radius: 20px;
-    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
     border: 1px solid var(--border-gold);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     margin-bottom: 30px;
-    transition: 0.3s;
+    color: var(--text-gray);
+    transition: transform 0.3s ease;
 }
 
-.card:hover {
-    border-color: var(--gold-primary);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
-}
+.card:hover { border-color: var(--gold-primary); }
 
-/* ASISTENTE MATHBOT EN FUNCIONES */
-.chatbot-tip {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 215, 0, 0.05);
-    border-left: 4px solid var(--gold-primary);
-    padding: 15px;
-    margin-top: 25px;
-    border-radius: 5px;
-}
-
-.bot-mini { width: 40px; margin-right: 15px; filter: drop-shadow(0 0 5px var(--gold-primary)); }
-
-/* WHATSAPP */
-.whatsapp-float {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: #25d366;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
-    color: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    z-index: 1000;
-    transition: 0.3s;
-}
-
-.whatsapp-float:hover { transform: scale(1.1) rotate(10deg); }
-
-.whatsapp-sidebar:hover { color: #25d366 !important; }
-
-/* TITULOS URBANO-GOLD */
+/* --- TIPOGRAFÍA Y ESTILOS DE TEXTO --- */
 .urban-title {
-    font-size: 3.5rem;
+    font-size: 3rem;
     font-weight: 900;
-    background: linear-gradient(to right, #FFD700, #fff);
-    -webkit-background-clip: text;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #FFD700, #FDB931, #FFFFFF);
+    background-size: 200% auto;
     color: transparent;
-    letter-spacing: -2px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shine 5s linear infinite;
 }
+@keyframes shine { to { background-position: 200% center; } }
+
+.definition-text {
+    font-size: 1.1rem; line-height: 1.8; color: white;
+    border-left: 4px solid var(--gold-primary); padding-left: 20px; margin-bottom: 30px;
+}
+
+.topic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+.topic-header h2 { color: var(--gold-primary); font-size: 1.8rem; }
+.badge { background: var(--gold-primary); color: black; padding: 5px 12px; border-radius: 15px; font-weight: 700; font-size: 0.8rem; }
+
+/* --- MATHBOT Y CAJAS INTERACTIVAS --- */
+.interactive-box {
+    background: rgba(0, 0, 0, 0.4); 
+    border: 1px solid var(--gold-dark);
+    padding: 25px; border-radius: 15px; margin-top: 20px;
+}
+.interactive-box h4 { color: var(--gold-primary); margin-bottom: 15px; text-transform: uppercase; }
+
+/* Inputs y Botones */
+input { 
+    padding: 12px; background: rgba(255,255,255,0.05); 
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; 
+    width: 100%; margin-bottom: 10px; color: white; font-family: monospace; 
+}
+input:focus { outline: none; border-color: var(--gold-primary); }
+.input-group { display: flex; gap: 10px; }
+
+.run-btn {
+    background: linear-gradient(45deg, var(--gold-primary), var(--gold-dark)); 
+    color: black; border: none; padding: 12px 30px; border-radius: 30px; 
+    cursor: pointer; font-weight: 700; text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(255,215,0,0.2); transition: 0.3s;
+}
+.run-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,215,0,0.4); }
+
+.result-display { 
+    margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.6); 
+    border-radius: 8px; font-family: monospace; border-left: 4px solid var(--gold-primary); 
+    color: var(--gold-primary);
+}
+
+/* Fórmulas */
+.formula-box {
+    background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;
+    text-align: center; margin: 20px 0; font-size: 1.3rem;
+    border: 1px dashed rgba(255,255,255,0.2); color: var(--gold-primary);
+}
+
+/* --- MATHBOT CONTEXTUAL (NUEVO) --- */
+.chatbot-tip {
+    display: flex; align-items: center;
+    background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
+    border-left: 3px solid var(--gold-primary);
+    padding: 15px; margin-top: 20px; border-radius: 0 10px 10px 0;
+}
+.bot-mini { width: 40px; height: 40px; margin-right: 15px; }
+
+/* --- BIENVENIDA --- */
+.welcome-section { display: flex; justify-content: center; }
+.bot-card {
+    background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(20px);
+    width: 100%; max-width: 900px; border-radius: 20px;
+    display: flex; align-items: center; padding: 40px;
+    border-top: 4px solid var(--gold-primary); border: 1px solid rgba(255,255,255,0.1);
+}
+.bot-text { flex: 2; padding-right: 30px; }
+.bot-text h3 { font-size: 2.5rem; color: var(--gold-primary); font-weight: 800; }
+.separator { width: 50px; height: 4px; background: var(--gold-primary); margin: 15px 0; }
+.cta-button {
+    background: var(--gold-primary); color: black; border: none;
+    padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer; margin-top: 20px;
+}
+.cta-button:hover { background: white; transform: translateY(-3px); }
+
+/* --- DIAGRAMAS Y GRIDS --- */
+.diagram-container { display: flex; justify-content: center; align-items: center; gap: 40px; margin: 30px 0; }
+.set-oval {
+    border: 2px solid var(--gold-primary); border-radius: 30px; padding: 15px 30px;
+    text-align: center; background: rgba(255,255,255,0.05); min-width: 100px;
+}
+.set-oval ul { list-style: none; }
+.arrow-connector { text-align: center; color: var(--gold-primary); }
+
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.type-card, .formula-card {
+    background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1); text-align: center;
+}
+.type-card:hover { border-color: var(--gold-primary); transform: translateY(-5px); }
+.type-card h3, .formula-card h5 { color: var(--gold-primary); margin-bottom: 10px; }
+.visual-cue { background: rgba(0,0,0,0.3); padding: 5px; font-size: 0.85rem; font-family: monospace; margin-top: 10px; color: #aaa; }
+
+.alert-box { 
+    background: rgba(255, 215, 0, 0.1); color: var(--gold-primary); 
+    padding: 15px; border-radius: 8px; border: 1px solid var(--gold-dark); 
+}
+
+/* --- WHATSAPP FLOTANTE --- */
+.whatsapp-float {
+    position: fixed; bottom: 30px; right: 30px;
+    background-color: #25d366; color: white;
+    width: 60px; height: 60px; border-radius: 50px;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 1000; transition: 0.3s;
+}
+.whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-obsidian); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }
