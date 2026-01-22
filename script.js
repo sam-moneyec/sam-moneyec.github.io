@@ -18,38 +18,47 @@ const sectionColors = {
 };
 
 function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
+  if (evt) evt.preventDefault();
 
-    // Ocultar contenidos
-    tabcontent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
+  // Ocultar contenidos
+  const tabcontent = document.getElementsByClassName("tab-content");
+  for (let i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
 
-    // Resetear botones
-    tablinks = document.getElementsByClassName("tab-link");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-        tablinks[i].style.borderColor = "transparent"; 
-        tablinks[i].style.color = "#e0e0e0"; 
-    }
+  // Resetear botones
+  const tablinks = document.getElementsByClassName("tab-link");
+  for (let i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+    tablinks[i].style.borderColor = "transparent";
+    tablinks[i].style.color = "#e0e0e0";
+  }
 
-    // Mostrar pestaña actual
-    var currentTab = document.getElementById(tabName);
-    if (currentTab) {
-        currentTab.style.display = "block";
-        
-        // --- CAMBIO DE COLOR DINÁMICO ---
-        var newColor = sectionColors[tabName] || '#FFD700';
-        document.documentElement.style.setProperty('--gold-primary', newColor);
-    }
+  const currentTab = document.getElementById(tabName);
 
-    // Activar botón
-    if (evt) {
-        evt.currentTarget.className += " active";
-        evt.currentTarget.style.borderColor = newColor;
-        evt.currentTarget.style.color = newColor;
-    }
+  // Si no existe esa sección, no dejes la página en blanco:
+  if (!currentTab) {
+    // vuelve a Inicio
+    const inicio = document.getElementById("inicio");
+    if (inicio) inicio.style.display = "block";
+    document.documentElement.style.setProperty('--gold-primary', sectionColors["inicio"] || '#FFD700');
+    alert("Esta sección aún no está creada en el HTML.");
+    return;
+  }
+
+  currentTab.style.display = "block";
+
+  const newColor = sectionColors[tabName] || '#FFD700';
+  document.documentElement.style.setProperty('--gold-primary', newColor);
+
+  if (evt) {
+    evt.currentTarget.className += " active";
+    evt.currentTarget.style.borderColor = newColor;
+    evt.currentTarget.style.color = newColor;
+  }
+
+  // Si usas MathJax en fórmulas dentro de tabs:
+  if (window.MathJax && window.MathJax.typeset) window.MathJax.typeset();
+}
+
 }
 
 // --- CALCULADORAS ---
