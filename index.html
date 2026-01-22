@@ -97,11 +97,9 @@
                         <p>
                             Dados los conjuntos A y B, el producto cartesiano (A x B) es el conjunto de todos los <strong>pares ordenados (a, b)</strong> posibles.
                         </p>
-                        
                         <p class="math-highlight giant-math">
                             A x B = { (a, b) | a ∈ A y b ∈ B }
                         </p>
-                        
                         <p style="margin-top: 20px;">
                             ¡Alerta! El orden es absoluto. El par (1, 2) <strong>NO</strong> es lo mismo que el par (2, 1). Es la diferencia entre coordenadas distintas en el mapa.
                         </p>
@@ -137,7 +135,9 @@ disp('--- A x B ---');
 disp(Pares);
 % Resultado esperado:
 % 1  4
-% 2  4 ...</code></pre>
+% 2  4
+% 3  4
+% 1  5 ...</code></pre>
                         </div>
                     </div>
                 </div>
@@ -150,21 +150,21 @@ disp(Pares);
                         <i class="fas fa-desktop fa-4x" style="color: var(--gold-primary);"></i>
                         <div>
                             <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">1. Resolución de Pantalla</h3>
-                            <p style="color: #bbb; font-size: 1.1rem;">Tu monitor Full HD es un Producto Cartesiano de 1920x1080.</p>
+                            <p>Tu monitor Full HD es un Producto Cartesiano gigante de 1920 columnas x 1080 filas. Cada píxel es un par ordenado (x, y).</p>
                         </div>
                     </div>
                     <div class="tech-item">
                         <i class="fas fa-database fa-4x" style="color: var(--gold-primary);"></i>
                         <div>
                             <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">2. Bases de Datos (SQL)</h3>
-                            <p style="color: #bbb; font-size: 1.1rem;">Un <code>CROSS JOIN</code> mal hecho colapsa servidores al crear un producto cartesiano masivo.</p>
+                            <p>Un <code>CROSS JOIN</code> en SQL es un producto cartesiano. Si se usa mal, combina cada fila de una tabla con todas las de otra.</p>
                         </div>
                     </div>
                     <div class="tech-item">
                         <i class="fas fa-user-secret fa-4x" style="color: var(--gold-primary);"></i>
                         <div>
                             <h3 style="color: white; font-size: 1.5rem; margin-bottom: 10px;">3. Criptografía</h3>
-                            <p style="color: #bbb; font-size: 1.1rem;">Ataques de fuerza bruta recorren el espacio cartesiano de caracteres.</p>
+                            <p>Un ataque de fuerza bruta recorre el producto cartesiano de todos los caracteres posibles para romper una contraseña.</p>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ disp(Pares);
                             </div>
                         </div>
                         <div style="flex: 1; min-width: 350px;">
-                            <div style="background: #1e1e1e; border: 2px solid var(--gold-primary); border-radius: 15px; overflow: hidden; height: 100%;">
+                            <div style="background: #1e1e1e; border: 3px solid var(--gold-primary); border-radius: 15px; overflow: hidden; height: 100%;">
                                 <h5 style="background: #252526; color: var(--gold-primary); padding: 15px; margin: 0; font-weight: bold; border-bottom: 1px solid #333; font-size: 1.2rem;">MATLAB LOOP</h5>
                                 <pre style="margin: 0;"><code class="language-matlab giant-code" style="padding: 25px; display: block; overflow-x: auto;">for i = 1:length(A)
     for j = 1:length(B)
