@@ -1,69 +1,44 @@
 :root {
-    --bg-main: #0f0f0f;         /* Fondo del contenido (más claro) */
-    --bg-sidebar: #050505;      /* Fondo de barra lateral y header (más oscuro) */
-    --gold-accent: #FFD700;
-    --card-bg: rgba(25, 25, 25, 0.8);
-    --border-color: rgba(255, 215, 0, 0.15);
+    /* Paleta de Contraste Mejorado */
+    --bg-sidebar: #050505;      /* Negro casi puro para el marco */
+    --bg-content: #1c1c1c;      /* Gris oscuro para el área de información */
+    --bg-header: #080808;       /* Tono intermedio para el encabezado */
+    --gold-primary: #FFD700;
+    --text-white: #ffffff;
+    --text-gray: #cccccc;
+    --sidebar-width: 280px;
+    --border-gold: rgba(255, 215, 0, 0.15);
 }
 
-/* Mejora de Contraste en Sidebar */
+/* Sidebar: Negro Profundo */
 .sidebar {
     background: var(--bg-sidebar);
-    border-right: 2px solid var(--border-color); /* Borde más marcado */
+    border-right: 2px solid var(--border-gold);
+    /* ... resto de tus estilos ... */
 }
 
-/* Mejora de Contraste en Main Content */
+/* Encabezado: Negro sutil */
+.top-header {
+    background: var(--bg-header);
+    border-bottom: 1px solid var(--border-gold);
+}
+
+/* Área de Información: Gris Oscuro Distinguible */
 .main-content {
-    background-color: var(--bg-main);
-    background-image: 
-        radial-gradient(circle at top right, rgba(255, 215, 0, 0.03), transparent),
-        linear-gradient(to right, rgba(255, 215, 0, 0.02) 1px, transparent 1px);
-    background-size: 100% 100%, 40px 40px;
+    margin-left: var(--sidebar-width);
+    background-color: var(--bg-content);
+    /* Añadimos una textura sutil de malla para mayor profesionalismo */
+    background-image: linear-gradient(rgba(255,215,0,0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,215,0,0.02) 1px, transparent 1px);
+    background-size: 30px 30px;
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
 }
 
-/* Estilo para el Asistente en Funciones */
-.chatbot-tip {
-    display: flex;
-    align-items: center;
-    background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
-    border-left: 3px solid var(--gold-accent);
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 0 10px 10px 0;
-}
-
-.bot-mini {
-    width: 40px;
-    height: 40px;
-    margin-right: 15px;
-}
-
-/* Botón Flotante WhatsApp */
-.whatsapp-float {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background-color: #25d366;
-    color: white;
-    width: 60px;
-    height: 60px;
-    border-radius: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    z-index: 1000;
-    transition: 0.3s;
-}
-
-.whatsapp-float:hover {
-    transform: scale(1.1);
-    background-color: #128c7e;
-}
-
-/* Botón de WhatsApp en el Sidebar */
-.whatsapp-link:hover {
-    color: #25d366 !important;
-    border-left-color: #25d366 !important;
+/* Ajuste de las tarjetas para que resalten sobre el gris */
+.card {
+    background: rgba(10, 10, 10, 0.7); /* Fondo más oscuro que el gris base */
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
