@@ -7,13 +7,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 const sectionColors = {
     'inicio': '#FFD700',          // Dorado (Original)
     'prod-cartesiano': '#00FF00', // Verde Matrix
-    'funciones': '#FFFF00',       // Amarillo Cyberpunk
+    'funciones': '#FF0033',       // <--- CAMBIO AQUÍ: ROJO NEÓN
     'ejercicios': '#00FFFF',      // Turquesa Neón
     'clasificacion': '#BC13FE',   // Púrpura Eléctrico
-    'inversa': '#FF0055',         // Rojo Neón Intenso
+    'inversa': '#006aff',         // Rojo Neón Intenso
     'compuesta': '#FF00FF',       // Magenta Láser
-    'discreta': '#FF5500',        // Naranja Fuego
-    'video': '#0088FF',           // Azul Eléctrico (Nuevo)
+    'discreta': '#7bff00',        // Naranja Fuego
+    'video': '#ff8400',           // Azul Eléctrico
     'resenas': '#00FF9C'          // Menta Tóxico
 };
 
@@ -31,7 +31,7 @@ function openTab(evt, tabName) {
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
         tablinks[i].style.borderColor = "transparent"; 
-        tablinks[i].style.color = "#e0e0e0"; // Reset color texto a gris
+        tablinks[i].style.color = "#e0e0e0"; 
     }
 
     // Mostrar pestaña actual
@@ -41,13 +41,10 @@ function openTab(evt, tabName) {
         
         // --- CAMBIO DE COLOR DINÁMICO ---
         var newColor = sectionColors[tabName] || '#FFD700';
-        
-        // Inyectamos el nuevo color en las variables CSS
-        // Al cambiar --gold-primary, TODOS los títulos, bordes y fórmulas cambiarán
         document.documentElement.style.setProperty('--gold-primary', newColor);
     }
 
-    // Activar botón con el nuevo color
+    // Activar botón
     if (evt) {
         evt.currentTarget.className += " active";
         evt.currentTarget.style.borderColor = newColor;
@@ -77,23 +74,6 @@ function calcCartesian() {
         });
     });
 
-    // Usamos el color actual para el resultado
     resDiv.style.color = "var(--gold-primary)";
     resDiv.innerHTML = `<strong>PARES GENERADOS:</strong><br>{ ${pairs.join(', ')} }`;
-}
-
-function calcFactorial() {
-    const n = parseInt(document.getElementById('numFactorial').value);
-    const resDiv = document.getElementById('resFactorial');
-    if (isNaN(n) || n < 0) { resDiv.innerHTML = "⚠️ ERROR"; return; }
-    let result = 1; for (let i = 1; i <= n; i++) result *= i;
-    resDiv.innerHTML = `RESULTADO: ${n}! = ${result}`;
-}
-
-function calcComposition() {
-    const x = parseFloat(document.getElementById('compInput').value);
-    const resDiv = document.getElementById('resComposicion');
-    if (isNaN(x)) { resDiv.innerHTML = "⚠️ ERROR"; return; }
-    const gx = x + 1; const fgx = gx * gx;
-    resDiv.innerHTML = `g(${x}) = ${gx} <br> f(${gx}) = ${fgx}`;
 }
