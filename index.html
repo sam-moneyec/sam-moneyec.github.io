@@ -15,7 +15,7 @@
     <aside class="sidebar">
         <div class="sidebar-header" onclick="openTab(event, 'inicio')">
             <h3>MATH<span class="highlight">COMP</span></h3>
-            <p style="font-size: 0.7rem; color: #888; letter-spacing: 2px;">LUXURY EDITION</p>
+            <p class="subtitle">LUXURY EDITION</p>
         </div>
         <nav>
             <ul>
@@ -29,7 +29,7 @@
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'discreta')"><i class="fas fa-chart-bar"></i> Función Discreta</a></li>
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'video')"><i class="fas fa-play-circle"></i> Video Explicativo</a></li>
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'resenas')"><i class="fas fa-comments"></i> Reseñas</a></li>
-                <li><a href="https://wa.me/593999999999" target="_blank" class="tab-link whatsapp-sidebar"><i class="fab fa-whatsapp"></i> WhatsApp Soporte</a></li>
+                <li><a href="https://wa.me/593999999999" target="_blank" class="tab-link whatsapp-link"><i class="fab fa-whatsapp"></i> Soporte WhatsApp</a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -38,6 +38,7 @@
     </aside>
 
     <main class="main-content">
+        
         <header class="top-header">
             <div class="logo-area">
                 <img src="img/logo-epn.png" alt="Escudo EPN">
@@ -57,7 +58,7 @@
                         <div class="bot-text">
                             <h3>SISTEMA INICIADO</h3>
                             <div class="separator"></div>
-                            <p><strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>, tu instructor virtual. Selecciona un módulo para comenzar la instrucción técnica.</p>
+                            <p><strong>Bienvenido, Cadete.</strong> Soy <strong>MathBot</strong>. Esta plataforma ha sido diseñada para dominar la Teoría de la Computación con estándares de alto nivel.</p>
                             <button class="cta-button" onclick="openTab(event, 'prod-cartesiano')">Comenzar Instrucción</button>
                         </div>
                         <div class="bot-image-container">
@@ -75,27 +76,31 @@
                 <div class="card">
                     <h1 class="urban-title">PRODUCTO</h1>
                     <div class="definition-text">
-                        <p>Mezcla de dos conjuntos para crear pares ordenados $(a,b)$.</p>
+                        <p>Operación que genera pares ordenados $(a,b)$ combinando elementos de dos conjuntos.</p>
                     </div>
                     <div class="formula-box">$$A \times B = \{(a,b) \mid a \in A \land b \in B\}$$</div>
+                    
                     <div class="interactive-box">
-                        <h4><i class="fas fa-calculator"></i> Generador</h4>
+                        <h4><i class="fas fa-calculator"></i> Generador de Pares</h4>
                         <div class="input-group">
-                            <input type="text" id="setA" placeholder="Conjunto A">
-                            <input type="text" id="setB" placeholder="Conjunto B">
+                            <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
+                            <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
                         </div>
                         <button class="run-btn" onclick="calcCartesian()">Calcular</button>
                         <div id="resCartesiano" class="result-display">Esperando datos...</div>
                     </div>
+
                     <div class="chatbot-tip">
                         <img src="img/bot.png" alt="MathBot" class="bot-mini">
-                        <p><strong>MathBot:</strong> ¡El orden de los elementos en el par sí importa! 🤖</p>
+                        <p><strong>MathBot:</strong> ¡El tamaño del resultado es la multiplicación de los tamaños de A y B! 🤖</p>
                     </div>
                 </div>
             </div>
 
             <div id="funciones" class="tab-content">
-                <div class="topic-header"><h2>FUNCIONES</h2></div>
+                <div class="topic-header">
+                    <h2>CONCEPTO DE FUNCIÓN</h2>
+                </div>
                 <div class="card">
                     <h1 class="urban-title">MÁQUINAS</h1>
                     <div class="diagram-container">
@@ -105,7 +110,38 @@
                     </div>
                     <div class="chatbot-tip">
                         <img src="img/bot.png" alt="MathBot" class="bot-mini">
-                        <p><strong>MathBot:</strong> Recuerda: cada entrada tiene una única salida. 🤖</p>
+                        <p><strong>MathBot:</strong> Una función es válida si cada entrada tiene una única salida. 🤖</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="discreta" class="tab-content">
+                <div class="topic-header">
+                    <h2>FUNCIONES DISCRETAS</h2>
+                </div>
+                <div class="card">
+                    <h1 class="urban-title">FACTORIAL</h1>
+                    <div class="interactive-box">
+                        <h4>Calculadora</h4>
+                        <input type="number" id="numFactorial" placeholder="Ingresa un número n">
+                        <button class="run-btn" onclick="calcFactorial()">Calcular n!</button>
+                        <div id="resFactorial" class="result-display">Resultado...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="compuesta" class="tab-content">
+                <div class="topic-header">
+                    <h2>FUNCIÓN COMPUESTA</h2>
+                </div>
+                <div class="card">
+                    <h1 class="urban-title">COMPOSICIÓN</h1>
+                    <div class="interactive-box">
+                        <h4>Calculadora f(g(x))</h4>
+                        <p style="margin-bottom:10px; color:#aaa;">Dado $g(x)=x+1$ y $f(u)=u^2$</p>
+                        <input type="number" id="compInput" placeholder="Valor de x">
+                        <button class="run-btn" onclick="calcComposition()">Calcular</button>
+                        <div id="resComposicion" class="result-display">Resultado...</div>
                     </div>
                 </div>
             </div>
@@ -113,7 +149,7 @@
             </div>
     </main>
 
-    <a href="https://wa.me/593999999999" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/593987662461" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
