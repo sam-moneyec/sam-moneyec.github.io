@@ -6,8 +6,14 @@
     <title>Matemáticas Computacionales | EPN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/matlab.min.js"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -52,7 +58,7 @@
         <div class="content-body">
 
             <div id="inicio" class="tab-content" style="display: block;">
-                <section class="welcome-section">
+                <section class="welcome-section with-rays">
                     <div class="bot-card">
                         <div class="bot-text">
                             <h3>SISTEMA INICIADO</h3>
@@ -103,6 +109,12 @@
 
                 <div class="card">
                     <h1 class="urban-title">2. DEFINICIÓN TÉCNICA</h1>
+                    
+                    <div style="margin-bottom: 30px; text-align: center;">
+                        <img src="img/img_2.png" alt="Definición del Producto Cartesiano" style="max-width: 100%; border-radius: 15px; border: 2px solid var(--gold-primary); box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);">
+                        <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Figura: Representación conceptual del cruce de conjuntos.</p>
+                    </div>
+
                     <div class="definition-text">
                         <p>
                             En matemáticas, específicamente en la teoría de conjuntos, el producto cartesiano es una operación que se realiza entre dos conjuntos para crear un tercero.
@@ -113,8 +125,8 @@
                             Dados dos conjuntos, el conjunto A y el conjunto B, el producto cartesiano (denotado como A x B) es el conjunto de todos los <strong>pares ordenados (a, b)</strong>, 
                             donde el primer elemento 'a' pertenece obligatoriamente al conjunto A, y el segundo elemento 'b' pertenece al conjunto B.
                         </p>
-                        <p style="margin-top: 15px; border-left: 3px solid #FFD700; padding-left: 15px; color: #ccc;">
-                            A x B = { (a, b) tal que a está en A y b está en B }
+                        <p style="margin-top: 15px; border-left: 3px solid #FFD700; padding-left: 15px; color: #ccc; font-family: monospace; background: rgba(0,0,0,0.2); padding: 10px;">
+                            A x B = { (a, b) | a ∈ A y b ∈ B }
                         </p>
                         <p style="margin-top: 15px;">
                             Es vital entender la diferencia entre un pequeño conjunto {a, b} y un par ordenado (a, b). 
@@ -130,33 +142,31 @@
                     <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 300px;">
                             <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Diagrama de Flechas</h3>
-                            <img src="image_0.png" alt="Diagrama Producto Cartesiano" style="width: 100%; border-radius: 10px; border: 1px solid #333; margin-bottom: 15px;">
+                            <img src="img/image_0.png" alt="Diagrama Producto Cartesiano" style="width: 100%; border-radius: 10px; border: 1px solid #333; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
                             <p>Este diagrama ilustra perfectamente el concepto: cada elemento del conjunto A (izquierda) lanza una "flecha" a <strong>todos</strong> los elementos del conjunto B (derecha).</p>
                             <p style="margin-top: 10px;">El total de flechas (3 x 2 = 6) representa los pares ordenados resultantes.</p>
                         </div>
 
                         <div style="flex: 1; min-width: 300px;">
                             <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Generación Matricial en MATLAB</h3>
-                            <div class="matlab-block" style="margin-top: 0;">
-                                <h5><i class="fas fa-code"></i> Script: Generar Pares</h5>
-                                <pre><code style="color: #a6e22e;">% Definimos los conjuntos como vectores
+                            <pre style="border-radius: 10px; overflow: hidden; border: 1px solid #333;"><code class="language-matlab">% Definimos los conjuntos como vectores
 A = [1, 2, 3];
 B = [4, 5];
 
-% Usamos ndgrid para crear las rejillas de combinaciones
+% Usamos ndgrid: la forma eficiente en ingeniería
+% para crear las rejillas de combinaciones
 [GridA, GridB] = ndgrid(A, B);
 
-% Convertimos las rejillas en columnas y las unimos
+% 'Aplanamos' las rejillas en columnas y las unimos
 ParesOrdenados = [GridA(:), GridB(:)];
 
-% Mostramos el resultado
-disp('Pares Ordenados (A x B):');
+% Mostramos el resultado en consola
+disp('--- Pares Ordenados Generados (A x B) ---');
 disp(ParesOrdenados);
                                 </code></pre>
                                 <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">
-                                    <strong>Lógica:</strong> <code>ndgrid</code> es una función eficiente para ingeniería que crea matrices repitiendo los elementos necesarios para formar todas las combinaciones. Al usar <code>(:)</code>, linealizamos esas matrices para obtener una lista limpia de pares, replicando la lógica del diagrama.
+                                    <strong>Nota de Ingeniería:</strong> La función <code>ndgrid</code> es fundamental en simulaciones numéricas para generar espacios de coordenadas n-dimensionales de manera vectorizada, evitando bucles lentos.
                                 </p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -169,9 +179,7 @@ disp(ParesOrdenados);
                         <div>
                             <h3 style="color: white;">1. Tu Monitor (Resolución)</h3>
                             <p style="color: #bbb; font-size: 0.95rem;">
-                                Una pantalla Full HD tiene 1920 columnas y 1080 filas. 
-                                Cada píxel que ves es un par ordenado <code>(x, y)</code>. 
-                                Tu pantalla es literalmente el Producto Cartesiano del conjunto de Columnas x Filas.
+                                Una pantalla Full HD tiene 1920 columnas y 1080 filas. Cada píxel es un par ordenado (x, y). Tu pantalla es el Producto Cartesiano de Columnas x Filas.
                             </p>
                         </div>
                     </div>
@@ -180,7 +188,7 @@ disp(ParesOrdenados);
                         <div>
                             <h3 style="color: white;">2. Bases de Datos (SQL CROSS JOIN)</h3>
                             <p style="color: #bbb; font-size: 0.95rem;">
-                                Si alguna vez cometes el error de hacer <code>SELECT * FROM Usuarios, Pedidos</code> sin poner una condición, la base de datos colapsará al intentar crear un Producto Cartesiano masivo.
+                                Si haces <code>SELECT * FROM Usuarios, Pedidos</code> sin condición, la base de datos colapsará al intentar crear un Producto Cartesiano masivo de todos contra todos.
                             </p>
                         </div>
                     </div>
@@ -189,22 +197,56 @@ disp(ParesOrdenados);
                         <div>
                             <h3 style="color: white;">3. Ataques de Fuerza Bruta</h3>
                             <p style="color: #bbb; font-size: 0.95rem;">
-                                Cuando un hacker intenta adivinar una contraseña, está recorriendo el Producto Cartesiano de todos los caracteres posibles.
+                                Un hacker que intenta adivinar una contraseña está recorriendo el Producto Cartesiano de todos los caracteres posibles para encontrar la combinación correcta.
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h1 class="urban-title">GENERADOR</h1>
-                    <div class="interactive-box">
-                        <h4><i class="fas fa-cogs"></i> Simulador de Pares</h4>
-                        <div class="input-group">
-                            <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
-                            <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
+                    <h1 class="urban-title">SIMULADOR Y CÓDIGO</h1>
+                    
+                    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 300px;">
+                             <div class="interactive-box" style="height: 100%;">
+                                <h4><i class="fas fa-cogs"></i> Simulador Web (JS)</h4>
+                                <p style="color: #aaa; margin-bottom: 15px; font-size: 0.9rem;">Prueba ingresando datos reales. Ej: [S, M, L] y [Rojo, Azul]</p>
+                                <div class="input-group">
+                                    <input type="text" id="setA" placeholder="Conjunto A (ej: 1, 2)">
+                                    <input type="text" id="setB" placeholder="Conjunto B (ej: a, b)">
+                                </div>
+                                <button class="run-btn" onclick="calcCartesian()">GENERAR PARES</button>
+                                <div id="resCartesiano" class="result-display">Esperando entrada...</div>
+                            </div>
                         </div>
-                        <button class="run-btn" onclick="calcCartesian()">GENERAR PARES</button>
-                        <div id="resCartesiano" class="result-display">Esperando entrada de datos...</div>
+
+                        <div style="flex: 1; min-width: 300px;">
+                            <div style="background: #1e1e1e; border: 1px solid #333; border-radius: 10px; overflow: hidden; height: 100%;">
+                                <h5 style="background: #252526; color: #ccc; padding: 10px; margin: 0; font-weight: normal; border-bottom: 1px solid #333;"><i class="fas fa-code"></i> Lógica Equivalente en MATLAB</h5>
+                                <pre style="margin: 0;"><code class="language-matlab" style="padding: 20px; display: block; overflow-x: auto;">% Código para generar combinaciones como el simulador
+
+% 1. Definir los conjuntos (Arrays o Celdas de texto)
+SetA_Datos = {'S', 'M', 'L'};
+SetB_Datos = {'Rojo', 'Azul'};
+
+% 2. Bucles anidados para recorrer todo (Lógica clásica)
+disp('Generando combinaciones...');
+contador = 1;
+for i = 1:length(SetA_Datos)
+    for j = 1:length(SetB_Datos)
+        % Crear el par
+        elementoA = SetA_Datos{i};
+        elementoB = SetB_Datos{j};
+        
+        % Mostrar en formato de par ordenado
+        fprintf('Par %d: (%s, %s)\n', contador, elementoA, elementoB);
+        contador = contador + 1;
+    end
+end
+fprintf('Total generado: %d pares.\n', contador-1);
+                                </code></pre>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -269,7 +311,7 @@ disp(ParesOrdenados);
                 
                     <div style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap; background: rgba(255,0,0,0.05); border: 1px solid red; padding: 30px; border-radius: 20px;">
                         <div style="flex: 1; min-width: 250px; text-align: center;">
-                            <img src="image_1.png" alt="Diagrama de relación que no es función" style="max-width: 100%; border-radius: 10px; box-shadow: 0 0 20px rgba(255,0,0,0.3); border: 2px solid red;">
+                            <img src="img/image_1.png" alt="Diagrama de relación que no es función" style="max-width: 100%; border-radius: 10px; box-shadow: 0 0 20px rgba(255,0,0,0.3); border: 2px solid red;">
                         </div>
                         <div style="flex: 1.5;">
                             <h2 style="color: red; margin-bottom: 20px; font-weight: 900; letter-spacing: 1px;"><i class="fas fa-times-circle"></i> VIOLACIÓN DE UNICIDAD</h2>

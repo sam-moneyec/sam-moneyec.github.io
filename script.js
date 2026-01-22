@@ -1,25 +1,32 @@
+// INICIALIZAR HIGHLIGHT.JS PARA COLOREAR CÓDIGO
+document.addEventListener('DOMContentLoaded', (event) => {
+    hljs.highlightAll();
+});
+
 /**
- * SISTEMA DE GESTIÓN DE PESTAÑAS
+ * LÓGICA DE PESTAÑAS (TABS)
  */
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
 
-    // 1. Ocultar todo el contenido
+    // Ocultar todo el contenido
     tabcontent = document.getElementsByClassName("tab-content");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
 
-    // 2. Desactivar todos los botones del menú
+    // Desactivar botones del menú
     tablinks = document.getElementsByClassName("tab-link");
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
 
-    // 3. Mostrar la pestaña actual
-    document.getElementById(tabName).style.display = "block";
-
-    // 4. Activar el botón presionado
+    // Mostrar pestaña seleccionada y activar botón (si existe el evento)
+    var targetTab = document.getElementById(tabName);
+    if (targetTab) {
+        targetTab.style.display = "block";
+    }
+    
     if (evt) {
         evt.currentTarget.className += " active";
     }
@@ -34,7 +41,7 @@ function calcCartesian() {
     const resDiv = document.getElementById('resCartesiano');
 
     if (!rawA || !rawB) {
-        resDiv.innerHTML = "<span style='color: #ff5555;'>⚠️ Error: Ingresa datos en ambos campos.</span>";
+        resDiv.innerHTML = "⚠️ Ingresa datos en ambos campos.";
         return;
     }
 
@@ -48,50 +55,42 @@ function calcCartesian() {
         });
     });
 
-    resDiv.innerHTML = `
-        <strong>Conjunto Resultante:</strong> { ${pairs.join(', ')} } <br>
-        <strong>Cardinalidad:</strong> ${A.length} x ${B.length} = ${pairs.length} pares.
-    `;
+    resDiv.innerHTML = `<strong>Resultado:</strong> { ${pairs.join(', ')} } <br> <strong>Total:</strong> ${pairs.length} pares.`;
 }
 
 /**
- * CALCULADORA: FACTORIAL (DISCRETA)
+ * CALCULADORA: FACTORIAL
  */
 function calcFactorial() {
     const n = parseInt(document.getElementById('numFactorial').value);
     const resDiv = document.getElementById('resFactorial');
 
     if (isNaN(n) || n < 0) {
-        resDiv.innerHTML = "⚠️ Ingresa un número entero positivo.";
+        resDiv.innerHTML = "⚠️ Ingresa un entero positivo.";
         return;
     }
 
     let result = 1;
-    for (let i = 1; i <= n; i++) {
-        result *= i;
-    }
-
-    resDiv.innerHTML = `<strong>Resultado:</strong> f(${n}) = ${n}! = ${result}`;
+    for (let i = 1; i <= n; i++) result *= i;
+    resDiv.innerHTML = `<strong>${n}! =</strong> ${result}`;
 }
 
 /**
- * CALCULADORA: COMPOSICIÓN f(g(x))
+ * CALCULADORA: COMPOSICIÓN
  */
 function calcComposition() {
     const x = parseFloat(document.getElementById('compInput').value);
     const resDiv = document.getElementById('resComposicion');
 
     if (isNaN(x)) {
-        resDiv.innerHTML = "⚠️ Por favor ingresa un número.";
+        resDiv.innerHTML = "⚠️ Ingresa un número.";
         return;
     }
+    
+    // g(x) = x + 1
+    const gx = x + 1;
+    // f(u) = u^2
+    const fgx = gx * gx;
 
-    const gx = x + 1;      // Paso 1
-    const fgx = gx * gx;   // Paso 2
-
-    resDiv.innerHTML = `
-        1. <strong>g(${x})</strong> = ${x} + 1 = ${gx} <br>
-        2. <strong>f(${gx})</strong> = (${gx})² = ${fgx} <br>
-        🏁 <strong>Resultado Final:</strong> ${fgx}
-    `;
+    resDiv.innerHTML = `g(${x}) = ${gx} <br> f(${gx}) = ${fgx}`;
 }
