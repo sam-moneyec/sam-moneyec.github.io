@@ -1,242 +1,69 @@
 :root {
-    /* Paleta Black & Gold Luxury */
-    --bg-dark: #0a0a0a;         /* Fondo principal */
-    --glass-dark: rgba(20, 20, 20, 0.7); /* Vidrio oscuro */
-    --gold-primary: #FFD700;    /* Dorado brillante */
-    --gold-dark: #B8860B;       /* Dorado oscuro */
-    --text-white: #ffffff;
-    --text-gray: #cccccc;
-    --sidebar-width: 280px;
+    --bg-main: #0f0f0f;         /* Fondo del contenido (más claro) */
+    --bg-sidebar: #050505;      /* Fondo de barra lateral y header (más oscuro) */
+    --gold-accent: #FFD700;
+    --card-bg: rgba(25, 25, 25, 0.8);
+    --border-color: rgba(255, 215, 0, 0.15);
 }
 
-/* --- BASICS & FONTS --- */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
-body { 
-    background-color: var(--bg-dark); 
-    background-image: radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 20%);
-    display: flex; 
-    overflow-x: hidden; 
-    color: var(--text-white); 
-}
-
-/* --- SIDEBAR (Barra Lateral) --- */
+/* Mejora de Contraste en Sidebar */
 .sidebar {
-    width: var(--sidebar-width);
-    background: rgba(0, 0, 0, 0.9); /* Casi negro solido */
-    backdrop-filter: blur(15px);      /* Efecto Apple Glass */
-    height: 100vh;
-    position: fixed;
-    top: 0; left: 0;
-    color: white;
-    display: flex; flex-direction: column;
-    z-index: 100;
-    border-right: 1px solid rgba(255, 215, 0, 0.2); /* Borde dorado sutil */
+    background: var(--bg-sidebar);
+    border-right: 2px solid var(--border-color); /* Borde más marcado */
 }
 
-.sidebar-header {
-    padding: 30px 20px;
-    text-align: center;
-    background: linear-gradient(180deg, rgba(255,215,0,0.1) 0%, transparent 100%);
-    cursor: pointer;
-}
-
-.sidebar-header h3 { 
-    font-size: 1.8rem; 
-    font-weight: 800;
-    color: var(--gold-primary);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-}
-
-.highlight { color: white; }
-
-.sidebar nav ul { list-style: none; padding-top: 10px; overflow-y: auto; }
-
-.sidebar nav ul li a {
-    display: flex; align-items: center;
-    padding: 15px 25px;
-    color: var(--text-gray);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: 0.3s;
-    border-left: 4px solid transparent;
-}
-
-.sidebar nav ul li a:hover, .sidebar nav ul li a.active {
-    background: linear-gradient(90deg, rgba(255,215,0,0.15) 0%, transparent 100%);
-    color: var(--gold-primary);
-    border-left: 4px solid var(--gold-primary);
-}
-
-.sidebar nav ul li a i { margin-right: 15px; width: 20px; text-align: center; }
-.sidebar-footer { margin-top: auto; padding: 20px; text-align: center; font-size: 0.75rem; color: #666; }
-
-/* --- MAIN CONTENT --- */
+/* Mejora de Contraste en Main Content */
 .main-content {
-    margin-left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
-    min-height: 100vh;
-    display: flex; flex-direction: column;
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(circle at top right, rgba(255, 215, 0, 0.03), transparent),
+        linear-gradient(to right, rgba(255, 215, 0, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px;
 }
 
-/* --- TOP HEADER --- */
-.top-header {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+/* Estilo para el Asistente en Funciones */
+.chatbot-tip {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
+    border-left: 3px solid var(--gold-accent);
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 0 10px 10px 0;
+}
+
+.bot-mini {
+    width: 40px;
+    height: 40px;
+    margin-right: 15px;
+}
+
+/* Botón Flotante WhatsApp */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25d366;
     color: white;
-    padding: 20px 40px;
-    position: relative;
-}
-
-.logo-area { display: flex; align-items: center; gap: 20px; }
-.logo-area img { height: 70px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
-.university-info h1 { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--gold-primary); letter-spacing: 1px; }
-.university-info h2 { font-size: 0.9rem; font-weight: 400; color: var(--text-white); }
-.motto { font-style: italic; font-size: 0.8rem; color: #aaa; margin-top: 5px; }
-
-/* --- TABS SYSTEM --- */
-.content-body { padding: 40px; flex: 1; }
-.tab-content { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-@keyframes slideUp { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
-
-/* --- CARDS & GLASSMORPHISM --- */
-.card {
-    background: rgba(30, 30, 30, 0.6); /* Vidrio oscuro */
-    backdrop-filter: blur(20px);         /* Desenfoque fuerte */
-    padding: 40px; 
-    border-radius: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.08); /* Borde sutil */
-    margin-bottom: 30px;
-    color: var(--text-gray);
-}
-
-/* --- TIPOGRAFÍA URBANA & ORO --- */
-.urban-title {
-    font-size: 4rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    line-height: 1;
-    margin-bottom: 20px;
-    /* Efecto Degradado Dorado */
-    background: linear-gradient(to right, #FFD700, #FDB931, #FFFFFF, #B8860B);
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: shine 5s linear infinite;
-    letter-spacing: -2px;
-}
-
-@keyframes shine { to { background-position: 200% center; } }
-
-.definition-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: white;
-    border-left: 4px solid var(--gold-primary);
-    padding-left: 20px;
-    margin-bottom: 30px;
-}
-
-.topic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-.topic-header h2 { color: var(--gold-primary); font-size: 1.8rem; }
-.badge { background: linear-gradient(45deg, var(--gold-dark), var(--gold-primary)); color: black; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 700; box-shadow: 0 4px 10px rgba(255,215,0,0.3); }
-
-/* --- INTERACTIVE BOXES --- */
-.interactive-box {
-    background: rgba(0, 0, 0, 0.3); 
-    border: 1px solid var(--gold-dark);
-    padding: 25px; border-radius: 15px; margin-top: 20px;
-}
-.interactive-box h4 { color: var(--gold-primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
-
-input { 
-    padding: 12px; 
-    background: rgba(255,255,255,0.05); 
-    border: 1px solid rgba(255,255,255,0.2); 
-    border-radius: 8px; 
-    width: 100%; margin-bottom: 10px; 
-    color: white; font-family: monospace; 
-}
-input:focus { outline: none; border-color: var(--gold-primary); box-shadow: 0 0 10px rgba(255,215,0,0.2); }
-.input-group { display: flex; gap: 10px; }
-
-.run-btn {
-    background: linear-gradient(45deg, var(--gold-primary), var(--gold-dark)); 
-    color: black; border: none;
-    padding: 12px 30px; border-radius: 30px; cursor: pointer; font-weight: 700;
+    width: 60px;
+    height: 60px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 1000;
     transition: 0.3s;
-    text-transform: uppercase;
-    box-shadow: 0 5px 15px rgba(255,215,0,0.2);
-}
-.run-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,215,0,0.4); }
-
-.result-display { 
-    margin-top: 15px; padding: 15px; 
-    background: rgba(0,0,0,0.5); 
-    border-radius: 8px; font-family: monospace; 
-    border-left: 4px solid var(--gold-primary); 
-    color: var(--gold-primary);
 }
 
-/* --- MATH & DIAGRAMS --- */
-.formula-box {
-    background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;
-    text-align: center; margin: 20px 0; font-size: 1.3rem;
-    border: 1px dashed rgba(255,255,255,0.2); color: var(--gold-primary);
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: #128c7e;
 }
-.matlab-block {
-    background: #111; color: #f8f8f2; padding: 20px;
-    border-radius: 12px; margin-top: 20px; font-family: monospace;
-    border: 1px solid #333;
-}
-.matlab-block h5 { color: var(--gold-dark); margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; }
 
-/* --- Diagramas CSS (Modo Oscuro) --- */
-.diagram-container { display: flex; justify-content: center; align-items: center; gap: 40px; margin: 30px 0; }
-.set-oval {
-    border: 2px solid var(--gold-primary); border-radius: 30px; padding: 15px 30px;
-    text-align: center; background: rgba(255,255,255,0.05); min-width: 100px; color: white;
+/* Botón de WhatsApp en el Sidebar */
+.whatsapp-link:hover {
+    color: #25d366 !important;
+    border-left-color: #25d366 !important;
 }
-.set-oval ul { list-style: none; }
-.arrow-connector { text-align: center; color: var(--gold-primary); }
-
-/* --- BIENVENIDA --- */
-.welcome-section { display: flex; justify-content: center; }
-.bot-card {
-    background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(20px);
-    width: 100%; max-width: 900px; border-radius: 20px;
-    display: flex; align-items: center; padding: 40px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-top: 4px solid var(--gold-primary);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.bot-text { flex: 2; padding-right: 30px; }
-.bot-text h3 { font-size: 2.5rem; color: var(--gold-primary); font-weight: 800; }
-.bot-text p { color: #ddd; }
-.separator { width: 50px; height: 4px; background: var(--gold-primary); margin: 15px 0; }
-
-.cta-button {
-    background: var(--gold-primary); color: black; border: none;
-    padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer; margin-top: 20px;
-    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4); transition: 0.3s;
-}
-.cta-button:hover { transform: translateY(-3px); background: white; }
-
-/* --- GRID CARDS --- */
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-.type-card, .machine-card, .formula-card {
-    background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1); text-align: center; transition: 0.3s;
-}
-.type-card:hover, .machine-card:hover { transform: translateY(-5px); border-color: var(--gold-primary); background: rgba(255,255,255,0.05); }
-.type-card h3 { color: var(--gold-primary); font-size: 1.1rem; margin-bottom: 10px; }
-.visual-cue { background: rgba(0,0,0,0.3); padding: 5px; font-size: 0.85rem; font-family: monospace; margin-top: 10px; border-radius: 4px; color: #aaa; }
-.alert-box { background: rgba(255, 215, 0, 0.1); color: var(--gold-primary); padding: 15px; border-radius: 8px; border: 1px solid var(--gold-dark); margin-bottom: 15px; }
-
-/* Scrollbar personalizado */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }

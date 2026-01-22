@@ -29,6 +29,7 @@
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'discreta')"><i class="fas fa-chart-bar"></i> Función Discreta</a></li>
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'video')"><i class="fas fa-play-circle"></i> Video Explicativo</a></li>
                 <li><a href="#" class="tab-link" onclick="openTab(event, 'resenas')"><i class="fas fa-comments"></i> Reseñas</a></li>
+                <li><a href="https://wa.me/593999999999" target="_blank" class="tab-link whatsapp-link"><i class="fab fa-whatsapp"></i> Contactar Soporte</a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -87,23 +88,7 @@
                     <div class="definition-text">
                         <p>
                             El <strong>Producto Cartesiano</strong> es una operación matemática que toma dos conjuntos y los mezcla para crear uno nuevo. 
-                            Su idea central es formar <em>pares ordenados</em>, donde el primer elemento proviene del primer conjunto y el segundo del segundo conjunto.
-                        </p>
-                        <br>
-                        <p>
-                            Cada elemento del primer conjunto se combina <strong>sin excepción</strong> con todos los del segundo. 
-                            El resultado se escribe como:
-                        </p>
-                    </div>
-
-                    <div class="formula-box">
-                        $$A \times B$$
-                    </div>
-
-                    <div class="definition-text">
-                        <p>
-                            Y refleja todas las combinaciones posibles. Eso sí, <strong>el orden manda</strong>: 
-                            cambiar los elementos cambia completamente el par.
+                            Su idea central es formar <em>pares ordenados</em>.
                         </p>
                     </div>
 
@@ -122,12 +107,9 @@
                         <div id="resCartesiano" class="result-display">Esperando datos...</div>
                     </div>
 
-                    <div class="matlab-block">
-                        <h5><i class="fas fa-code"></i> Código MATLAB</h5>
-                        <pre><code>A = [1, 2, 3]; B = [10, 20];
-[X, Y] = ndgrid(A, B);
-producto = [X(:), Y(:)];
-disp(producto);</code></pre>
+                    <div class="chatbot-tip">
+                        <img src="img/bot.png" alt="MathBot Small" class="bot-mini">
+                        <p><strong>Tip de MathBot:</strong> El orden importa. El par (a,b) no es lo mismo que (b,a) a menos que a = b. 🤖</p>
                     </div>
                 </div>
             </div>
@@ -140,7 +122,7 @@ disp(producto);</code></pre>
                 <div class="card">
                     <h1 class="urban-title">LA MÁQUINA</h1>
                     <div class="definition-text">
-                        <p>Una función $f: A \rightarrow B$ es una asignación donde a cada elemento $x$ de $A$ se le asigna un <strong>único</strong> elemento $y = f(x)$ de $B$.</p>
+                        <p>Una función $f: A \rightarrow B$ asigna a cada elemento $x$ de $A$ un <strong>único</strong> elemento $y = f(x)$ de $B$.</p>
                     </div>
                     
                     <div class="diagram-container">
@@ -158,23 +140,9 @@ disp(producto);</code></pre>
                         </div>
                     </div>
 
-                    <h3 style="color: var(--gold-primary); margin-top: 30px;">Tipos de Máquinas</h3>
-                    <div class="grid-3">
-                        <div class="machine-card">
-                            <i class="fas fa-cog fa-spin"></i>
-                            <h4>Cuadrática</h4>
-                            <p>$f(x) = x^2$</p>
-                        </div>
-                        <div class="machine-card">
-                            <i class="fas fa-plus-circle"></i>
-                            <h4>Sucesor</h4>
-                            <p>$g(n) = n + 1$</p>
-                        </div>
-                        <div class="machine-card">
-                            <i class="fas fa-equals"></i>
-                            <h4>Constante</h4>
-                            <p>$h(r) = 2$</p>
-                        </div>
+                    <div class="chatbot-tip">
+                        <img src="img/bot.png" alt="MathBot Small" class="bot-mini">
+                        <p><strong>Dato Curioso:</strong> En programación, las funciones puras siempre devuelven el mismo resultado para la misma entrada. 🤖</p>
                     </div>
                 </div>
             </div>
@@ -191,12 +159,12 @@ disp(producto);</code></pre>
                     <div class="interactive-box">
                         <div style="display: flex; gap: 20px;">
                             <div class="type-card" style="flex: 1; border-color: red;">
-                                <h4 style="color: red;"><i class="fas fa-times-circle"></i> CASO ERROR</h4>
+                                <h4 style="color: #ff5555;"><i class="fas fa-times-circle"></i> CASO ERROR</h4>
                                 <p>El elemento <strong>4</strong> tiene dos salidas (1 y 3). ¡Esto rompe la regla de unicidad!</p>
                             </div>
-                            <div class="type-card" style="flex: 1; border-color: green;">
-                                <h4 style="color: green;"><i class="fas fa-check-circle"></i> CASO VÁLIDO</h4>
-                                <p>Si eliminamos $(4,3)$, cada elemento tendría una sola flecha. No importa si el 5 recibe dos flechas.</p>
+                            <div class="type-card" style="flex: 1; border-color: #00ff88;">
+                                <h4 style="color: #00ff88;"><i class="fas fa-check-circle"></i> CASO VÁLIDO</h4>
+                                <p>Si cada elemento del dominio tiene exactamente una flecha de salida, es una función válida.</p>
                             </div>
                         </div>
                     </div>
@@ -212,28 +180,19 @@ disp(producto);</code></pre>
                     <div class="grid-3">
                         <div class="type-card">
                             <h3>Inyectiva</h3>
-                            <p>Cada elemento de B tiene a lo sumo una anti-imagen. (1 a 1).</p>
-                            <div class="visual-cue">Si $f(x_1)=f(x_2) \implies x_1=x_2$</div>
+                            <p>Elementos distintos de A van a elementos distintos de B.</p>
+                            <div class="visual-cue">Uno a Uno</div>
                         </div>
                         <div class="type-card">
                             <h3>Sobreyectiva</h3>
-                            <p>El Rango es igual al Codominio. No sobran elementos en B.</p>
-                            <div class="visual-cue">$f(A) = B$</div>
+                            <p>Todo elemento de B es imagen de al menos uno de A.</p>
+                            <div class="visual-cue">Rango = Codominio</div>
                         </div>
                         <div class="type-card">
                             <h3>Biyectiva</h3>
-                            <p>Es inyectiva y sobreyectiva simultáneamente. Perfecta.</p>
-                            <div class="visual-cue">$|A| = |B|$</div>
+                            <p>Es inyectiva y sobreyectiva. Permite la existencia de inversa.</p>
+                            <div class="visual-cue">Correspondencia Perfecta</div>
                         </div>
-                    </div>
-
-                    <div class="matlab-block">
-                        <h5><i class="fas fa-laptop-code"></i> Validación Inyectividad</h5>
-                        <pre><code>n = 1:10; 
-y = 2*n + 1; 
-if length(unique(y)) == length(y)
-    disp('Es Inyectiva: No hay colisiones');
-end</code></pre>
                     </div>
                 </div>
             </div>
@@ -248,12 +207,6 @@ end</code></pre>
                         <i class="fas fa-exclamation-triangle"></i>
                         <strong>Requisito:</strong> Para que exista inversa $f^{-1}$, la función debe ser <strong>Biyectiva</strong>.
                     </div>
-                    
-                    <div class="diagram-container">
-                        <span style="font-size: 2rem;">A $\xrightarrow{f}$ B</span>
-                        <div style="width: 2px; height: 50px; background: var(--gold-primary); margin: 0 20px;"></div>
-                        <span style="font-size: 2rem;">A $\xleftarrow{f^{-1}}$ B</span>
-                    </div>
                 </div>
             </div>
 
@@ -264,10 +217,6 @@ end</code></pre>
                 </div>
                 <div class="card">
                     <h1 class="urban-title">COMPOSICIÓN</h1>
-                    <div class="definition-text">
-                        <p>La composición se denota $(f \circ g)(x) = f(g(x))$. Si $f$ y $g$ son biyectivas, su composición también lo es.</p>
-                    </div>
-
                     <div class="interactive-box">
                         <h4><i class="fas fa-cogs"></i> Calculadora (f o g)(x)</h4>
                         <p>Sea $g(x) = x+1$ y $f(u) = u^2$.</p>
@@ -287,14 +236,6 @@ end</code></pre>
                 </div>
                 <div class="card">
                     <h1 class="urban-title">DISCRETA</h1>
-                    <div class="definition-text">
-                        <ul style="list-style: none;">
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Dominio:</strong> Números Enteros ($\mathbb{Z}$).</li>
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Codominio:</strong> Números Reales ($\mathbb{R}$).</li>
-                            <li><i class="fas fa-chevron-right" style="color: var(--gold-primary);"></i> <strong>Notación:</strong> Se usa $n$ en lugar de $x$.</li>
-                        </ul>
-                    </div>
-
                     <div class="grid-3">
                         <div class="formula-card">
                             <h5>Factorial</h5>
@@ -324,9 +265,8 @@ end</code></pre>
                     <h2>VIDEO EXPLICATIVO</h2>
                 </div>
                 <div class="card video-card" style="text-align: center;">
-                    <p>Resumen del proyecto.</p>
                     <div class="interactive-box" style="padding: 100px;">
-                        <i class="fab fa-youtube fa-5x" style="color: red;"></i>
+                        <i class="fab fa-youtube fa-5x" style="color: #ff0000;"></i>
                         <p style="margin-top: 20px;">Video Próximamente</p>
                     </div>
                 </div>
@@ -345,6 +285,11 @@ end</code></pre>
 
         </div>
     </main>
+
+    <a href="https://wa.me/593999999999" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script src="script.js"></script>
 </body>
 </html>
