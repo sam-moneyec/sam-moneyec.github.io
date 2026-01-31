@@ -259,33 +259,33 @@ end</code></pre>
 <div class="info-box">
 <h3><i class="fas fa-dice"></i> Generar ejercicio</h3>
 <label class="label">Tema</label>
-<select id="practiceTopic">
+<select id="practiceCardTopic">
 <option value="cartesiano">Producto cartesiano</option>
 <option value="composicion">Función compuesta</option>
 <option value="inversa">Función inversa</option>
 <option value="funcion">¿Es función?</option>
 <option value="discreta">Función discreta</option>
 </select>
-<button class="action-btn primary" id="genPracticeBtn" type="button"><i class="fas fa-bolt"></i> Generar</button>
+<button class="action-btn primary" id="practiceCardGenBtn" type="button"><i class="fas fa-bolt"></i> Generar</button>
 <div class="section-divider"></div>
-<div class="question-box" id="practiceQuestion">Presiona <b>Generar</b> para empezar.</div>
+<div class="question-box" id="practiceCardQuestion">Presiona <b>Generar</b> para empezar.</div>
 </div>
 <div class="info-box">
 <h3><i class="fas fa-pen"></i> Respuesta</h3>
 <label class="label">Tu respuesta</label>
-<input id="practiceAnswer" placeholder="Escribe tu respuesta aquí..." type="text">
+<input id="practiceCardAnswer" placeholder="Escribe tu respuesta aquí..." type="text">
 <div class="row">
-<button class="action-btn" id="checkPracticeBtn" type="button"><i class="fas fa-check"></i> Verificar</button>
-<button class="action-btn" id="hintPracticeBtn" type="button"><i class="fas fa-lightbulb"></i> Pista</button>
+<button class="action-btn" id="practiceCardCheckBtn" type="button"><i class="fas fa-check"></i> Verificar</button>
+<button class="action-btn" id="practiceCardHintBtn" type="button"><i class="fas fa-lightbulb"></i> Pista</button>
 </div>
-<div class="feedback" id="practiceFeedback"></div>
+<div class="feedback" id="practiceCardFeedback"></div>
 <div class="section-divider"></div>
 <div class="row">
-<button class="action-btn" id="exportCsvBtn" type="button"><i class="fas fa-file-csv"></i> Exportar CSV</button>
-<button class="action-btn" id="exportJsonBtn" type="button"><i class="fas fa-file-code"></i> Exportar JSON</button>
-<button class="action-btn danger" id="clearPracticeBtn" type="button"><i class="fas fa-trash"></i> Limpiar</button>
+<button class="action-btn" id="practiceCardExportCsv" type="button"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+<button class="action-btn" id="practiceCardExportJson" type="button"><i class="fas fa-file-code"></i> Exportar JSON</button>
+<button class="action-btn danger" id="practiceCardClear" type="button"><i class="fas fa-trash"></i> Limpiar</button>
 </div>
-</input></div>
+</div>
 </div>
 <div class="card-sub">
 <h3><i class="fas fa-clock-rotate-left"></i> Historial</h3>
@@ -299,7 +299,7 @@ end</code></pre>
 <div class="tab-content" id="clasificacion" style="display:none;">
 <div class="topic-header">
 <h2>CLASIFICACIÓN DE FUNCIONES</h2>
-<span class="badge">NIVEL 2</span>
+<span class="badge">NIVEL 3</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Analizador (Web) + Script (MATLAB)</h1>
@@ -349,7 +349,7 @@ a, 2-&gt;b, 3-&gt;c)"&gt;
 <div class="tab-content" id="inversa" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN INVERSA</h2>
-<span class="badge">NIVEL 2</span>
+<span class="badge">NIVEL 4</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Calculadora de Inversa (si es biyectiva)</h1>
@@ -400,7 +400,7 @@ a,2-&gt;b,3-&gt;c)"&gt;
 <div class="tab-content" id="compuesta" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN COMPUESTA</h2>
-<span class="badge">NIVEL 3</span>
+<span class="badge">NIVEL 5</span>
 </div>
 <div class="card">
 <h1 class="urban-title">g ∘ f (A→B→C)</h1>
@@ -464,7 +464,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <div class="tab-content" id="discreta" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN DISCRETA</h2>
-<span class="badge">NIVEL 2</span>
+<span class="badge">NIVEL 6</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Tabla + Gráfico tipo Stem</h1>
@@ -563,7 +563,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <button class="btn" id="practiceReveal"><i class="fas fa-eye"></i> Ver solución</button>
 </div>
 <div class="practice-feedback" id="practiceFeedback"></div>
-</input></div>
+</div>
 <div class="matlab-box">
 <div class="matlab-head">
 <div class="matlab-title"><i class="fas fa-code"></i> MATLAB generado</div>
@@ -594,7 +594,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <button class="btn" id="videoLoadBtn">Cargar</button>
 <button class="btn btn-secondary" id="videoClearBtn">Quitar</button>
 </div>
-</input></div>
+</div>
 <div class="video-wrap" id="videoPreviewWrap">
 <div class="video-placeholder" id="videoPlaceholder">
 <div class="ph-title">Sin video</div>
@@ -661,6 +661,21 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <button aria-label="Cerrar" class="modal-close" data-close="true" type="button"><i class="fas fa-xmark"></i></button>
 </div>
 <div class="modal-body">
+
+          <div class="ach-summary">
+            <div class="ach-sum-left">
+              <div class="ach-xp"><i class="fas fa-bolt"></i> XP actual: <span id="achXpNow">0</span></div>
+              <div class="ach-next">Siguiente logro: <span id="achNextTitle">—</span> <span class="ach-next-xp">(<span id="achNextXp">—</span> XP)</span></div>
+            </div>
+            <div class="ach-sum-right">
+              <div class="ach-count"><span id="achUnlockedCount">0</span>/<span id="achTotalCount">0</span> logros</div>
+            </div>
+          </div>
+          <div class="ach-progress">
+            <div class="bar"><div class="fill" id="achProgressFill"></div></div>
+            <div class="labels"><span>0</span><span id="achProgressMax">0</span></div>
+          </div>
+
 <div class="ach-grid" id="achGrid"></div>
 </div>
 </div>
@@ -714,7 +729,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <div class="modal-body">
 <input autocomplete="off" class="qs-input" id="qsInput" placeholder="Escribe para buscar secciones..." type="text">
 <div class="qs-results" id="qsResults"></div>
-</input></div>
+</div>
 </div>
 </div>
 </body>
