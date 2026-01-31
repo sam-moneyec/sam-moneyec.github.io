@@ -1,3 +1,48 @@
+function validateLastTab(){
+  try{
+    const last = localStorage.getItem("mc_last_tab");
+    if (!last) return;
+    if (!document.getElementById(last)){
+      localStorage.removeItem("mc_last_tab");
+    }
+  }catch(e){}
+}
+
+
+
+function bindTabLinksHard(){
+  const links = Array.from(document.querySelectorAll(".sidebar a.tab-link"));
+  links.forEach(a=>{
+    // Extract tabName from onclick="openTab(event, 'x')"
+    let tab = a.getAttribute("data-tab");
+    if (!tab){
+      const oc = a.getAttribute("onclick") || "";
+      const m = oc.match(/openTab\(\s*event\s*,\s*'([^']+)'\s*\)/);
+      if (m) tab = m[1];
+    }
+    if (tab) a.setAttribute("data-tab", tab);
+
+    // Always bind a real click handler (more reliable than inline)
+    a.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const t = a.getAttribute("data-tab");
+      if (typeof window.openTab === "function" && t){
+        window.openTab(e, t);
+      }else{
+        // ultra-fallback: show the tab by id
+        document.querySelectorAll(".tab-content").forEach(x=>{ x.style.display="none"; x.classList.remove("active"); });
+        const el = document.getElementById(t);
+        if (el){ el.style.display="block"; el.classList.add("active"); }
+      }
+      // On drawer mode, close sidebar after selection
+      try{ document.body.classList.remove("sidebar-open"); }catch(_){}
+    }, {capture:true});
+  });
+}
+
+
+
 
 function getNavItems(){
   const links = Array.from(document.querySelectorAll(".sidebar .tab-link"));
@@ -123,6 +168,10 @@ function uiBeep(){
 
 
 document.addEventListener("DOMContentLoaded", () => {
+  try{ validateLastTab(); }catch(e){}
+
+  try{ bindTabLinksHard(); }catch(e){}
+
   try{ updateStreak(); }catch(e){}
   try{ saveXp(loadXp()); }catch(e){} // render XP in HUD
   try{ initSidebarSearch(); }catch(e){}
