@@ -1,3 +1,43 @@
+
+function openModal(id){
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.add("show");
+  m.setAttribute("aria-hidden","false");
+  // focus first close button if exists
+  const btn = m.querySelector('[data-close="'+id+'"], .icon-btn, button');
+  btn && btn.focus && btn.focus();
+}
+
+function closeModal(id){
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.remove("show");
+  m.setAttribute("aria-hidden","true");
+}
+
+function bindModalClose(){
+  // click delegation for any [data-close]
+  document.addEventListener("click",(e)=>{
+    const el = e.target.closest("[data-close]");
+    if (!el) return;
+    e.preventDefault();
+    const id = el.getAttribute("data-close");
+    if (id) closeModal(id);
+  }, true);
+
+  // Esc closes the topmost open modal
+  document.addEventListener("keydown",(e)=>{
+    if (e.key !== "Escape") return;
+    const open = Array.from(document.querySelectorAll(".modal.show"));
+    if (open.length){
+      const top = open[open.length-1];
+      closeModal(top.id);
+    }
+  }, true);
+}
+
+
 function validateLastTab(){
   try{
     const last = localStorage.getItem("mc_last_tab");
@@ -169,6 +209,19 @@ function uiBeep(){
 
 
 // ===== Mission numbering (sidebar) =====
+
+function renumberLevelBadges(){
+  // Levels correspond to the main mission topics (exclude Inicio / Video / Reseñas)
+  const order = ["prod-cartesiano","funciones","clasificacion","inversa","compuesta","discreta"];
+  order.forEach((id, i)=>{
+    const tab = document.getElementById(id);
+    if (!tab) return;
+    const badge = tab.querySelector(".topic-header .badge");
+    if (!badge) return;
+    badge.textContent = "NIVEL " + (i+1);
+  });
+}
+
 function renumberMissionBadges(){
   const links = Array.from(document.querySelectorAll(".sidebar a.tab-link"));
   let n = 0;
@@ -189,6 +242,22 @@ function renumberMissionBadges(){
 }
 
 // ===== Player panel (mission panel) close/open =====
+
+function hardBindPanelClose(){
+  // Fallback: if something interferes with direct listeners, capture-phase delegation ensures close works
+  document.addEventListener("click", (e)=>{
+    const t = e.target;
+    const btn = t && (t.closest ? t.closest("#missionClose") : null);
+    if (btn){
+      const panel = document.getElementById("missionPanel");
+      if (panel){
+        panel.classList.add("is-hidden");
+        try{ localStorage.setItem("mc_panel_hidden","1"); }catch(_){}
+      }
+    }
+  }, true);
+}
+
 function initPlayerPanelClose(){
   const panel = document.getElementById("missionPanel");
   const closeBtn = document.getElementById("missionClose");
@@ -547,7 +616,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   try{ bindTabLinksHard(); }catch(e){}
   try{ renumberMissionBadges(); }catch(e){}
+  try{ renumberLevelBadges(); }catch(e){}
   try{ initPlayerPanelClose(); }catch(e){}
+  try{ hardBindPanelClose(); }catch(e){}
   try{ initPracticeMode(); }catch(e){}
 
   try{ updateStreak(); }catch(e){}
