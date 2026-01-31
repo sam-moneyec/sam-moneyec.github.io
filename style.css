@@ -2654,6 +2654,10 @@ body{
   }
   body.sidebar-open .sidebar{ transform: translateX(0); }
   .sidebar-backdrop{
+    pointer-events: none !important;
+    opacity: 0;
+  }
+  body.sidebar-open .sidebar-backdrop{
     pointer-events: auto !important;
     opacity: 1;
   }
