@@ -1,3 +1,4 @@
+
 function getNavItems(){
   const links = Array.from(document.querySelectorAll(".sidebar .tab-link"));
   return links.map(a=>{
