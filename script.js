@@ -2014,8 +2014,8 @@ function toEmbedUrl(raw){
 }
 
 function initVideoSection() {
-  // Always start blank (no default video)
-  try{ localStorage.removeItem("mc_video_url"); }catch(e){}
+  // Default video (can be replaced by the user)
+  const DEFAULT_VIDEO_URL = "https://youtu.be/9juarsU2hQo";
 
   const input = document.getElementById("videoInput");
   const loadBtn = document.getElementById("videoLoadBtn");
@@ -2032,8 +2032,13 @@ function initVideoSection() {
   };
 
   const load = ()=>{
-    const src = toEmbedUrl(input.value);
-    if(!src){ showPlaceholder(); return; }
+    const raw = (input.value || "").trim();
+    const src = toEmbedUrl(raw);
+    if(!src){
+      try{ localStorage.removeItem("mc_video_url"); }catch(e){}
+      showPlaceholder();
+      return;
+    }
 
     removeIframe();
     const iframe = document.createElement("iframe");
@@ -2046,11 +2051,15 @@ function initVideoSection() {
 
     if(ph) ph.style.display = "none";
     wrap.appendChild(iframe);
+
+    // persist the original link the user pasted
+    try{ localStorage.setItem("mc_video_url", raw); }catch(e){}
   };
 
   loadBtn.addEventListener("click", load);
   clearBtn?.addEventListener("click", ()=>{
     input.value = "";
+    try{ localStorage.removeItem("mc_video_url"); }catch(e){}
     showPlaceholder();
   });
 
@@ -2058,9 +2067,17 @@ function initVideoSection() {
     if(e.key === "Enter"){ e.preventDefault(); load(); }
   });
 
-  // always start blank
-  input.value = "";
-  showPlaceholder();
+  // Start with saved video, or default if none
+  let saved = "";
+  try{ saved = (localStorage.getItem("mc_video_url") || "").trim(); }catch(e){ saved = ""; }
+  input.value = saved || DEFAULT_VIDEO_URL;
+
+  // Auto-load if we have a link
+  if((input.value || "").trim()){
+    load();
+  }else{
+    showPlaceholder();
+  }
 }
 
 window.__MC_APP_LOADED__ = true;
