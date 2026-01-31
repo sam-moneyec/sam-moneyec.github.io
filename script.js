@@ -200,7 +200,7 @@ function initXpBadge(){
   document.getElementById("xpBadge")?.addEventListener("click", openProfile);
   document.getElementById("resetProgressBtn")?.addEventListener("click", ()=>{
     if (!confirm("¿Reiniciar progreso? Se borrará XP, nivel, racha y completados.")) return;
-    ["mc_xp","mc_level","mc_done","mc_streak","mc_sound","mc_theme"].forEach(k=>localStorage.removeItem(k));
+    ["mc_xp","mc_level","mc_done","mc_streak","mc_ach","mc_xp_keys","mc_practice","mc_practice_history","mc_sound","mc_theme"].forEach(k=>localStorage.removeItem(k));
     showToast("Progreso reiniciado.", "info");
     // refresh HUD
     saveXp(loadXp());
@@ -565,6 +565,13 @@ function checkPractice(){
     return;
   }
 
+  if (!ansRaw.trim()){
+    feedback.classList.remove("ok","bad");
+    feedback.classList.add("bad");
+    feedback.textContent = "Escribe una respuesta.";
+    return;
+  }
+
   let ok = false;
   if (PRACTICE_STATE.type==="scalar"){
     ok = normStr(ansRaw) === normStr(String(PRACTICE_STATE.expected));
@@ -580,12 +587,15 @@ function checkPractice(){
   feedback.classList.remove("ok","bad");
   if (ok){
     feedback.classList.add("ok");
-    feedback.innerHTML = `✅ Correcto. +XP`;
     const gained = 60;
-    try{ awardXp(gained, "Práctica"); }catch(e){}
+    const xpKey = `prac|${PRACTICE_STATE.topic}|${PRACTICE_STATE.level}|${PRACTICE_STATE.prompt}|${JSON.stringify(PRACTICE_STATE.expected)}`;
+    let awarded = false;
+    try{ awarded = awardXp(gained, "Práctica", xpKey); }catch(e){ awarded = false; }
+    const actual = awarded ? gained : 0;
+    feedback.innerHTML = awarded ? `✅ Correcto. +${gained} XP` : `✅ Correcto. (ya completado)`;
     try{ updateStreak(); }catch(e){}
-    try{ pushPracticeHistory({topic:PRACTICE_STATE.topic, topicLabel: topicLabel(PRACTICE_STATE.topic), level:PRACTICE_STATE.level, ok:true, xp:gained, when: new Date().toLocaleString(), prompt:PRACTICE_STATE.prompt, expected:PRACTICE_STATE.expected, answer: ansRaw}); }catch(e){}
-    try{ burstConfetti(); }catch(e){}
+    try{ pushPracticeHistory({topic:PRACTICE_STATE.topic, topicLabel: topicLabel(PRACTICE_STATE.topic), level:PRACTICE_STATE.level, ok:true, xp:actual, when: new Date().toLocaleString(), prompt:PRACTICE_STATE.prompt, expected:PRACTICE_STATE.expected, answer: ansRaw}); }catch(e){}
+    try{ if (awarded) burstConfetti(); }catch(e){}
   }else{
     feedback.classList.add("bad");
     feedback.innerHTML = `❌ Incorrecto. <b>Pista:</b> ${practiceHint()}`;
@@ -1180,7 +1190,6 @@ document.documentElement.style.setProperty('--gold-primary', newColor);
 
 // --- CALCULADORAS ---
 function calcCartesian() {
-    try{ awardXp(40, "Producto cartesiano"); }catch(e){}
     const rawA = document.getElementById('setA').value;
     const rawB = document.getElementById('setB').value;
     const resDiv = document.getElementById('resCartesiano');
@@ -1191,8 +1200,14 @@ function calcCartesian() {
         return; 
     }
 
-    const A = rawA.split(',').map(s => s.trim());
-    const B = rawB.split(',').map(s => s.trim());
+    const A = rawA.split(',').map(s => s.trim()).filter(Boolean);
+    const B = rawB.split(',').map(s => s.trim()).filter(Boolean);
+    if (A.length === 0 || B.length === 0) { 
+        resDiv.innerHTML = "⚠️ DATOS FALTANTES"; 
+        resDiv.style.color = "red";
+        return;
+    }
+
     let pairs = [];
 
     A.forEach(a => {
@@ -1200,6 +1215,8 @@ function calcCartesian() {
             pairs.push(`(${a},${b})`);
         });
     });
+
+    try{ awardXp(40, "Producto cartesiano", `cart|${A.join(",")}|${B.join(",")}`); }catch(e){}
 
     resDiv.style.color = "var(--gold-primary)";
     resDiv.innerHTML = `<strong>PARES GENERADOS:</strong><br>{ ${pairs.join(', ')} }`;
@@ -1468,7 +1485,6 @@ function badge(text, type="ok") {
 
 // --------- CLASIFICACIÓN ----------
 function classifyFunction() {
-    try{ awardXp(60, "Clasificación"); }catch(e){}
     const domain = parseList(document.getElementById("classDomain")?.value);
     const codomain = parseList(document.getElementById("classCodomain")?.value);
     const mapping = parseMapping(document.getElementById("classMap")?.value);
@@ -1561,11 +1577,12 @@ isBijective = isInjective && isSurjective;
 
 disp(isInjective); disp(isSurjective); disp(isBijective);`;
     setMatlab("classMatlab","classMatlabWrap", matlab, true);
+    const xpKey = `class|A:${domain.join(",")}|B:${codomain.join(",")}|M:${Object.entries(mapping.map).sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).map(([x,y])=>`${x}->${y}`).join(",")}`;
+    try{ awardXp(60, "Clasificación", xpKey); }catch(e){}
 }
 
 // --------- INVERSA ----------
 function invertFunction() {
-    try{ awardXp(60, "Inversa"); }catch(e){}
     const domain = parseList(document.getElementById("invDomain")?.value);
     const codomain = parseList(document.getElementById("invCodomain")?.value);
     const mapping = parseMapping(document.getElementById("invMap")?.value);
@@ -1650,11 +1667,12 @@ else
     disp('No existe f^{-1}(y) para ese valor.');
 end`;
     setMatlab("invMatlab","invMatlabWrap", matlab, true);
+    const xpKey = `inv|A:${domain.join(",")}|B:${codomain.join(",")}|M:${Object.entries(mapping.map).sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).map(([x,y])=>`${x}->${y}`).join(",")}`;
+    try{ awardXp(60, "Inversa", xpKey); }catch(e){}
 }
 
 // --------- COMPUESTA ----------
 function composeFunctions() {
-    try{ awardXp(70, "Composición"); }catch(e){}
     const A = parseList(document.getElementById("compDomain")?.value);
     const B = parseList(document.getElementById("compMid")?.value);
     const C = parseList(document.getElementById("compCodomain")?.value);
@@ -1742,11 +1760,12 @@ fMap = containers.Map(Xf, Yf);
 %   h{i} = gMap(y);
 % end`;
     setMatlab("compMatlab","compMatlabWrap", matlab, true);
+    const xpKey = `comp|A:${A.join(",")}|B:${B.join(",")}|C:${C.join(",")}|f:${Object.entries(f.map).sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).map(([x,y])=>`${x}->${y}`).join(",")}|g:${Object.entries(g.map).sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).map(([x,y])=>`${x}->${y}`).join(",")}`;
+    try{ awardXp(70, "Composición", xpKey); }catch(e){}
 }
 
 // --------- DISCRETA ----------
 function plotDiscrete() {
-    try{ awardXp(70, "Gráfica discreta"); }catch(e){}
     let xs = parseList(document.getElementById("discX")?.value).map(Number);
     let ys = parseList(document.getElementById("discY")?.value).map(Number);
     const out = document.getElementById("discResult");
@@ -1793,6 +1812,8 @@ grid ${useGrid ? "on" : "off"};
 xlabel('x'); ylabel('f(x)');
 title('Función discreta');`;
     setMatlab("discMatlab","discMatlabWrap", matlab, true);
+    const xpKey = `disc|x:${xs.join(",")}|y:${ys.join(",")}`;
+    try{ awardXp(70, "Gráfica discreta", xpKey); }catch(e){}
 }
 
 function drawDiscretePlot(canvas, xs, ys, opts={}) {
@@ -2403,11 +2424,59 @@ function loadAch(){
 }
 function saveAch(st){ localStorage.setItem("mc_ach", JSON.stringify(st||{})); }
 
-function awardXp(amount, reason){
+const XP_KEYS_STORE = "mc_xp_keys";
+
+// Guarda qué retos/acciones ya dieron XP (anti-farmeo)
+function loadXpKeys(){
+  try{ return JSON.parse(localStorage.getItem(XP_KEYS_STORE) || "{}") || {}; }catch(e){ return {}; }
+}
+function saveXpKeys(st){
+  try{
+    // Evita crecimiento infinito: conserva los más recientes
+    const entries = Object.entries(st || {});
+    if (entries.length > 1500){
+      entries.sort((a,b)=> (a[1]||0) - (b[1]||0)); // más antiguos primero
+      const trimmed = entries.slice(entries.length-1500);
+      st = Object.fromEntries(trimmed);
+    }
+    localStorage.setItem(XP_KEYS_STORE, JSON.stringify(st||{}));
+  }catch(e){}
+}
+function hashKey(s){
+  // hash simple (rápido y estable)
+  s = String(s ?? "");
+  let h = 2166136261;
+  for (let i=0;i<s.length;i++){
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0).toString(16);
+}
+
+/**
+ * Suma XP SOLO si (a) amount>0 y (b) no se ha otorgado antes por la misma acción/entrada.
+ * @returns {boolean} true si se otorgó XP, false si no (ya completado o inválido).
+ */
+function awardXp(amount, reason, key){
+  amount = Number(amount);
+  if (!Number.isFinite(amount) || amount <= 0) return false;
+
+  if (key){
+    const st = loadXpKeys();
+    const hk = hashKey(key);
+    if (st[hk]){
+      if (typeof showToast === "function") showToast(`✔ ${reason || "Completado"} · 0 XP (ya obtenido)`, "info");
+      return false;
+    }
+    st[hk] = Date.now();
+    saveXpKeys(st);
+  }
+
   const xp = loadXp() + amount;
   saveXp(xp);
   if (typeof showToast === "function") showToast(`+${amount} XP${reason ? " · " + reason : ""}`);
   checkAchievements(xp);
+  return true;
 }
 
 function checkAchievements(xp){
@@ -3079,10 +3148,12 @@ function genPractice(topic){
       renderPracticeHistory();
 
       if (ok){
-        setFeedback("Correcto ✅  +50 XP", true);
+        const xpKey = `prac2|${currentPractice.topicLabel}|${currentPractice.prompt}|${currentPractice.answer}`;
+        let awarded = false;
+        if (typeof awardXp === "function") awarded = awardXp(50, "Práctica", xpKey);
+        setFeedback(awarded ? "Correcto ✅  +50 XP" : "Correcto ✅  (ya completado)", true);
         // XP solo en modo práctica/cálculo (no video/reseñas)
-        if (typeof awardXp === "function") awardXp(50, "Práctica");
-      }else{
+}else{
         setFeedback(`Incorrecto ❌  Respuesta: ${currentPractice.answer}`, false);
       }
     }
