@@ -2672,3 +2672,107 @@ body{
   .sidebar-backdrop{ display:none !important; }
   body::before{ display:none !important; }
 }
+
+
+/* ===== Visual boost: color accents ===== */
+:root{
+  --accent-cyan: #00FFC8;
+  --accent-magenta: #FF2BD6;
+  --accent-lime: #7CFF6B;
+  --accent-blue: #00D1FF;
+  --accent-orange: #FFB020;
+}
+.sidebar{
+  background: radial-gradient(1200px 600px at 20% 0%, rgba(0,255,200,0.10), transparent 60%),
+              radial-gradient(900px 500px at 70% 30%, rgba(255,43,214,0.08), transparent 65%),
+              linear-gradient(180deg, rgba(20,20,24,0.98), rgba(8,8,10,0.98));
+}
+.top-header{
+  background: linear-gradient(180deg, rgba(16,16,18,0.98), rgba(10,10,12,0.98)) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+.badge{
+  background: linear-gradient(90deg, rgba(255,215,0,0.18), rgba(0,255,200,0.14));
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.btn.primary{
+  background: linear-gradient(90deg, rgba(255,215,0,0.22), rgba(0,255,200,0.18));
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.btn.primary:hover{ filter: brightness(1.07); }
+.run-btn{
+  background: linear-gradient(90deg, rgba(0,255,200,0.22), rgba(255,43,214,0.14));
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.mission-badge{
+  background: linear-gradient(90deg, rgba(0,255,200,0.16), rgba(255,215,0,0.14));
+}
+/* Colorize mission badges by order */
+.sidebar nav ul li:nth-child(2) .mission-badge{ background: linear-gradient(90deg, rgba(0,209,255,0.18), rgba(255,215,0,0.14)); }
+.sidebar nav ul li:nth-child(3) .mission-badge{ background: linear-gradient(90deg, rgba(124,255,107,0.18), rgba(0,255,200,0.14)); }
+.sidebar nav ul li:nth-child(4) .mission-badge{ background: linear-gradient(90deg, rgba(255,176,32,0.18), rgba(255,215,0,0.12)); }
+.sidebar nav ul li:nth-child(5) .mission-badge{ background: linear-gradient(90deg, rgba(255,43,214,0.16), rgba(0,209,255,0.14)); }
+.sidebar nav ul li:nth-child(6) .mission-badge{ background: linear-gradient(90deg, rgba(0,255,200,0.16), rgba(124,255,107,0.14)); }
+.sidebar nav ul li:nth-child(7) .mission-badge{ background: linear-gradient(90deg, rgba(255,215,0,0.18), rgba(255,176,32,0.14)); }
+.sidebar nav ul li:nth-child(8) .mission-badge{ background: linear-gradient(90deg, rgba(0,209,255,0.16), rgba(255,43,214,0.12)); }
+.sidebar nav ul li:nth-child(9) .mission-badge{ background: linear-gradient(90deg, rgba(124,255,107,0.16), rgba(0,255,200,0.12)); }
+
+/* Panel button + mission panel close */
+.panel-btn{
+  width: 42px; height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  cursor: pointer;
+  margin-right: 10px;
+}
+.panel-btn:hover{ transform: translateY(-1px); }
+.panel-btn:active{ transform: translateY(0); }
+
+.mission-close{
+  width: 34px; height: 34px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  cursor:pointer;
+  margin-left: 8px;
+}
+.mission-close:hover{ transform: translateY(-1px); }
+
+.mission-panel.is-hidden{ display:none !important; }
+
+/* Practice mode: extra polish */
+.practice-feedback{
+  margin-top: 10px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+.practice-feedback.ok{
+  border-color: rgba(124,255,107,0.35);
+  box-shadow: 0 0 0 3px rgba(124,255,107,0.10);
+}
+.practice-feedback.bad{
+  border-color: rgba(255,43,214,0.35);
+  box-shadow: 0 0 0 3px rgba(255,43,214,0.10);
+}
+
+
+.practice-pre{
+  white-space: pre-wrap;
+  line-height: 1.4;
+  margin: 0;
+  color: rgba(255,255,255,0.90);
+}
+.mission-lv{
+  margin-left: 8px;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.86);
+}
