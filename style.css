@@ -2776,3 +2776,83 @@ body{
   background: rgba(255,255,255,0.06);
   color: rgba(255,255,255,0.86);
 }
+
+
+/* ===== Logros (resumen + barra) ===== */
+.ach-summary{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  padding:10px 12px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  background:linear-gradient(135deg, rgba(0,255,180,.08), rgba(255,200,0,.06));
+  box-shadow:0 0 0 1px rgba(0,255,180,.05) inset;
+  margin:8px 0 10px;
+}
+.ach-sum-left{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+.ach-xp{
+  font-weight:800;
+  letter-spacing:.2px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.ach-xp i{ color:var(--accent); filter:drop-shadow(0 0 10px rgba(0,255,180,.35)); }
+.ach-next{
+  font-size:.95rem;
+  opacity:.92;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.ach-next-xp{ opacity:.85; font-weight:700; }
+.ach-sum-right{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  min-width:120px;
+}
+.ach-count{
+  font-weight:900;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(0,0,0,.35);
+}
+.ach-progress{
+  margin:0 0 14px;
+  padding:0 2px;
+}
+.ach-progress .bar{
+  height:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 0 0 1px rgba(0,0,0,.35) inset;
+}
+.ach-progress .bar .fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, rgba(0,255,180,.95), rgba(255,200,0,.95));
+  box-shadow:0 0 18px rgba(0,255,180,.25);
+  transition:width .35s ease;
+}
+.ach-progress .labels{
+  display:flex;
+  justify-content:space-between;
+  font-size:.85rem;
+  opacity:.75;
+  margin-top:6px;
+}
+
+/* clicks sobre el ícono también cierran (no roba el target al botón) */
+.modal-close i{ pointer-events:none; }
