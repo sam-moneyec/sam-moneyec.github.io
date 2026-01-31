@@ -252,46 +252,19 @@ end</code></pre>
 </div>
 </div>
 </div>
+
 <div class="card" id="practiceCard">
-<div class="topic-header"><h2>MODO PRÁCTICA</h2><span class="badge">Nuevo</span></div>
-<p class="soft">Genera ejercicios aleatorios, responde y gana XP (solo en secciones de práctica/cálculo).</p>
-<div class="grid-2">
-<div class="info-box">
-<h3><i class="fas fa-dice"></i> Generar ejercicio</h3>
-<label class="label">Tema</label>
-<select id="practiceCardTopic">
-<option value="cartesiano">Producto cartesiano</option>
-<option value="composicion">Función compuesta</option>
-<option value="inversa">Función inversa</option>
-<option value="funcion">¿Es función?</option>
-<option value="discreta">Función discreta</option>
-</select>
-<button class="action-btn primary" id="practiceCardGenBtn" type="button"><i class="fas fa-bolt"></i> Generar</button>
-<div class="section-divider"></div>
-<div class="question-box" id="practiceCardQuestion">Presiona <b>Generar</b> para empezar.</div>
-</div>
-<div class="info-box">
-<h3><i class="fas fa-pen"></i> Respuesta</h3>
-<label class="label">Tu respuesta</label>
-<input id="practiceCardAnswer" placeholder="Escribe tu respuesta aquí..." type="text">
+<div class="topic-header"><h2>MODO PRÁCTICA</h2><span class="badge">INTERACTIVO</span></div>
+<p class="soft">Ahora el modo práctica vive en su propia misión. Genera retos, gana XP y carga los datos en cada módulo.</p>
 <div class="row">
-<button class="action-btn" id="practiceCardCheckBtn" type="button"><i class="fas fa-check"></i> Verificar</button>
-<button class="action-btn" id="practiceCardHintBtn" type="button"><i class="fas fa-lightbulb"></i> Pista</button>
+<button class="btn primary" id="openPracticeFromEj"><i class="fas fa-gamepad"></i> Ir a Modo Práctica</button>
+<button class="btn" id="practiceQuickTipBtn"><i class="fas fa-lightbulb"></i> Ver tip</button>
 </div>
-<div class="feedback" id="practiceCardFeedback"></div>
-<div class="section-divider"></div>
-<div class="row">
-<button class="action-btn" id="practiceCardExportCsv" type="button"><i class="fas fa-file-csv"></i> Exportar CSV</button>
-<button class="action-btn" id="practiceCardExportJson" type="button"><i class="fas fa-file-code"></i> Exportar JSON</button>
-<button class="action-btn danger" id="practiceCardClear" type="button"><i class="fas fa-trash"></i> Limpiar</button>
+<div class="callout" id="practiceQuickTip" style="display:none; margin-top:14px;">
+        Tip: en <b>Modo Práctica</b> usa <b>Cargar en sección</b> para ver la solución en el módulo real y su código MATLAB.
+      </div>
 </div>
-</div>
-</div>
-<div class="card-sub">
-<h3><i class="fas fa-clock-rotate-left"></i> Historial</h3>
-<div class="history" id="practiceHistory"></div>
-</div>
-</div>
+
 </div>
 <!-- ============================= -->
 <!-- SECCIÓN: CLASIFICACIÓN -->
@@ -299,7 +272,7 @@ end</code></pre>
 <div class="tab-content" id="clasificacion" style="display:none;">
 <div class="topic-header">
 <h2>CLASIFICACIÓN DE FUNCIONES</h2>
-<span class="badge">NIVEL 3</span>
+<span class="badge">NIVEL 2</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Analizador (Web) + Script (MATLAB)</h1>
@@ -349,7 +322,7 @@ a, 2-&gt;b, 3-&gt;c)"&gt;
 <div class="tab-content" id="inversa" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN INVERSA</h2>
-<span class="badge">NIVEL 4</span>
+<span class="badge">NIVEL 2</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Calculadora de Inversa (si es biyectiva)</h1>
@@ -393,14 +366,13 @@ a,2-&gt;b,3-&gt;c)"&gt;
 </div>
 </div>
 </div>
-
 <!-- ============================= -->
 <!-- SECCIÓN: COMPUESTA -->
 <!-- ============================= -->
 <div class="tab-content" id="compuesta" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN COMPUESTA</h2>
-<span class="badge">NIVEL 5</span>
+<span class="badge">NIVEL 3</span>
 </div>
 <div class="card">
 <h1 class="urban-title">g ∘ f (A→B→C)</h1>
@@ -456,15 +428,13 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <pre class="matlab-pre" id="compMatlabWrap" style="display:none;"><code class="language-matlab giant-code" id="compMatlab"></code></pre>
 </div>
 </div>
-
-
 <!-- ============================= -->
 <!-- SECCIÓN: DISCRETA -->
 <!-- ============================= -->
 <div class="tab-content" id="discreta" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN DISCRETA</h2>
-<span class="badge">NIVEL 6</span>
+<span class="badge">NIVEL 2</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Tabla + Gráfico tipo Stem</h1>
@@ -557,9 +527,9 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 </div>
 <div class="practice-answer">
 <label class="label">Tu respuesta</label>
-<input id="practiceAnswer" placeholder="Escribe tu respuesta aquí..." type="text">
+<input id="practiceAnswer" placeholder="Escribe tu respuesta aquí..." type="text"/><div class="practice-choices" id="practiceChoices"></div>
 <div class="row">
-<button class="btn primary" id="practiceCheck"><i class="fas fa-check"></i> Evaluar</button>
+<button class="btn primary" id="practiceCheck"><i class="fas fa-check"></i> Evaluar</button><button class="btn" id="practiceHintBtn"><i class="fas fa-lightbulb"></i> Pista</button>
 <button class="btn" id="practiceReveal"><i class="fas fa-eye"></i> Ver solución</button>
 </div>
 <div class="practice-feedback" id="practiceFeedback"></div>
@@ -577,6 +547,17 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 </div>
 </div>
 </div>
+<div class="card practice-card practice-history-card">
+<h1 class="urban-title">Historial</h1>
+<p class="muted">Se guardan tus últimos retos y resultados en este dispositivo.</p>
+<div class="practice-history" id="practiceHistory"></div>
+<div class="row">
+<button class="btn mini" id="practiceExportCSV"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+<button class="btn mini" id="practiceExportJSON"><i class="fas fa-file-code"></i> Exportar JSON</button>
+<button class="btn danger mini" id="practiceClearHistory"><i class="fas fa-trash"></i> Limpiar</button>
+</div>
+</div>
+
 </div>
 <div class="tab-content" id="video" style="display:none;">
 <div class="topic-header">
@@ -589,7 +570,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
       Pega un enlace (YouTube / youtu.be / embed). No hay ningún video cargado por defecto.
     </p>
 <div class="video-controls">
-<input id="videoInput" placeholder="https://www.youtube.com/watch?v=..." type="text">
+<input id="videoInput" placeholder="https://www.youtube.com/watch?v=..." type="text"/>
 <div class="video-actions">
 <button class="btn" id="videoLoadBtn">Cargar</button>
 <button class="btn btn-secondary" id="videoClearBtn">Quitar</button>
@@ -641,7 +622,6 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <div class="reviews-list" id="reviewsList"></div>
 </div>
 </div>
-
 </main>
 <a class="whatsapp-btn" href="https://wa.me/593987662461" target="_blank" title="Chatear en WhatsApp">
 <i class="fab fa-whatsapp"></i>
@@ -661,28 +641,12 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <button aria-label="Cerrar" class="modal-close" data-close="true" type="button"><i class="fas fa-xmark"></i></button>
 </div>
 <div class="modal-body">
-
-          <div class="ach-summary">
-            <div class="ach-sum-left">
-              <div class="ach-xp"><i class="fas fa-bolt"></i> XP actual: <span id="achXpNow">0</span></div>
-              <div class="ach-next">Siguiente logro: <span id="achNextTitle">—</span> <span class="ach-next-xp">(<span id="achNextXp">—</span> XP)</span></div>
-            </div>
-            <div class="ach-sum-right">
-              <div class="ach-count"><span id="achUnlockedCount">0</span>/<span id="achTotalCount">0</span> logros</div>
-            </div>
-          </div>
-          <div class="ach-progress">
-            <div class="bar"><div class="fill" id="achProgressFill"></div></div>
-            <div class="labels"><span>0</span><span id="achProgressMax">0</span></div>
-          </div>
-
 <div class="ach-grid" id="achGrid"></div>
 </div>
 </div>
 </div>
 <!-- Achievement Popup -->
 <div aria-atomic="true" aria-live="polite" class="ach-popup" id="achPopup"></div>
-
 <div aria-hidden="true" class="modal" id="profileModal">
 <div class="modal-backdrop" data-close="profileModal"></div>
 <div aria-labelledby="profileTitle" aria-modal="true" class="modal-card" role="dialog">
@@ -727,7 +691,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <button class="icon-btn" data-close="quickSearchModal" title="Cerrar" type="button"><i class="fas fa-times"></i></button>
 </div>
 <div class="modal-body">
-<input autocomplete="off" class="qs-input" id="qsInput" placeholder="Escribe para buscar secciones..." type="text">
+<input autocomplete="off" class="qs-input" id="qsInput" placeholder="Escribe para buscar secciones..." type="text"/>
 <div class="qs-results" id="qsResults"></div>
 </div>
 </div>
