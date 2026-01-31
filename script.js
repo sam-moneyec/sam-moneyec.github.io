@@ -1,10 +1,137 @@
+function getNavItems(){
+  const links = Array.from(document.querySelectorAll(".sidebar .tab-link"));
+  return links.map(a=>{
+    const label = (a.dataset.label || a.textContent || "").trim();
+    const tab = a.getAttribute("data-tab") || "";
+    const icon = (a.querySelector("i")||{}).className || "fas fa-circle";
+    return {a,label,tab,icon};
+  });
+}
+
+function highlightCurrentSection(){
+  // add a brief highlight to the first visible heading inside active tab
+  const active = document.querySelector(".tab-content.active") || document.querySelector(".tab-content[style*='display: block']");
+  if (!active) return;
+  const target = active.querySelector("h1,h2,.topic-header,.urban-title,.section-title");
+  if (target){
+    target.classList.add("flash-highlight");
+    setTimeout(()=>target.classList.remove("flash-highlight"), 1300);
+  }
+}
+
+function updateProfilePanel(){
+  const level = Number(localStorage.getItem("mc_level")||1);
+  const xp = Number(localStorage.getItem("mc_xp")||0);
+  const st = loadStreak();
+  const done = JSON.parse(localStorage.getItem("mc_done")||"{}");
+  const doneCount = Object.values(done).filter(Boolean).length;
+
+  const set = (id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=String(val); };
+  set("profLevel", level);
+  set("profXp", xp);
+  set("profStreak", st.count||1);
+  set("profDone", doneCount);
+}
+
+function openProfile(){
+  updateProfilePanel();
+  const m = document.getElementById("profileModal");
+  if (!m) return;
+  m.classList.add("show");
+  m.setAttribute("aria-hidden","false");
+}
+
+function initQuickSearch(){
+  const modal = document.getElementById("quickSearchModal");
+  const input = document.getElementById("qsInput");
+  const results = document.getElementById("qsResults");
+  if (!modal || !input || !results) return;
+
+  const items = getNavItems();
+
+  const render = (q)=>{
+    const norm = (s)=> (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    const nq = norm(q);
+    const list = items.filter(it=> !nq || norm(it.label).includes(nq)).slice(0, 10);
+    results.innerHTML = list.map(it=>`
+      <div class="qs-row" data-tab="${it.tab}">
+        <i class="${it.icon}"></i>
+        <span>${it.label}</span>
+        <small>${it.tab}</small>
+      </div>
+    `).join("") || `<div class="qs-row" style="opacity:.75; cursor:default;"><span>No hay resultados</span></div>`;
+    results.querySelectorAll(".qs-row[data-tab]").forEach(row=>{
+      row.addEventListener("click", ()=>{
+        const tab = row.getAttribute("data-tab");
+        const a = document.querySelector(`.sidebar .tab-link[data-tab="${tab}"]`);
+        if (a) a.click();
+        closeModal("quickSearchModal");
+        setTimeout(highlightCurrentSection, 80);
+      });
+    });
+  };
+
+  input.addEventListener("input", ()=>render(input.value));
+  input.addEventListener("keydown",(e)=>{
+    if (e.key==="Escape"){ closeModal("quickSearchModal"); }
+    if (e.key==="Enter"){
+      const first = results.querySelector(".qs-row[data-tab]");
+      first?.click();
+    }
+  });
+
+  // Ctrl+K opens quick search
+  document.addEventListener("keydown",(e)=>{
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==="k"){
+      e.preventDefault();
+      openModal("quickSearchModal");
+      setTimeout(()=>{ input.focus(); input.select(); render(input.value); }, 20);
+    }
+  });
+}
+
+function initXpBadge(){
+  document.getElementById("xpBadge")?.addEventListener("click", openProfile);
+  document.getElementById("resetProgressBtn")?.addEventListener("click", ()=>{
+    if (!confirm("¿Reiniciar progreso? Se borrará XP, nivel, racha y completados.")) return;
+    ["mc_xp","mc_level","mc_done","mc_streak","mc_sound","mc_theme"].forEach(k=>localStorage.removeItem(k));
+    showToast("Progreso reiniciado.", "info");
+    // refresh HUD
+    saveXp(loadXp());
+    updateStreak();
+    updateProfilePanel();
+  });
+}
+
+// tiny beep using WebAudio when sound is on
+function uiBeep(){
+  const v = localStorage.getItem("mc_sound") || "off";
+  if (v !== "on") return;
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = 660;
+    g.gain.value = 0.04;
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    setTimeout(()=>{ o.stop(); ctx.close(); }, 110);
+  }catch(e){}
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
   try{ updateStreak(); }catch(e){}
   try{ saveXp(loadXp()); }catch(e){} // render XP in HUD
   try{ initSidebarSearch(); }catch(e){}
+  try{ initStarPicker(); }catch(e){}
   try{ initModalSystem(); }catch(e){}
   try{ initHud(); }catch(e){}
+  try{ initXpBadge(); }catch(e){}
+  try{ initQuickSearch(); }catch(e){}
   try{ initVideoSection(); }catch(e){}
+  try{ initPractice(); }catch(e){}
   try{ renderReviews(); }catch(e){}
   // pair-builder sync on blur
   [["class","classMap"],["inv","invMap"],["compF","compMapF"],["compG","compMapG"]].forEach(([p,id])=>{
@@ -19,67 +146,115 @@ document.addEventListener("DOMContentLoaded", () => {
 function initSidebarSearch(){
   const input = document.getElementById("sidebarSearch");
   const btn = document.getElementById("sidebarSearchBtn");
+  const results = document.getElementById("sidebarSearchResults");
   if (!input) return;
 
   const links = Array.from(document.querySelectorAll(".sidebar .tab-link"));
-  // Store original labels
+  // Store original labels (only the visible section name, without "MISION X")
   links.forEach(a=>{
-    if (!a.dataset.label) a.dataset.label = a.textContent.trim();
+    const txt = (a.querySelector(".nav-text") || a).textContent.trim();
+    if (!a.dataset.label) a.dataset.label = txt;
   });
 
   const norm = (s)=> (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const clearHighlights = ()=>{
+    links.forEach(a=>{
+      const label = a.dataset.label || (a.querySelector(".nav-text")||a).textContent.trim();
+      const target = (a.querySelector(".nav-text") || a);
+      if (target) target.textContent = label;
+    });
+  };
+
   const apply = ()=>{
-    const q = norm(input.value.trim());
+    const raw = input.value.trim();
+    const q = norm(raw);
     let visibleCount = 0;
 
     links.forEach(a=>{
-      const label = a.dataset.label || a.textContent;
+      const label = a.dataset.label || (a.querySelector(".nav-text")||a).textContent.trim();
       const match = !q || norm(label).includes(q);
       const li = a.closest("li") || a.parentElement;
-
       if (li) li.style.display = match ? "" : "none";
       if (match) visibleCount++;
 
-      // highlight match
+      // highlight in nav-text only
+      const target = (a.querySelector(".nav-text") || a);
+      if (!target) return;
       if (!q){
-        a.innerHTML = `<i class="${(a.querySelector("i")||{}).className || "fas fa-circle"}"></i><span class="label">${label}</span>`;
+        target.textContent = label;
       } else {
         const idx = norm(label).indexOf(q);
         if (idx >= 0){
           const before = label.slice(0, idx);
-          const mid = label.slice(idx, idx + input.value.trim().length);
-          const after = label.slice(idx + input.value.trim().length);
-          const iconClass = (a.querySelector("i")||{}).className || "fas fa-circle";
-          a.innerHTML = `<i class="${iconClass}"></i><span class="label">${before}<mark>${mid}</mark>${after}</span>`;
+          const mid = label.slice(idx, idx + raw.length);
+          const after = label.slice(idx + raw.length);
+          target.innerHTML = `${escapeHtml(before)}<span class="nav-hit">${escapeHtml(mid)}</span>${escapeHtml(after)}`;
+        } else {
+          target.textContent = label;
         }
       }
     });
 
-    // simple feedback in placeholder
-    input.dataset.count = String(visibleCount);
+    // results dropdown
+    if (results){
+      results.innerHTML = "";
+      if (!q){
+        results.classList.remove("show");
+      } else {
+        const matches = links
+          .filter(a=>{
+            const li = a.closest("li") || a.parentElement;
+            return li && li.style.display !== "none";
+          })
+          .slice(0, 7);
+
+        if (!matches.length){
+          results.innerHTML = `<div class="search-empty">Sin resultados</div>`;
+        } else {
+          matches.forEach(a=>{
+            const item = document.createElement("button");
+            item.type = "button";
+            item.className = "search-result";
+            item.textContent = a.dataset.label || a.textContent.trim();
+            item.addEventListener("click", ()=>{
+              a.click();
+              results.classList.remove("show");
+              document.body.classList.remove("menu-open");
+            });
+            results.appendChild(item);
+          });
+        }
+        results.classList.add("show");
+      }
+    }
   };
 
   input.addEventListener("input", apply);
   input.addEventListener("keydown", (e)=>{
     if (e.key === "Enter"){
-      e.preventDefault();
       const first = links.find(a=>{
         const li = a.closest("li") || a.parentElement;
         return li && li.style.display !== "none";
       });
-      if (first){ first.click(); }
-    } else if (e.key === "Escape"){
+      if (first){
+        first.click();
+        results?.classList.remove("show");
+        document.body.classList.remove("menu-open");
+      }
+    }
+    if (e.key === "Escape"){
       input.value = "";
       apply();
-      input.blur();
+      results?.classList.remove("show");
     }
   });
+
   btn?.addEventListener("click", ()=>{
     input.focus();
     apply();
   });
 
-  // Shortcut: '/' focuses search
+  // "/" focuses the search
   document.addEventListener("keydown", (e)=>{
     if (e.key === "/" && document.activeElement !== input){
       e.preventDefault();
@@ -89,6 +264,7 @@ function initSidebarSearch(){
 
   apply();
 }
+
 
 
 function openAchModal(){
@@ -138,6 +314,7 @@ function initHud(){
       soundBtn.title = "Sonido: " + (v === "on" ? "on" : "off");
     }
     showToast(v === "on" ? "Sonido activado" : "Sonido desactivado");
+    uiBeep();
   };
   setSound(getSound());
   soundBtn?.addEventListener("click", ()=> setSound(getSound()==="on" ? "off" : "on"));
@@ -212,6 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- DICCIONARIO DE COLORES NEÓN VIBRANTES ---
 const sectionColors = {
+  practica: "#00FFC8",
     'inicio': '#FFD700',          // Dorado (Original)
     'prod-cartesiano': '#00FF00', // Verde Matrix
     'funciones': '#ff001e',       // <--- CAMBIO AQUÍ: ROJO NEÓN
@@ -1100,7 +1278,10 @@ function toEmbedUrl(raw){
   return u;
 }
 
-function initVideoSection(){
+function initVideoSection() {
+  // Always start blank (no default video)
+  try{ localStorage.removeItem("mc_video_url"); }catch(e){}
+
   const input = document.getElementById("videoInput");
   const loadBtn = document.getElementById("videoLoadBtn");
   const clearBtn = document.getElementById("videoClearBtn");
@@ -1146,12 +1327,6 @@ function initVideoSection(){
   input.value = "";
   showPlaceholder();
 }
-
-
-
-    // star picker
-    initStarPicker();
-});
 
 window.__MC_APP_LOADED__ = true;
 
