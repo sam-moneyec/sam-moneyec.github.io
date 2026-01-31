@@ -1,4 +1,50 @@
 
+function openModal(id){
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.add("show");
+  m.setAttribute("aria-hidden","false");
+  // focus first close button if exists
+  const btn = m.querySelector('[data-close="'+id+'"], .icon-btn, button');
+  btn && btn.focus && btn.focus();
+}
+
+function closeModal(id){
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.remove("show");
+  m.setAttribute("aria-hidden","true");
+}
+
+function bindModalClose(){
+  // click delegation for any [data-close]
+  document.addEventListener("click",(e)=>{
+    const el = e.target.closest("[data-close]");
+    if (!el) return;
+    e.preventDefault();
+    const id = el.getAttribute("data-close");
+    // data-close="true" (o vacío) cierra el modal más cercano
+    if (id === "true" || id === "1" || id === "" || id === null){
+      const modal = el.closest(".modal");
+      if (modal && modal.id) { closeModal(modal.id); }
+      return;
+    }
+
+    if (id) closeModal(id);
+  }, true);
+
+  // Esc closes the topmost open modal
+  document.addEventListener("keydown",(e)=>{
+    if (e.key !== "Escape") return;
+    const open = Array.from(document.querySelectorAll(".modal.show"));
+    if (open.length){
+      const top = open[open.length-1];
+      closeModal(top.id);
+    }
+  }, true);
+}
+
+
 function validateLastTab(){
   try{
     const last = localStorage.getItem("mc_last_tab");
@@ -80,72 +126,13 @@ function updateProfilePanel(){
   set("profDone", doneCount);
 }
 
-// =========================
-// Modal helpers (robusto)
-// =========================
-function openModal(id){
-  const m = document.getElementById(id);
+function openProfile(){
+  updateProfilePanel();
+  const m = document.getElementById("profileModal");
   if (!m) return;
   m.classList.add("show");
   m.setAttribute("aria-hidden","false");
-  // focus first focusable element
-  try{
-    const focusable = m.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    focusable && focusable.focus && focusable.focus();
-  }catch(e){}
 }
-function closeModal(id){
-  const m = document.getElementById(id);
-  if (!m) return;
-  m.classList.remove("show");
-  m.setAttribute("aria-hidden","true");
-}
-
-// Cierre universal: cualquier elemento con [data-close] cierra su modal.
-// Soporta data-close="profileModal" o data-close="true" (cierra el modal contenedor).
-function initGlobalModalClose(){
-  if (window.__mcModalCloseBound) return;
-  window.__mcModalCloseBound = true;
-
-  document.addEventListener("click", (e)=>{
-    const el = e.target.closest("[data-close]");
-    if (!el) return;
-    const target = (el.getAttribute("data-close") || "").trim();
-    // Evitar que el click dispare otras cosas
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (target && target !== "true"){
-      closeModal(target);
-    }else{
-      // data-close="true" -> cerrar modal padre
-      const parentModal = el.closest(".modal");
-      if (parentModal && parentModal.id){
-        closeModal(parentModal.id);
-      }else if (parentModal){
-        parentModal.classList.remove("show");
-        parentModal.setAttribute("aria-hidden","true");
-      }
-    }
-  }, true);
-
-  // Click fuera (backdrop) ya está cubierto si tiene data-close.
-  // ESC: cierra el modal visible más reciente.
-  document.addEventListener("keydown", (e)=>{
-    if (e.key !== "Escape") return;
-    const shown = Array.from(document.querySelectorAll(".modal.show"));
-    if (shown.length){
-      const last = shown[shown.length - 1];
-      if (last && last.id) closeModal(last.id);
-    }
-  }, true);
-}
-
-function openProfile(){
-  updateProfilePanel();
-  openModal("profileModal");
-}
-
 
 function initQuickSearch(){
   const modal = document.getElementById("quickSearchModal");
@@ -229,6 +216,19 @@ function uiBeep(){
 
 
 // ===== Mission numbering (sidebar) =====
+
+function renumberLevelBadges(){
+  // Levels correspond to the main mission topics (exclude Inicio / Video / Reseñas)
+  const order = ["prod-cartesiano","funciones","clasificacion","inversa","compuesta","discreta"];
+  order.forEach((id, i)=>{
+    const tab = document.getElementById(id);
+    if (!tab) return;
+    const badge = tab.querySelector(".topic-header .badge");
+    if (!badge) return;
+    badge.textContent = "NIVEL " + (i+1);
+  });
+}
+
 function renumberMissionBadges(){
   const links = Array.from(document.querySelectorAll(".sidebar a.tab-link"));
   let n = 0;
@@ -249,6 +249,22 @@ function renumberMissionBadges(){
 }
 
 // ===== Player panel (mission panel) close/open =====
+
+function hardBindPanelClose(){
+  // Fallback: if something interferes with direct listeners, capture-phase delegation ensures close works
+  document.addEventListener("click", (e)=>{
+    const t = e.target;
+    const btn = t && (t.closest ? t.closest("#missionClose") : null);
+    if (btn){
+      const panel = document.getElementById("missionPanel");
+      if (panel){
+        panel.classList.add("is-hidden");
+        try{ localStorage.setItem("mc_panel_hidden","1"); }catch(_){}
+      }
+    }
+  }, true);
+}
+
 function initPlayerPanelClose(){
   const panel = document.getElementById("missionPanel");
   const closeBtn = document.getElementById("missionClose");
@@ -569,8 +585,6 @@ function downloadPracticeMatlab(){
 }
 
 function initPracticeMode(){
-  if (window.__mcPracticeBound) { try{ renderPractice(); }catch(e){}; return; }
-  window.__mcPracticeBound = true;
   const topicSel = document.getElementById("practiceTopic");
   const levelSel = document.getElementById("practiceLevel");
 
@@ -589,7 +603,6 @@ function initPracticeMode(){
     const lvl = Number(levelSel?.value || 1);
     PRACTICE_STATE = makePractice(topic, lvl);
     renderPractice();
-    try{ showToast("Reto generado"); }catch(e){}
   });
 
   btnCheck && btnCheck.addEventListener("click", checkPractice);
@@ -608,11 +621,11 @@ function initPracticeMode(){
 document.addEventListener("DOMContentLoaded", () => {
   try{ validateLastTab(); }catch(e){}
 
-  try{ initGlobalModalClose(); }catch(e){}
-
   try{ bindTabLinksHard(); }catch(e){}
   try{ renumberMissionBadges(); }catch(e){}
+  try{ renumberLevelBadges(); }catch(e){}
   try{ initPlayerPanelClose(); }catch(e){}
+  try{ hardBindPanelClose(); }catch(e){}
   try{ initPracticeMode(); }catch(e){}
 
   try{ updateStreak(); }catch(e){}
@@ -2514,6 +2527,36 @@ function renderAchievements(){
     `;
     grid.appendChild(item);
   });
+
+  // Resumen (si existe en el HTML)
+  try{
+    const xpNowEl = document.getElementById("achXpNow");
+    const nextTitleEl = document.getElementById("achNextTitle");
+    const nextXpEl = document.getElementById("achNextXp");
+    const unlockedEl = document.getElementById("achUnlockedCount");
+    const totalEl = document.getElementById("achTotalCount");
+    const fillEl = document.getElementById("achProgressFill");
+    const maxEl = document.getElementById("achProgressMax");
+
+    const xpNow = (PROGRESS && typeof PROGRESS.xp === "number") ? PROGRESS.xp : (parseInt(localStorage.getItem("xp")||"0",10) || 0);
+    const sorted = ACHIEVEMENTS.slice().sort((a,b)=>a.xp-b.xp);
+    const unlockedCount = sorted.filter(a=>xpNow>=a.xp).length;
+    const next = sorted.find(a=>xpNow < a.xp) || sorted[sorted.length-1];
+    const max = next ? next.xp : xpNow;
+
+    if (xpNowEl) xpNowEl.textContent = xpNow;
+    if (totalEl) totalEl.textContent = sorted.length;
+    if (unlockedEl) unlockedEl.textContent = unlockedCount;
+
+    if (nextTitleEl) nextTitleEl.textContent = next ? next.title : "—";
+    if (nextXpEl) nextXpEl.textContent = next ? next.xp : xpNow;
+    if (maxEl) maxEl.textContent = max;
+
+    if (fillEl){
+      const frac = max > 0 ? Math.min(1, Math.max(0, xpNow / max)) : 0;
+      fillEl.style.width = (frac*100).toFixed(1) + "%";
+    }
+  }catch(e){}
 }
 
 function openAchModal(){
@@ -2537,7 +2580,8 @@ function closeAchModal(){
     if (!modal) return;
     modal.addEventListener("click", (e)=>{
       const t = e.target;
-      if (t && t.dataset && t.dataset.close) closeAchModal();
+      const closer = e.target.closest('[data-close]');
+    if (closer) closeAchModal();
     });
     document.addEventListener("keydown",(e)=>{
       if (e.key === "Escape") closeAchModal();
@@ -2786,16 +2830,16 @@ function genPractice(topic){
 
 (function initPractice(){
   function run(){
-    const topicSel = document.getElementById("practiceTopic");
-    const genBtn = document.getElementById("genPracticeBtn");
-    const chkBtn = document.getElementById("checkPracticeBtn");
-    const hintBtn = document.getElementById("hintPracticeBtn");
-    const ansIn = document.getElementById("practiceAnswer");
-    const qBox = document.getElementById("practiceQuestion");
-    const fb = document.getElementById("practiceFeedback");
-    const csvBtn = document.getElementById("exportCsvBtn");
-    const jsonBtn = document.getElementById("exportJsonBtn");
-    const clearBtn = document.getElementById("clearPracticeBtn");
+    const topicSel = document.getElementById("practiceCardTopic");
+    const genBtn = document.getElementById("practiceCardGenBtn");
+    const chkBtn = document.getElementById("practiceCardCheckBtn");
+    const hintBtn = document.getElementById("practiceCardHintBtn");
+    const ansIn = document.getElementById("practiceCardAnswer");
+    const qBox = document.getElementById("practiceCardQuestion");
+    const fb = document.getElementById("practiceCardFeedback");
+    const csvBtn = document.getElementById("practiceCardExportCsv");
+    const jsonBtn = document.getElementById("practiceCardExportJson");
+    const clearBtn = document.getElementById("practiceCardClear");
 
     if (!topicSel || !genBtn || !chkBtn || !ansIn || !qBox || !fb) return;
 
