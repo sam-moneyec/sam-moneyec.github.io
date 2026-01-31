@@ -167,10 +167,388 @@ function uiBeep(){
 }
 
 
+
+// ===== Mission numbering (sidebar) =====
+function renumberMissionBadges(){
+  const links = Array.from(document.querySelectorAll(".sidebar a.tab-link"));
+  let n = 0;
+  links.forEach(a=>{
+    // data-tab could be set by bindTabLinksHard; fallback to onclick
+    let tab = a.getAttribute("data-tab") || "";
+    if (!tab){
+      const oc = a.getAttribute("onclick") || "";
+      const m = oc.match(/openTab\(\s*event\s*,\s*'([^']+)'\s*\)/);
+      if (m) tab = m[1];
+    }
+    const badge = a.querySelector(".mission-badge");
+    if (!badge) return;
+    if (["inicio","video","resenas"].includes(tab)) return;
+    n += 1;
+    badge.textContent = "MISION " + n;
+  });
+}
+
+// ===== Player panel (mission panel) close/open =====
+function initPlayerPanelClose(){
+  const panel = document.getElementById("missionPanel");
+  const closeBtn = document.getElementById("missionClose");
+  const openBtn = document.getElementById("panelBtn");
+  const xp = document.getElementById("xpBadge");
+
+  if (!panel) return;
+
+  const setHidden = (hidden)=>{
+    panel.classList.toggle("is-hidden", !!hidden);
+    try{ localStorage.setItem("mc_panel_hidden", hidden ? "1" : "0"); }catch(e){}
+  };
+
+  // restore
+  try{
+    setHidden(localStorage.getItem("mc_panel_hidden")==="1");
+  }catch(e){}
+
+  closeBtn && closeBtn.addEventListener("click", ()=> setHidden(true));
+  openBtn && openBtn.addEventListener("click", ()=> setHidden(false));
+
+  // Optional: click XP badge toggles panel
+  xp && xp.addEventListener("click", ()=>{
+    const hidden = panel.classList.contains("is-hidden");
+    setHidden(!hidden);
+  });
+}
+
+// ===== Practice Mode Engine =====
+let PRACTICE_STATE = null;
+
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function parseCSV(s){ return (s||"").split(",").map(x=>x.trim()).filter(Boolean); }
+
+function parsePairsFromAnswer(s){
+  const t = (s||"").replace(/[{}]/g,"");
+  const pairs = [];
+  const re = /\(\s*([^,]+?)\s*,\s*([^)]+?)\s*\)/g;
+  let m;
+  while((m=re.exec(t))){
+    pairs.push([m[1].trim(), m[2].trim()]);
+  }
+  return pairs;
+}
+function normStr(s){
+  return (s||"").toString().trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+function sameSetNorm(a,b){
+  const sa = new Set(a.map(normStr));
+  const sb = new Set(b.map(normStr));
+  if (sa.size !== sb.size) return false;
+  for (const x of sa) if (!sb.has(x)) return false;
+  return true;
+}
+function samePairs(pa, pb){
+  const a = pa.map(p=>`${normStr(p[0])}→${normStr(p[1])}`);
+  const b = pb.map(p=>`${normStr(p[0])}→${normStr(p[1])}`);
+  return sameSetNorm(a,b);
+}
+
+function makePractice(topic, level){
+  if (topic==="prod-cartesiano") return makeCartesian(level);
+  if (topic==="clasificacion") return makeClassification(level);
+  if (topic==="inversa") return makeInverse(level);
+  if (topic==="compuesta") return makeComposite(level);
+  if (topic==="discreta") return makeDiscrete(level);
+  return makeCartesian(level);
+}
+
+function makeCartesian(level){
+  const sizeA = level===1?2:level===2?3:4;
+  const sizeB = level===1?2:level===2?3:4;
+  const poolA = ["1","2","3","4","5","6","7","8","9"];
+  const poolB = ["a","b","c","d","e","f"];
+  const A = Array.from(new Set(Array.from({length:sizeA},()=>pick(poolA)))).slice(0,sizeA);
+  const B = Array.from(new Set(Array.from({length:sizeB},()=>pick(poolB)))).slice(0,sizeB);
+  const pairs = [];
+  A.forEach(x=>B.forEach(y=>pairs.push([x,y])));
+
+  const prompt = `Dados A = {${A.join(",")}} y B = {${B.join(",")}}, escribe A×B como pares ordenados.\nEjemplo: (1,a),(1,b)...`;
+  const matlab =
+`A = {${A.map(x=>`'${x}'`).join(", ")}};\nB = {${B.map(x=>`'${x}'`).join(", ")}};\nP = {};\nfor i=1:numel(A)\n  for j=1:numel(B)\n    P{end+1} = sprintf('(%s,%s)', A{i}, B{j});\n  end\nend\ndisp(['A×B = { ' strjoin(P, ', ') ' }']);\n`;
+
+  return {topic, level, prompt, matlab, type:"pairs", expected:pairs, payload:{A,B}};
+}
+
+function makeClassification(level){
+  const n = level===1?3:level===2?4:5;
+  const domain = Array.from({length:n},(_,i)=>String(i+1));
+  const cod = ["a","b","c","d","e","f"].slice(0,n);
+
+  const makeFunc = Math.random() > (level===1?0.25:0.45);
+  let pairs = [];
+  if (makeFunc){
+    const perm = cod.slice().sort(()=>Math.random()-0.5);
+    pairs = domain.map((x,i)=>[x, perm[i]]);
+  }else{
+    pairs = domain.map((x)=>[x, pick(cod)]);
+    const xdup = pick(domain);
+    pairs.push([xdup, pick(cod.filter(c=>c!==pairs.find(p=>p[0]===xdup)?.[1])) || pick(cod)]);
+  }
+  const prompt = `Relación R = { ${pairs.map(p=>`(${p[0]},${p[1]})`).join(", ")} }.\n¿R es una función? Responde: si / no.`;
+  const matlab =
+`R = {${pairs.map(p=>`'(${p[0]},${p[1]})'`).join(", ")}};\n% Verificar si es función: cada x aparece una sola vez\nxs = cellfun(@(s) extractBetween(s,'(',','), R);\nxs = string(xs);\nif numel(unique(xs)) == numel(xs)\n  disp('SI es función');\nelse\n  disp('NO es función');\nend\n`;
+  return {topic, level, prompt, matlab, type:"yn", expected: makeFunc ? "si" : "no", payload:{domain, cod, pairs}};
+}
+
+function makeInverse(level){
+  const n = level===1?3:level===2?4:5;
+  const xs = Array.from({length:n},(_,i)=>String(i+1));
+  const ys = ["a","b","c","d","e","f","g","h"].slice(0,n);
+  const perm = ys.slice().sort(()=>Math.random()-0.5);
+  const pairs = xs.map((x,i)=>[x, perm[i]]);
+  const q = pick(perm);
+  const xsol = pairs.find(p=>p[1]===q)[0];
+
+  const prompt = `Sea f = { ${pairs.map(p=>`(${p[0]},${p[1]})`).join(", ")} }.\nCalcula f^{-1}(${q}). Responde SOLO el valor.`;
+  const matlab =
+`pairs = {${pairs.map(p=>`'${p[0]}->${p[1]}'`).join(", ")}};\nq = '${q}';\n% Invertir buscando el par cuyo valor sea q\nfor k=1:numel(pairs)\n  parts = split(string(pairs{k}), '->');\n  if parts(2)==q\n    disp(['f^{-1}(' q ') = ' char(parts(1))]);\n  end\nend\n`;
+  return {topic, level, prompt, matlab, type:"scalar", expected:xsol, payload:{pairs,q}};
+}
+
+function makeComposite(level){
+  const n = level===1?3:level===2?4:5;
+  const A = Array.from({length:n},(_,i)=>String(i+1));
+  const B = ["a","b","c","d","e","f","g"].slice(0,n);
+  const C = ["α","β","γ","δ","ε","ζ","η"].slice(0,n);
+
+  const fperm = B.slice().sort(()=>Math.random()-0.5);
+  const gperm = C.slice().sort(()=>Math.random()-0.5);
+  const f = A.map((x,i)=>[x,fperm[i]]);
+  const g = B.map((b,i)=>[b,gperm[i]]);
+  const x0 = pick(A);
+  const fx = f.find(p=>p[0]===x0)[1];
+  const gfx = g.find(p=>p[0]===fx)[1];
+
+  const prompt = `Dados f y g:\n f = { ${f.map(p=>`(${p[0]},${p[1]})`).join(", ")} }\n g = { ${g.map(p=>`(${p[0]},${p[1]})`).join(", ")} }\nCalcula (g∘f)(${x0}). Responde SOLO el valor.`;
+  const matlab =
+`% Mapas como listas de pares\nf = {${f.map(p=>`'${p[0]}->${p[1]}'`).join(", ")}};\ng = {${g.map(p=>`'${p[0]}->${p[1]}'`).join(", ")}};\nx0='${x0}';\n% calcular f(x0)\nfx='';\nfor k=1:numel(f)\n  parts=split(string(f{k}),'->');\n  if parts(1)==x0\n    fx=char(parts(2));\n  end\nend\n% calcular g(fx)\nres='';\nfor k=1:numel(g)\n  parts=split(string(g{k}),'->');\n  if parts(1)==string(fx)\n    res=char(parts(2));\n  end\nend\ndisp(['(g∘f)(' x0 ') = ' res]);\n`;
+  return {topic, level, prompt, matlab, type:"scalar", expected:gfx, payload:{A,B,C,f,g,x0}};
+}
+
+function makeDiscrete(level){
+  const n = level===1?5:level===2?7:9;
+  const xs = Array.from({length:n},(_,i)=>i+1);
+  const ys = xs.map(()=>randInt(0,9));
+  const idx = randInt(0,n-1);
+  const xq = xs[idx];
+  const yq = ys[idx];
+
+  const prompt = `X = [${xs.join(", ")}]\nY = [${ys.join(", ")}]\n¿Cuál es y cuando x = ${xq}? Responde SOLO el número.`;
+  const matlab =
+`X=[${xs.join(" ")}];\nY=[${ys.join(" ")}];\nxq=${xq};\nidx=find(X==xq);\ndisp(['y(' num2str(xq) ') = ' num2str(Y(idx))]);\n`;
+  return {topic, level, prompt, matlab, type:"scalar", expected:String(yq), payload:{xs,ys,xq}};
+}
+
+function renderPractice(){
+  const promptBox = document.getElementById("practicePrompt");
+  const feedback = document.getElementById("practiceFeedback");
+  const ans = document.getElementById("practiceAnswer");
+  const codeEl = document.getElementById("practiceMatlab");
+  if (!promptBox || !codeEl) return;
+
+  if (!PRACTICE_STATE){
+    promptBox.innerHTML = `<div class="video-placeholder" style="min-height:180px;">
+      <div class="ph-title">Aún no hay reto</div>
+      <div class="ph-sub">Genera un reto para empezar.</div>
+    </div>`;
+    codeEl.textContent = "% Genera un reto para ver el código MATLAB aquí.";
+    if (feedback){ feedback.innerHTML = ""; feedback.classList.remove("ok","bad"); }
+    if (ans) ans.value = "";
+    try{ hljs.highlightElement(codeEl); }catch(e){}
+    return;
+  }
+
+  const p = PRACTICE_STATE.prompt.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  promptBox.innerHTML = `<pre class="practice-pre">${p}</pre>`;
+  if (feedback){ feedback.innerHTML = ""; feedback.classList.remove("ok","bad"); }
+  if (ans) ans.value = "";
+  codeEl.textContent = PRACTICE_STATE.matlab;
+  try{ hljs.highlightElement(codeEl); }catch(e){}
+}
+
+function practiceHint(){
+  if (!PRACTICE_STATE) return "";
+  switch(PRACTICE_STATE.topic){
+    case "prod-cartesiano": return "Incluye todos los pares (a,b) con a∈A y b∈B.";
+    case "clasificacion": return "Si un x aparece con dos y distintos, no es función.";
+    case "inversa": return "Encuentra el x que produce ese valor en f.";
+    case "compuesta": return "Primero aplica f, luego g.";
+    case "discreta": return "Encuentra el índice de x en X y toma el mismo índice en Y.";
+    default: return "";
+  }
+}
+
+function checkPractice(){
+  const feedback = document.getElementById("practiceFeedback");
+  const ansRaw = (document.getElementById("practiceAnswer")?.value || "");
+  if (!feedback) return;
+
+  if (!PRACTICE_STATE){
+    feedback.classList.remove("ok","bad");
+    feedback.classList.add("bad");
+    feedback.textContent = "Primero genera un reto.";
+    return;
+  }
+
+  let ok = false;
+  if (PRACTICE_STATE.type==="scalar"){
+    ok = normStr(ansRaw) === normStr(String(PRACTICE_STATE.expected));
+  }else if (PRACTICE_STATE.type==="yn"){
+    const a = normStr(ansRaw);
+    const exp = normStr(String(PRACTICE_STATE.expected));
+    ok = (["si","sí","s"].includes(a) && exp==="si") || (["no","n"].includes(a) && exp==="no");
+  }else if (PRACTICE_STATE.type==="pairs"){
+    const pa = parsePairsFromAnswer(ansRaw);
+    ok = samePairs(pa, PRACTICE_STATE.expected);
+  }
+
+  feedback.classList.remove("ok","bad");
+  if (ok){
+    feedback.classList.add("ok");
+    feedback.innerHTML = `✅ Correcto. +XP`;
+    try{ awardXp(60, "Práctica"); }catch(e){}
+  }else{
+    feedback.classList.add("bad");
+    feedback.innerHTML = `❌ Incorrecto. <b>Pista:</b> ${practiceHint()}`;
+  }
+}
+
+function revealPractice(){
+  const feedback = document.getElementById("practiceFeedback");
+  if (!feedback) return;
+
+  if (!PRACTICE_STATE){
+    feedback.classList.remove("ok","bad");
+    feedback.classList.add("bad");
+    feedback.textContent = "Primero genera un reto.";
+    return;
+  }
+
+  feedback.classList.remove("ok","bad");
+  feedback.classList.add("ok");
+  if (PRACTICE_STATE.type==="pairs"){
+    feedback.innerHTML = `Solución: { ${PRACTICE_STATE.expected.map(p=>`(${p[0]},${p[1]})`).join(", ")} }`;
+  }else{
+    feedback.innerHTML = `Solución: <b>${PRACTICE_STATE.expected}</b>`;
+  }
+}
+
+function loadPracticeIntoSection(){
+  if (!PRACTICE_STATE) return;
+
+  const t = PRACTICE_STATE.topic;
+  if (t==="prod-cartesiano"){
+    document.getElementById("setA").value = PRACTICE_STATE.payload.A.join(",");
+    document.getElementById("setB").value = PRACTICE_STATE.payload.B.join(",");
+    openTab(new Event("click"), "prod-cartesiano");
+    try{ calcCartesian(); }catch(e){}
+  }else if (t==="clasificacion"){
+    const d = PRACTICE_STATE.payload.domain;
+    const c = PRACTICE_STATE.payload.cod;
+    const pairs = PRACTICE_STATE.payload.pairs;
+    document.getElementById("classDomain").value = d.join(",");
+    document.getElementById("classCodomain").value = c.join(",");
+    document.getElementById("classMap").value = pairs.map(p=>`${p[0]}->${p[1]}`).join(",");
+    openTab(new Event("click"), "clasificacion");
+    try{ classifyFunction(); }catch(e){}
+  }else if (t==="inversa"){
+    const pairs = PRACTICE_STATE.payload.pairs;
+    const domain = Array.from(new Set(pairs.map(p=>p[0])));
+    const codomain = Array.from(new Set(pairs.map(p=>p[1])));
+    document.getElementById("invDomain").value = domain.join(",");
+    document.getElementById("invCodomain").value = codomain.join(",");
+    document.getElementById("invMap").value = pairs.map(p=>`${p[0]}->${p[1]}`).join(",");
+    document.getElementById("invQuery").value = PRACTICE_STATE.payload.q;
+    openTab(new Event("click"), "inversa");
+    try{ invertFunction(); }catch(e){}
+  }else if (t==="compuesta"){
+    const A = PRACTICE_STATE.payload.A;
+    const B = PRACTICE_STATE.payload.B;
+    const C = PRACTICE_STATE.payload.C;
+    const f = PRACTICE_STATE.payload.f;
+    const g = PRACTICE_STATE.payload.g;
+    document.getElementById("compDomain").value = A.join(",");
+    document.getElementById("compMid").value = B.join(",");
+    document.getElementById("compCodomain").value = C.join(",");
+    document.getElementById("compMapF").value = f.map(p=>`${p[0]}->${p[1]}`).join(",");
+    document.getElementById("compMapG").value = g.map(p=>`${p[0]}->${p[1]}`).join(",");
+    openTab(new Event("click"), "compuesta");
+    try{ composeFunctions(); }catch(e){}
+  }else if (t==="discreta"){
+    document.getElementById("discX").value = PRACTICE_STATE.payload.xs.join(",");
+    document.getElementById("discY").value = PRACTICE_STATE.payload.ys.join(",");
+    openTab(new Event("click"), "discreta");
+    try{ plotDiscrete(); }catch(e){}
+  }
+
+  try{ showToast("Reto cargado en la sección"); }catch(e){}
+}
+
+function copyPracticeMatlab(){
+  const code = document.getElementById("practiceMatlab")?.textContent || "";
+  if (!navigator.clipboard){ return; }
+  navigator.clipboard.writeText(code).then(()=>{ try{ showToast("MATLAB copiado"); }catch(e){} });
+}
+function downloadPracticeMatlab(){
+  const code = document.getElementById("practiceMatlab")?.textContent || "";
+  const blob = new Blob([code], {type:"text/plain"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "practice.m";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function initPracticeMode(){
+  const topicSel = document.getElementById("practiceTopic");
+  const levelSel = document.getElementById("practiceLevel");
+
+  const btnNew = document.getElementById("practiceNew");
+  const btnCheck = document.getElementById("practiceCheck");
+  const btnReveal = document.getElementById("practiceReveal");
+  const btnLoad = document.getElementById("practiceLoad");
+  const btnReset = document.getElementById("practiceReset");
+  const btnCopy = document.getElementById("practiceCopy");
+  const btnDown = document.getElementById("practiceDownload");
+
+  if (!btnNew) return;
+
+  btnNew.addEventListener("click", ()=>{
+    const topic = topicSel?.value || "prod-cartesiano";
+    const lvl = Number(levelSel?.value || 1);
+    PRACTICE_STATE = makePractice(topic, lvl);
+    renderPractice();
+  });
+
+  btnCheck && btnCheck.addEventListener("click", checkPractice);
+  btnReveal && btnReveal.addEventListener("click", revealPractice);
+  btnLoad && btnLoad.addEventListener("click", loadPracticeIntoSection);
+  btnReset && btnReset.addEventListener("click", ()=>{
+    PRACTICE_STATE = null;
+    renderPractice();
+  });
+  btnCopy && btnCopy.addEventListener("click", copyPracticeMatlab);
+  btnDown && btnDown.addEventListener("click", downloadPracticeMatlab);
+
+  renderPractice();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   try{ validateLastTab(); }catch(e){}
 
   try{ bindTabLinksHard(); }catch(e){}
+  try{ renumberMissionBadges(); }catch(e){}
+  try{ initPlayerPanelClose(); }catch(e){}
+  try{ initPracticeMode(); }catch(e){}
 
   try{ updateStreak(); }catch(e){}
   try{ saveXp(loadXp()); }catch(e){} // render XP in HUD
@@ -1542,7 +1920,7 @@ function renderMissions(){
   const st = loadMissions();
   list.innerHTML = "";
 
-  MISSIONS.forEach(m => {
+  MISSIONS.forEach((m, idx) => {
     
     
     if (["video","resenas"].includes(m.id)) return;
@@ -1552,7 +1930,7 @@ const li = document.createElement("li");
     const left = document.createElement("div");
     left.className = "left";
     left.innerHTML = `<i class="fas ${st[m.id] ? "fa-circle-check" : "fa-circle"}"></i>
-                      <span class="label">${m.label}</span>`;
+                      <span class="label">${m.label}</span> <span class="mission-lv">LV ${idx+1}</span>`;
     const state = document.createElement("span");
     state.className = "state";
     state.textContent = st[m.id] ? "Completada" : "Pendiente";
@@ -1579,7 +1957,7 @@ const li = document.createElement("li");
 function ensureMiniMissions(){
   // Inserta una mini barra al inicio de cada tab-content (solo una vez)
   const st = loadMissions();
-  MISSIONS.forEach(m => {
+  MISSIONS.forEach((m, idx) => {
     const tab = document.getElementById(m.id);
     if (!tab) return;
     if (tab.querySelector(".mission-mini")) return;
