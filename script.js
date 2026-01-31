@@ -1,6 +1,213 @@
+document.addEventListener("DOMContentLoaded", () => {
+  try{ updateStreak(); }catch(e){}
+  try{ saveXp(loadXp()); }catch(e){} // render XP in HUD
+  try{ initSidebarSearch(); }catch(e){}
+  try{ initModalSystem(); }catch(e){}
+  try{ initHud(); }catch(e){}
+  try{ initVideoSection(); }catch(e){}
+  try{ renderReviews(); }catch(e){}
+  // pair-builder sync on blur
+  [["class","classMap"],["inv","invMap"],["compF","compMapF"],["compG","compMapG"]].forEach(([p,id])=>{
+    const el=document.getElementById(id);
+    if(el){ el.addEventListener("blur", ()=>syncPairsFromInput(p,id)); syncPairs(p,id); }
+  });
+  initStarPicker?.();
+});
+
+
+
+function initSidebarSearch(){
+  const input = document.getElementById("sidebarSearch");
+  const btn = document.getElementById("sidebarSearchBtn");
+  if (!input) return;
+
+  const links = Array.from(document.querySelectorAll(".sidebar .tab-link"));
+  // Store original labels
+  links.forEach(a=>{
+    if (!a.dataset.label) a.dataset.label = a.textContent.trim();
+  });
+
+  const norm = (s)=> (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const apply = ()=>{
+    const q = norm(input.value.trim());
+    let visibleCount = 0;
+
+    links.forEach(a=>{
+      const label = a.dataset.label || a.textContent;
+      const match = !q || norm(label).includes(q);
+      const li = a.closest("li") || a.parentElement;
+
+      if (li) li.style.display = match ? "" : "none";
+      if (match) visibleCount++;
+
+      // highlight match
+      if (!q){
+        a.innerHTML = `<i class="${(a.querySelector("i")||{}).className || "fas fa-circle"}"></i><span class="label">${label}</span>`;
+      } else {
+        const idx = norm(label).indexOf(q);
+        if (idx >= 0){
+          const before = label.slice(0, idx);
+          const mid = label.slice(idx, idx + input.value.trim().length);
+          const after = label.slice(idx + input.value.trim().length);
+          const iconClass = (a.querySelector("i")||{}).className || "fas fa-circle";
+          a.innerHTML = `<i class="${iconClass}"></i><span class="label">${before}<mark>${mid}</mark>${after}</span>`;
+        }
+      }
+    });
+
+    // simple feedback in placeholder
+    input.dataset.count = String(visibleCount);
+  };
+
+  input.addEventListener("input", apply);
+  input.addEventListener("keydown", (e)=>{
+    if (e.key === "Enter"){
+      e.preventDefault();
+      const first = links.find(a=>{
+        const li = a.closest("li") || a.parentElement;
+        return li && li.style.display !== "none";
+      });
+      if (first){ first.click(); }
+    } else if (e.key === "Escape"){
+      input.value = "";
+      apply();
+      input.blur();
+    }
+  });
+  btn?.addEventListener("click", ()=>{
+    input.focus();
+    apply();
+  });
+
+  // Shortcut: '/' focuses search
+  document.addEventListener("keydown", (e)=>{
+    if (e.key === "/" && document.activeElement !== input){
+      e.preventDefault();
+      input.focus();
+    }
+  });
+
+  apply();
+}
+
+
+function openAchModal(){
+  const modal = document.getElementById("achModal");
+  if (!modal) return;
+  renderAchievements();
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden","false");
+}
+function closeAchModal(){
+  const modal = document.getElementById("achModal");
+  if (!modal) return;
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden","true");
+}
+
+function initModalSystem(){
+  // Close achievements modal
+  document.querySelectorAll("#achModal [data-close]").forEach(el=>{
+    el.addEventListener("click", ()=> closeAchModal());
+  });
+  document.addEventListener("keydown", (e)=>{
+    if (e.key === "Escape"){ 
+      closeAchModal();
+      document.body.classList.remove("sidebar-open");
+    }
+  });
+}
+
+function initHud(){
+  // Streak click -> info
+  document.querySelector(".streak")?.addEventListener("click", ()=>{
+    const st = loadStreak();
+    showToast(`Racha: ${st.count||1} día(s)`);
+  });
+
+  // Trophy -> open achievements modal
+  document.getElementById("trophyBtn")?.addEventListener("click", openAchModal);
+
+  // Sound toggle
+  const soundBtn = document.getElementById("soundBtn");
+  const getSound = ()=> (localStorage.getItem("mc_sound") || "off");
+  const setSound = (v)=>{
+    localStorage.setItem("mc_sound", v);
+    if (soundBtn){
+      soundBtn.innerHTML = v === "on" ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+      soundBtn.title = "Sonido: " + (v === "on" ? "on" : "off");
+    }
+    showToast(v === "on" ? "Sonido activado" : "Sonido desactivado");
+  };
+  setSound(getSound());
+  soundBtn?.addEventListener("click", ()=> setSound(getSound()==="on" ? "off" : "on"));
+
+  // Theme toggle (gold <-> cyber)
+  const themeBtn = document.getElementById("themeBtn");
+  const root = document.documentElement;
+  const getTheme = ()=> localStorage.getItem("mc_theme") || "gold";
+  const setTheme = (t)=>{
+    root.setAttribute("data-theme", t);
+    localStorage.setItem("mc_theme", t);
+    showToast("Tema: " + (t === "cyber" ? "Cyber" : "Gold"));
+  };
+  setTheme(getTheme());
+  themeBtn?.addEventListener("click", ()=> setTheme(getTheme()==="gold" ? "cyber" : "gold"));
+
+  // Fullscreen
+  const fsBtn = document.getElementById("fsBtn");
+  const updateFs = ()=>{
+    const isFs = !!document.fullscreenElement;
+    if (fsBtn){
+      fsBtn.innerHTML = isFs ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+      fsBtn.title = isFs ? "Salir de pantalla completa" : "Pantalla completa";
+    }
+  };
+  updateFs();
+  fsBtn?.addEventListener("click", async ()=>{
+    try{
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+      else await document.exitFullscreen();
+    }catch(e){
+      showToast("No se pudo activar pantalla completa.");
+    }
+    updateFs();
+  });
+  document.addEventListener("fullscreenchange", updateFs);
+
+  // Sidebar toggle for mobile
+  const toggle = document.getElementById("sidebarToggle");
+  toggle?.addEventListener("click", ()=>{
+    document.body.classList.toggle("sidebar-open");
+  });
+  // clicking overlay closes
+  document.addEventListener("click",(e)=>{
+    if (!document.body.classList.contains("sidebar-open")) return;
+    const sidebar = document.querySelector(".sidebar");
+    const toggle = document.getElementById("sidebarToggle");
+    if (sidebar && !sidebar.contains(e.target) && toggle && !toggle.contains(e.target)){
+      document.body.classList.remove("sidebar-open");
+    }
+  });
+}
+
+
+// --- Layout stability: keep header height in CSS var (prevents motto clipping) ---
+function updateTopbarHeight(){
+  const header = document.querySelector('.top-header');
+  if (!header) return;
+  const h = Math.ceil(header.getBoundingClientRect().height);
+  if (h > 0){
+    document.documentElement.style.setProperty('--topbar-height', h + 'px');
+  }
+}
+window.addEventListener('resize', ()=>requestAnimationFrame(updateTopbarHeight), { passive:true });
+
 // ACTIVAR COLOREADO DE CÓDIGO
-document.addEventListener('DOMContentLoaded', (event) => {
-    hljs.highlightAll();
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.hljs && typeof window.hljs.highlightAll === 'function') {
+        window.hljs.highlightAll();
+    }
 });
 
 // --- DICCIONARIO DE COLORES NEÓN VIBRANTES ---
@@ -20,18 +227,28 @@ const sectionColors = {
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
 
+    // Evitar salto al inicio por href="#"
+    if (evt && evt.preventDefault) evt.preventDefault();
+
+    // Color por sección (siempre definido)
+    var newColor = sectionColors[tabName] || '#FFD700';
+
     // Ocultar contenidos
     tabcontent = document.getElementsByClassName("tab-content");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
+    }
+    // Animación: reset clase active
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList && tabcontent[i].classList.remove("active");
     }
 
     // Resetear botones
     tablinks = document.getElementsByClassName("tab-link");
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
-        tablinks[i].style.borderColor = "transparent"; 
-        tablinks[i].style.color = "#e0e0e0"; 
+        tablinks[i].style.borderColor = "transparent";
+        tablinks[i].style.color = "#e0e0e0";
     }
 
     // Mostrar pestaña actual
@@ -39,21 +256,39 @@ function openTab(evt, tabName) {
     if (currentTab) {
         currentTab.style.display = "block";
         
-        // --- CAMBIO DE COLOR DINÁMICO ---
-        var newColor = sectionColors[tabName] || '#FFD700';
-        document.documentElement.style.setProperty('--gold-primary', newColor);
+        // Animación: activar
+        if (currentTab.classList) {
+            requestAnimationFrame(() => currentTab.classList.add("active"));
+        }
+document.documentElement.style.setProperty('--gold-primary', newColor);
     }
 
     // Activar botón
-    if (evt) {
+    if (evt && evt.currentTarget) {
         evt.currentTarget.className += " active";
         evt.currentTarget.style.borderColor = newColor;
         evt.currentTarget.style.color = newColor;
     }
+    try{ ensureMiniMissions(); updateMiniMission(tabName); }catch(e){}
+
+
+    try{ cleanupNonGameTabs(); }catch(e){}
+
+    // UX: al cambiar de pestaña, vuelve arriba del panel central
+    try{
+        const scroller = document.querySelector(".main-content");
+        if (scroller) scroller.scrollTo({ top: 0, behavior: "smooth" });
+    }catch(e){}
+    // Si no hubo evento (carga inicial), activa el link correspondiente
+    if (!evt) { try{ activateLinkForTab(tabName); }catch(e){} }
+
+    try{ localStorage.setItem("mc_last_tab", tabName); }catch(e){}
+    try{ setCurrentSection(tabName); }catch(e){}
 }
 
 // --- CALCULADORAS ---
 function calcCartesian() {
+    try{ awardXp(40, "Producto cartesiano"); }catch(e){}
     const rawA = document.getElementById('setA').value;
     const rawB = document.getElementById('setB').value;
     const resDiv = document.getElementById('resCartesiano');
@@ -78,636 +313,1976 @@ function calcCartesian() {
     resDiv.innerHTML = `<strong>PARES GENERADOS:</strong><br>{ ${pairs.join(', ')} }`;
 }
 
-/* =========================
-   UTILIDADES (PARSING)
-========================= */
-function parseCSV(raw) {
+// =========================
+//  NUEVAS SECCIONES (MC)
+//  Clasificación / Inversa / Compuesta / Discreta / Video / Reseñas
+// =========================
+
+function parseList(raw) {
     if (!raw) return [];
-    return raw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    return raw.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
 }
 
-/**
- * Acepta pares tipo:
- *  1->a, 2->b
- *  1:a, 2:b
- *  1=a, 2=b
- *  (1,a), (2,b)
- */
 function parseMapping(raw) {
     const out = { map: {}, pairs: [], errors: [] };
-    if (!raw) {
-        out.errors.push("⚠️ Ingresa el mapeo.");
-        return out;
-    }
+    if (!raw) { out.errors.push("⚠️ Ingresa el mapeo."); return out; }
 
-    // Normalizar: quitar llaves y espacios extras
     let cleaned = raw.replace(/[{}]/g, '').trim();
-
-    // Soportar formato (x,y)
     cleaned = cleaned.replace(/\(/g, '').replace(/\)/g, '');
 
-    const parts = cleaned.split(',').map(s => s.trim()).filter(Boolean);
+    const parts = cleaned.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
 
-    // Intentar reconstruir pares si el usuario puso (x,y) sin separador claro:
-    // Ej: "1,a,2,b" -> lo convertimos en ["1,a","2,b"]
+    // Si el usuario puso "1,a,2,b" lo emparejamos
     let chunks = parts;
     const hasArrow = cleaned.includes("->") || cleaned.includes(":") || cleaned.includes("=");
     if (!hasArrow && parts.length % 2 === 0) {
         chunks = [];
-        for (let i = 0; i < parts.length; i += 2) {
-            chunks.push(parts[i] + "," + parts[i + 1]);
-        }
+        for (let i = 0; i < parts.length; i += 2) chunks.push(parts[i] + "," + parts[i+1]);
     }
 
-    const separators = ["->", ":", "="];
-    chunks.forEach(p => {
-        let x = null, y = null;
+    const seps = ["->", ":", "="];
+    for (const p of chunks) {
+        let x = "", y = "";
 
-        for (const sep of separators) {
+        let found = false;
+        for (const sep of seps) {
             if (p.includes(sep)) {
-                const [lx, ry] = p.split(sep);
-                x = (lx ?? "").trim();
-                y = (ry ?? "").trim();
+                const tmp = p.split(sep);
+                x = (tmp[0] || "").trim();
+                y = (tmp[1] || "").trim();
+                found = true;
                 break;
             }
         }
-
-        // Formato "x,y"
-        if (x === null || y === null) {
-            if (p.includes(",")) {
-                const [lx, ry] = p.split(",");
-                x = (lx ?? "").trim();
-                y = (ry ?? "").trim();
-            }
+        if (!found && p.includes(",")) {
+            const tmp = p.split(",");
+            x = (tmp[0] || "").trim();
+            y = (tmp[1] || "").trim();
+            found = true;
         }
 
         if (!x || !y) {
             out.errors.push(`⚠️ Par inválido: "${p}"`);
-            return;
+            continue;
         }
 
-        // detectar duplicado con salida distinta
-        if (out.map.hasOwnProperty(x) && out.map[x] !== y) {
+        if (Object.prototype.hasOwnProperty.call(out.map, x) && out.map[x] !== y) {
             out.errors.push(`❌ No es función: "${x}" tiene dos salidas (${out.map[x]} y ${y}).`);
-            return;
+            continue;
         }
 
         out.map[x] = y;
         out.pairs.push([x, y]);
-    });
+    }
 
     if (out.pairs.length === 0 && out.errors.length === 0) out.errors.push("⚠️ No se detectaron pares.");
     return out;
 }
 
-function setResult(el, msg, ok = true) {
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+// =============================
+// UI helpers (toast / download / pair builder)
+// =============================
+function showToast(msg, type="info", ms=2600) {
+    const el = document.getElementById("toast");
     if (!el) return;
-    el.style.color = ok ? "var(--gold-primary)" : "red";
-    el.innerHTML = msg;
+    el.className = "toast toast-" + type;
+    el.textContent = msg;
+    el.style.display = "block";
+    el.style.opacity = "1";
+    clearTimeout(el.__t);
+    el.__t = setTimeout(() => {
+        el.style.opacity = "0";
+        setTimeout(()=>{ el.style.display = "none"; }, 250);
+    }, ms);
 }
 
-function stars(n) {
-    const k = Math.max(0, Math.min(5, Number(n) || 0));
-    return "★".repeat(k) + "☆".repeat(5 - k);
+function downloadCode(codeId, filename="script.m") {
+    const el = document.getElementById(codeId);
+    if (!el) return;
+    const txt = el.textContent || "";
+    const blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+    showToast("Descargado: " + filename, "ok");
 }
 
-/* =========================
-   CLASIFICACIÓN
-========================= */
-function analyzeMapping(domain, codomain, mapping) {
-    // mapping: objeto x->y
-    const report = {
-        isFunction: true,
-        missingDomain: [],
-        image: [],
-        notInCodomain: [],
-        injective: false,
-        surjective: false,
-        bijective: false
-    };
+// Pair builder store
+const pairStore = Object.create(null);
 
-    const image = [];
-    const imageSet = new Set();
-    const seenY = new Set();
+function addPair(prefix, mapInputId) {
+    const xEl = document.getElementById(prefix + "PairX");
+    const yEl = document.getElementById(prefix + "PairY");
+    const listEl = document.getElementById(prefix + "PairsList");
+    const mapEl = document.getElementById(mapInputId);
 
-    domain.forEach(x => {
-        if (!mapping.hasOwnProperty(x)) report.missingDomain.push(x);
-        else {
-            const y = mapping[x];
-            image.push(y);
-            imageSet.add(y);
-            if (codomain.length > 0 && !codomain.includes(y)) report.notInCodomain.push(`${x}->${y}`);
-            if (seenY.has(y)) { /* repetido */ }
-            seenY.add(y);
+    if (!xEl || !yEl || !listEl || !mapEl) return;
+
+    const x = (xEl.value || "").trim();
+    const y = (yEl.value || "").trim();
+    if (!x || !y) {
+        showToast("Completa x e y.", "warn");
+        return;
+    }
+
+    pairStore[prefix] = pairStore[prefix] || [];
+    const idx = pairStore[prefix].findIndex(p => p[0] === x);
+    if (idx >= 0) pairStore[prefix][idx] = [x, y];
+    else pairStore[prefix].push([x, y]);
+
+    xEl.value = ""; yEl.value = "";
+    syncPairs(prefix, mapInputId);
+}
+
+function removePair(prefix, mapInputId, encodedX) {
+    const x = decodeURIComponent(encodedX || "");
+    pairStore[prefix] = (pairStore[prefix] || []).filter(p => p[0] !== x);
+    syncPairs(prefix, mapInputId);
+}
+
+function clearPairs(prefix, mapInputId) {
+    pairStore[prefix] = [];
+    syncPairs(prefix, mapInputId);
+    showToast("Pares borrados.", "info");
+}
+
+function syncPairs(prefix, mapInputId) {
+    const listEl = document.getElementById(prefix + "PairsList");
+    const mapEl = document.getElementById(mapInputId);
+    if (!listEl || !mapEl) return;
+
+    const arr = pairStore[prefix] || [];
+    mapEl.value = arr.map(([x,y]) => `${x}->${y}`).join(", ");
+
+    if (!arr.length) {
+        listEl.innerHTML = `<span class="pairs-empty">Sin pares (usa + para agregar)</span>`;
+        return;
+    }
+
+    listEl.innerHTML = arr.map(([x,y]) => {
+        const ex = encodeURIComponent(x);
+        return `<span class="pair-chip"><strong>${escapeHtml(x)}</strong>→${escapeHtml(y)} <button class="chip-x" onclick="removePair('${prefix}','${mapInputId}','${ex}')">×</button></span>`;
+    }).join("");
+}
+
+// When user writes mapping manually, try to reflect it into the builder list
+function syncPairsFromInput(prefix, mapInputId) {
+    const mapEl = document.getElementById(mapInputId);
+    if (!mapEl) return;
+    const parsed = parseMapping(mapEl.value);
+    if (parsed.errors.length) return; // don't overwrite with bad input
+    pairStore[prefix] = parsed.pairs.map(([x,y]) => [x,y]);
+    syncPairs(prefix, mapInputId);
+}
+
+function clearSection(sectionId) {
+    if (sectionId === "clasificacion") {
+        ["classDomain","classCodomain","classMap","classPairX","classPairY"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+        const out = document.getElementById("classResult"); if(out) out.textContent="Esperando entrada...";
+        const wrap = document.getElementById("classMatlabWrap"); if(wrap) wrap.style.display="none";
+        pairStore["class"] = []; syncPairs("class","classMap");
+    }
+    if (sectionId === "inversa") {
+        ["invDomain","invCodomain","invMap","invQuery","invPairX","invPairY"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+        const out = document.getElementById("invResult"); if(out) out.textContent="Esperando entrada...";
+        const wrap = document.getElementById("invMatlabWrap"); if(wrap) wrap.style.display="none";
+        pairStore["inv"] = []; syncPairs("inv","invMap");
+    }
+    if (sectionId === "compuesta") {
+        ["compDomain","compMid","compCodomain","compMapF","compMapG","compFPairX","compFPairY","compGPairX","compGPairY"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+        const out = document.getElementById("compResult"); if(out) out.textContent="Esperando entrada...";
+        const wrap = document.getElementById("compMatlabWrap"); if(wrap) wrap.style.display="none";
+        pairStore["compF"] = []; pairStore["compG"] = [];
+        syncPairs("compF","compMapF"); syncPairs("compG","compMapG");
+    }
+    if (sectionId === "discreta") {
+        ["discX","discY"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+        const out = document.getElementById("discResult"); if(out) out.textContent="Esperando entrada...";
+        const wrap = document.getElementById("discMatlabWrap"); if(wrap) wrap.style.display="none";
+        const canvas = document.getElementById("discCanvas");
+        if (canvas && canvas.getContext) canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+    }
+    showToast("Listo: sección limpia.", "ok");
+}
+
+function pairsTable(pairs, h1="x", h2="f(x)") {
+    const rows = pairs.map(([a,b]) => `<tr><td>${escapeHtml(a)}</td><td>${escapeHtml(b)}</td></tr>`).join("");
+    return `<table class="mini-table"><thead><tr><th>${escapeHtml(h1)}</th><th>${escapeHtml(h2)}</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function setMatlab(codeId, wrapId, codeStr, autoOpen=true) {
+    const codeEl = document.getElementById(codeId);
+    const wrap = document.getElementById(wrapId);
+    if (!codeEl || !wrap) return;
+    codeEl.textContent = codeStr || "";
+    if (autoOpen) wrap.style.display = "block";
+
+    // highlight.js (si existe)
+    if (window.hljs && typeof window.hljs.highlightElement === "function") {
+        try { window.hljs.highlightElement(codeEl); } catch {}
+    }
+}
+
+function toggleMatlab(wrapId, btnEl) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    const isHidden = (wrap.style.display === "none" || wrap.style.display === "");
+    wrap.style.display = isHidden ? "block" : "none";
+    if (btnEl) btnEl.textContent = isHidden ? "Ocultar MATLAB" : "Ver MATLAB";
+}
+
+async function copyCode(codeId) {
+    const el = document.getElementById(codeId);
+    if (!el) return;
+    const txt = el.textContent || "";
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(txt);
+            showToast("Copiado ✓", "ok");
+        } else {
+            throw new Error("no clipboard");
         }
-    });
-
-    report.isFunction = report.missingDomain.length === 0; // asumiendo que mapping ya no tiene conflictos
-    report.image = Array.from(imageSet);
-
-    // Injectiva: no repite y (considerando solo x del dominio)
-    report.injective = report.isFunction && (image.length === report.image.length);
-
-    // Sobreyectiva: imagen cubre codominio (si codominio fue dado)
-    if (codomain.length === 0) {
-        report.surjective = false;
-    } else {
-        report.surjective = report.isFunction && codomain.every(y => imageSet.has(y));
+    } catch {
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("Copiado ✓", "ok");
     }
-
-    report.bijective = report.injective && report.surjective;
-
-    return report;
 }
 
+function badge(text, type="ok") {
+    const cls = type === "ok" ? "badge-ok" : (type === "warn" ? "badge-warn" : "badge-bad");
+    return `<span class="pill ${cls}">${escapeHtml(text)}</span>`;
+}
+
+// --------- CLASIFICACIÓN ----------
 function classifyFunction() {
-    const dom = parseCSV(document.getElementById("classDomain")?.value);
-    const cod = parseCSV(document.getElementById("classCodomain")?.value);
-    const mappingRaw = document.getElementById("classMap")?.value;
+    try{ awardXp(60, "Clasificación"); }catch(e){}
+    const domain = parseList(document.getElementById("classDomain")?.value);
+    const codomain = parseList(document.getElementById("classCodomain")?.value);
+    const mapping = parseMapping(document.getElementById("classMap")?.value);
+    const out = document.getElementById("classResult");
 
-    const resEl = document.getElementById("classResult");
-    const codeEl = document.getElementById("classMatlab");
+    if (!out) return;
 
-    if (dom.length === 0 || cod.length === 0 || !mappingRaw) {
-        setResult(resEl, "⚠️ Completa dominio, codominio y mapeo.", false);
+    const errors = [];
+    if (domain.length === 0) errors.push("⚠️ Dominio A vacío.");
+    if (codomain.length === 0) errors.push("⚠️ Codominio B vacío.");
+    errors.push(...mapping.errors);
+
+    if (errors.length) {
+        out.innerHTML = `<div class="alert-bad">${errors.map(e => `<div>${escapeHtml(e)}</div>`).join("")}</div>`;
+        setMatlab("classMatlab", "classMatlabWrap", "% Corrige los datos primero para generar el script MATLAB.", false);
         return;
     }
 
-    const parsed = parseMapping(mappingRaw);
-    if (parsed.errors.length > 0) {
-        setResult(resEl, parsed.errors.join("<br>"), false);
+    // Validar que todo x del dominio tenga imagen
+    const missingX = domain.filter(x => !Object.prototype.hasOwnProperty.call(mapping.map, x));
+    const extraX = Object.keys(mapping.map).filter(x => !domain.includes(x));
+
+    let isFunction = missingX.length === 0 && mapping.errors.length === 0;
+
+    // Validar que imágenes estén en codominio
+    const badY = Object.values(mapping.map).filter(y => !codomain.includes(y));
+    if (badY.length) {
+        isFunction = false;
+        errors.push(`❌ Hay salidas fuera del codominio: ${[...new Set(badY)].join(", ")}`);
+    }
+
+    if (!isFunction) {
+        const html = [
+            badge("NO es función", "bad"),
+            missingX.length ? `<div class="alert-warn">Faltan mapeos para: ${escapeHtml(missingX.join(", "))}</div>` : "",
+            extraX.length ? `<div class="alert-warn">Sobran entradas (no están en A): ${escapeHtml(extraX.join(", "))}</div>` : "",
+            errors.length ? `<div class="alert-bad">${errors.map(e => `<div>${escapeHtml(e)}</div>`).join("")}</div>` : "",
+            pairsTable(mapping.pairs, "x", "imagen")
+        ].join("");
+        out.innerHTML = html;
+
+        setMatlab("classMatlab","classMatlabWrap",
+`% CLASIFICACIÓN (revisa datos: no es función con el dominio/codominio actual)
+A = {${domain.map(x=>`'${x}'`).join(", ")}};
+B = {${codomain.map(x=>`'${x}'`).join(", ")}};
+% Mapeo (x -> y)
+pairs = {${mapping.pairs.map(([x,y])=>`'${x}','${y}'`).join(", ")}};
+% Sugerencia: valida que cada x en A tenga exactamente una salida en B.`, true);
         return;
     }
 
-    const rep = analyzeMapping(dom, cod, parsed.map);
+    // Injectiva: todas las imágenes únicas
+    const images = domain.map(x => mapping.map[x]);
+    const uniqueImages = new Set(images);
+    const injective = uniqueImages.size === images.length;
 
-    if (rep.notInCodomain.length > 0) {
-        setResult(resEl, `⚠️ Hay salidas fuera del codominio: ${rep.notInCodomain.join(", ")}`, false);
-        return;
-    }
+    // Sobreyectiva: todas las y del codominio aparecen
+    const imageSet = new Set(images);
+    const surjective = codomain.every(y => imageSet.has(y));
 
-    if (!rep.isFunction) {
-        setResult(resEl, `❌ No es función: faltan asignaciones para ${rep.missingDomain.join(", ")}`, false);
-        return;
-    }
+    const bijective = injective && surjective;
 
-    const lines = [];
-    lines.push(`✅ ES FUNCIÓN (cada x tiene una única salida)`);
-    lines.push(`Imagen: { ${rep.image.join(", ")} }`);
-    lines.push(rep.injective ? `✅ Injectiva` : `❌ No injectiva (se repite alguna salida)`);
-    lines.push(rep.surjective ? `✅ Sobreyectiva` : `❌ No sobreyectiva (no cubre todo B)`);
-    lines.push(rep.bijective ? `🏆 Biyectiva (tiene inversa)` : `—`);
+    const html = [
+        badge("Es función", "ok"),
+        injective ? badge("Inyectiva", "ok") : badge("No inyectiva", "warn"),
+        surjective ? badge("Sobreyectiva", "ok") : badge("No sobreyectiva", "warn"),
+        bijective ? badge("Biyectiva", "ok") : badge("No biyectiva", "warn"),
+        `<div style="margin-top:12px">${pairsTable(domain.map(x=>[x, mapping.map[x]]), "x", "f(x)")}</div>`
+    ].join(" ");
+    out.innerHTML = html;
 
-    setResult(resEl, lines.join("<br>"), true);
+    // MATLAB script
+    const matlab =
+`% CLASIFICACIÓN DE UNA FUNCIÓN (discreta)
+A = {${domain.map(x=>`'${x}'`).join(", ")}};
+B = {${codomain.map(x=>`'${x}'`).join(", ")}};
 
-    // MATLAB generator
-    const A = dom.map(x => `'${x}'`).join(", ");
-    const B = cod.map(y => `'${y}'`).join(", ");
-    const fPairs = parsed.pairs.map(([x, y]) => `'%s','%s'`).join("; "); // not used
-    const keys = parsed.pairs.map(([x,_]) => `'${x}'`).join(", ");
-    const vals = parsed.pairs.map(([_,y]) => `'${y}'`).join(", ");
+% Pares (x -> y)
+X = {${domain.map(x=>`'${x}'`).join(", ")}};
+Y = {${domain.map(x=>`'${mapping.map[x]}'`).join(", ")}};
 
-    const matlab = [
-`% Dominio y Codominio`,
-`A = {${A}};`,
-`B = {${B}};`,
-`% Mapeo f (x -> y) como tabla`,
-`X = {${keys}};`,
-`Y = {${vals}};`,
-`T = table(X(:), Y(:), 'VariableNames', {'x','fx'});`,
-`disp(T);`,
-``,
-`% Verificar que sea función sobre A (cada x aparece una vez)`,
-`isFunction = (height(unique(T(:,1))) == numel(A)) && all(ismember(A, T.x));`,
-``,
-`% Imagen`,
-`Im = unique(T.fx);`,
-``,
-`% Injectiva: no repite salida`,
-`injectiva = isFunction && (numel(Im) == height(T));`,
-``,
-`% Sobreyectiva: cubre B`,
-`sobreyectiva = isFunction && all(ismember(B, Im));`,
-``,
-`biyectiva = injectiva && sobreyectiva;`,
-`fprintf('Funcion=%d | Injectiva=%d | Sobreyectiva=%d | Biyectiva=%d\\n', isFunction, injectiva, sobreyectiva, biyectiva);`
-    ].join("\n");
+% Inyectiva: todas las imágenes distintas
+isInjective = numel(unique(Y)) == numel(Y);
 
-    if (codeEl) {
-        codeEl.textContent = matlab;
-        if (window.hljs) hljs.highlightElement(codeEl);
-    }
+% Sobreyectiva: cubre todo el codominio
+isSurjective = all(ismember(B, Y));
+
+% Biyectiva
+isBijective = isInjective && isSurjective;
+
+disp(isInjective); disp(isSurjective); disp(isBijective);`;
+    setMatlab("classMatlab","classMatlabWrap", matlab, true);
 }
 
-/* =========================
-   INVERSA
-========================= */
+// --------- INVERSA ----------
 function invertFunction() {
-    const dom = parseCSV(document.getElementById("invDomain")?.value);
-    const cod = parseCSV(document.getElementById("invCodomain")?.value);
-    const mappingRaw = document.getElementById("invMap")?.value;
+    try{ awardXp(60, "Inversa"); }catch(e){}
+    const domain = parseList(document.getElementById("invDomain")?.value);
+    const codomain = parseList(document.getElementById("invCodomain")?.value);
+    const mapping = parseMapping(document.getElementById("invMap")?.value);
     const query = (document.getElementById("invQuery")?.value || "").trim();
+    const out = document.getElementById("invResult");
+    if (!out) return;
 
-    const resEl = document.getElementById("invResult");
-    const codeEl = document.getElementById("invMatlab");
+    const errors = [];
+    if (domain.length === 0) errors.push("⚠️ Dominio A vacío.");
+    if (codomain.length === 0) errors.push("⚠️ Codominio B vacío.");
+    errors.push(...mapping.errors);
 
-    if (dom.length === 0 || cod.length === 0 || !mappingRaw) {
-        setResult(resEl, "⚠️ Completa dominio, codominio y mapeo.", false);
+    if (errors.length) {
+        out.innerHTML = `<div class="alert-bad">${errors.map(e => `<div>${escapeHtml(e)}</div>`).join("")}</div>`;
+        setMatlab("invMatlab","invMatlabWrap","% Corrige los datos para generar el script MATLAB.", false);
         return;
     }
 
-    const parsed = parseMapping(mappingRaw);
-    if (parsed.errors.length > 0) {
-        setResult(resEl, parsed.errors.join("<br>"), false);
+    // Validar que todo x del dominio tenga imagen y en B
+    const missingX = domain.filter(x => !Object.prototype.hasOwnProperty.call(mapping.map, x));
+    const images = domain.filter(x=>Object.prototype.hasOwnProperty.call(mapping.map,x)).map(x => mapping.map[x]);
+    const badY = images.filter(y => !codomain.includes(y));
+
+    if (missingX.length || badY.length) {
+        out.innerHTML = badge("NO es biyectiva → no hay inversa", "bad") +
+            (missingX.length ? `<div class="alert-warn">Faltan mapeos para: ${escapeHtml(missingX.join(", "))}</div>` : "") +
+            (badY.length ? `<div class="alert-bad">Hay salidas fuera de B: ${escapeHtml([...new Set(badY)].join(", "))}</div>` : "");
+        setMatlab("invMatlab","invMatlabWrap","% No hay inversa: revisa dominio/codominio y el mapeo.", true);
         return;
     }
 
-    const rep = analyzeMapping(dom, cod, parsed.map);
+    const injective = (new Set(images)).size === images.length;
+    const surjective = codomain.every(y => new Set(images).has(y));
+    const bijective = injective && surjective;
 
-    if (rep.notInCodomain.length > 0) {
-        setResult(resEl, `⚠️ Hay salidas fuera del codominio: ${rep.notInCodomain.join(", ")}`, false);
+    if (!bijective) {
+        out.innerHTML = badge("Es función, pero NO biyectiva → no hay inversa", "warn");
+        setMatlab("invMatlab","invMatlabWrap","% No hay inversa: se requiere biyectividad.", true);
         return;
     }
 
-    if (!rep.bijective) {
-        const why = [];
-        if (!rep.isFunction) why.push(`faltan asignaciones en el dominio (${rep.missingDomain.join(", ")})`);
-        if (rep.isFunction && !rep.injective) why.push("no es injectiva (se repite alguna salida)");
-        if (rep.isFunction && !rep.surjective) why.push("no es sobreyectiva (no cubre todo B)");
-        setResult(resEl, `❌ No tiene inversa porque ${why.join(" y ")}.`, false);
-        return;
-    }
-
-    // construir inversa
     const inv = {};
-    Object.keys(parsed.map).forEach(x => {
-        inv[parsed.map[x]] = x;
-    });
+    domain.forEach(x => { inv[mapping.map[x]] = x; });
+    const invPairs = Object.keys(inv).map(y => [y, inv[y]]);
 
-    const invPairs = Object.keys(inv).map(y => `${y}->${inv[y]}`);
-    const lines = [];
-    lines.push(`✅ Inversa encontrada:`);
-    lines.push(`f⁻¹ = { ${invPairs.join(", ")} }`);
-
+    let queryHtml = "";
     if (query) {
-        if (inv.hasOwnProperty(query)) lines.push(`<br><strong>f⁻¹(${query}) = ${inv[query]}</strong>`);
-        else lines.push(`<br>⚠️ "${query}" no está en el codominio B.`);
+        queryHtml = Object.prototype.hasOwnProperty.call(inv, query)
+            ? `<div class="alert-ok">f⁻¹(${escapeHtml(query)}) = <b>${escapeHtml(inv[query])}</b></div>`
+            : `<div class="alert-warn">No existe f⁻¹(${escapeHtml(query)}) con el mapeo actual.</div>`;
     }
 
-    setResult(resEl, lines.join("<br>"), true);
+    out.innerHTML = [
+        badge("Biyectiva → inversa existe", "ok"),
+        queryHtml,
+        `<div style="margin-top:12px">${pairsTable(invPairs, "y", "f⁻¹(y)")}</div>`
+    ].join("");
 
-    // MATLAB generator
-    const A = dom.map(x => `'${x}'`).join(", ");
-    const B = cod.map(y => `'${y}'`).join(", ");
-    const keys = parsed.pairs.map(([x,_]) => `'${x}'`).join(", ");
-    const vals = parsed.pairs.map(([_,y]) => `'${y}'`).join(", ");
+    const matlab =
+`% INVERSA DE UNA FUNCIÓN BIYECTIVA (discreta)
+A = {${domain.map(x=>`'${x}'`).join(", ")}};
+B = {${codomain.map(x=>`'${x}'`).join(", ")}};
 
-    const matlab = [
-`% Dominio y Codominio`,
-`A = {${A}};`,
-`B = {${B}};`,
-`X = {${keys}};`,
-`Y = {${vals}};`,
-`T = table(X(:), Y(:), 'VariableNames', {'x','fx'});`,
-``,
-`% Biyectiva => inversa`,
-`isFunction = (height(unique(T(:,1))) == numel(A)) && all(ismember(A, T.x));`,
-`Im = unique(T.fx);`,
-`injectiva = isFunction && (numel(Im) == height(T));`,
-`sobreyectiva = isFunction && all(ismember(B, Im));`,
-`biyectiva = injectiva && sobreyectiva;`,
-``,
-`if ~biyectiva`,
-`    error('No hay inversa: la funcion no es biyectiva');`,
-`end`,
-``,
-`% Inversa como tabla (y -> x)`,
-`Tinv = table(T.fx, T.x, 'VariableNames', {'y','finv_y'});`,
-`disp(Tinv);`,
-``,
-`% Consulta ejemplo`,
-`yq = '${query || (cod[0] || "")}';`,
-`idx = strcmp(Tinv.y, yq);`,
-`if any(idx)`,
-`    fprintf('f^{-1}(%s) = %s\\n', yq, Tinv.finv_y{idx});`,
-`else`,
-`    fprintf('y=%s no encontrado\\n', yq);`,
-`end`
-    ].join("\n");
+X = {${domain.map(x=>`'${x}'`).join(", ")}};
+Y = {${domain.map(x=>`'${mapping.map[x]}'`).join(", ")}};
 
-    if (codeEl) {
-        codeEl.textContent = matlab;
-        if (window.hljs) hljs.highlightElement(codeEl);
-    }
+% Verificar biyectividad
+isInjective = numel(unique(Y)) == numel(Y);
+isSurjective = all(ismember(B, Y));
+if ~(isInjective && isSurjective)
+    error('No es biyectiva, no existe inversa.');
+end
+
+% Construir inversa (y -> x)
+invMap = containers.Map(Y, X);
+
+% Consultar ejemplo
+yq = '${query || (codomain[0] || "")}';
+if isKey(invMap, yq)
+    disp(invMap(yq));
+else
+    disp('No existe f^{-1}(y) para ese valor.');
+end`;
+    setMatlab("invMatlab","invMatlabWrap", matlab, true);
 }
 
-/* =========================
-   COMPOSICIÓN
-========================= */
+// --------- COMPUESTA ----------
 function composeFunctions() {
-    const A = parseCSV(document.getElementById("compDomain")?.value);
-    const B = parseCSV(document.getElementById("compMid")?.value);
-    const C = parseCSV(document.getElementById("compCodomain")?.value);
-    const rawF = document.getElementById("compMapF")?.value;
-    const rawG = document.getElementById("compMapG")?.value;
+    try{ awardXp(70, "Composición"); }catch(e){}
+    const A = parseList(document.getElementById("compDomain")?.value);
+    const B = parseList(document.getElementById("compMid")?.value);
+    const C = parseList(document.getElementById("compCodomain")?.value);
+    const f = parseMapping(document.getElementById("compMapF")?.value);
+    const g = parseMapping(document.getElementById("compMapG")?.value);
+    const out = document.getElementById("compResult");
+    if (!out) return;
 
-    const resEl = document.getElementById("compResult");
-    const codeEl = document.getElementById("compMatlab");
+    const errors = [];
+    if (A.length === 0) errors.push("⚠️ A vacío.");
+    if (B.length === 0) errors.push("⚠️ B vacío.");
+    if (C.length === 0) errors.push("⚠️ C vacío.");
+    errors.push(...f.errors.map(e=>"f: "+e), ...g.errors.map(e=>"g: "+e));
 
-    if (A.length === 0 || B.length === 0 || C.length === 0 || !rawF || !rawG) {
-        setResult(resEl, "⚠️ Completa A, B, C, f y g.", false);
+    if (errors.length) {
+        out.innerHTML = `<div class="alert-bad">${errors.map(e => `<div>${escapeHtml(e)}</div>`).join("")}</div>`;
+        setMatlab("compMatlab","compMatlabWrap","% Corrige los datos para generar el script MATLAB.", false);
         return;
     }
 
-    const fParsed = parseMapping(rawF);
-    const gParsed = parseMapping(rawG);
+    // Validar f: A->B y g: B->C
+    const missingF = A.filter(x => !Object.prototype.hasOwnProperty.call(f.map, x));
+    const fOut = A.filter(x=>Object.prototype.hasOwnProperty.call(f.map,x)).map(x=>f.map[x]);
+    const badF = fOut.filter(y => !B.includes(y));
 
-    if (fParsed.errors.length > 0) { setResult(resEl, fParsed.errors.join("<br>"), false); return; }
-    if (gParsed.errors.length > 0) { setResult(resEl, gParsed.errors.join("<br>"), false); return; }
+    const gKeys = Object.keys(g.map);
+    const badGIn = gKeys.filter(y => !B.includes(y));
+    const gOut = gKeys.map(y=>g.map[y]);
+    const badGOut = gOut.filter(z => !C.includes(z));
 
-    const fRep = analyzeMapping(A, B, fParsed.map);
-    const gRep = analyzeMapping(B, C, gParsed.map);
-
-    if (!fRep.isFunction) { setResult(resEl, `❌ f no es función: faltan ${fRep.missingDomain.join(", ")}`, false); return; }
-    if (!gRep.isFunction) { setResult(resEl, `❌ g no es función: faltan ${gRep.missingDomain.join(", ")}`, false); return; }
-
-    // composición
-    const comp = {};
-    const missingInG = [];
-    A.forEach(x => {
-        const y = fParsed.map[x];
-        if (!gParsed.map.hasOwnProperty(y)) missingInG.push(`${x}: g(${y}) no definido`);
-        else comp[x] = gParsed.map[y];
-    });
-
-    const pairs = Object.keys(comp).map(x => `${x}->${comp[x]}`);
-
-    const lines = [];
-    lines.push(`✅ (g ∘ f)(x) calculada`);
-    lines.push(`(g ∘ f) = { ${pairs.join(", ")} }`);
-    if (missingInG.length > 0) lines.push(`<br>⚠️ Faltó g(y) para: ${missingInG.join(" | ")}`);
-
-    setResult(resEl, lines.join("<br>"), true);
-
-    // MATLAB generator
-    const matA = A.map(v => `'${v}'`).join(", ");
-    const matB = B.map(v => `'${v}'`).join(", ");
-    const matC = C.map(v => `'${v}'`).join(", ");
-    const fX = fParsed.pairs.map(([x,_]) => `'${x}'`).join(", ");
-    const fY = fParsed.pairs.map(([_,y]) => `'${y}'`).join(", ");
-    const gX = gParsed.pairs.map(([x,_]) => `'${x}'`).join(", ");
-    const gY = gParsed.pairs.map(([_,y]) => `'${y}'`).join(", ");
-
-    const matlab = [
-`% Conjuntos`,
-`A = {${matA}}; B = {${matB}}; C = {${matC}};`,
-``,
-`% f: A->B`,
-`Tf = table({${fX}}', {${fY}}', 'VariableNames', {'x','fx'});`,
-`% g: B->C`,
-`Tg = table({${gX}}', {${gY}}', 'VariableNames', {'y','gy'});`,
-``,
-`% Composición (g o f)`,
-`Tcomp = table('Size',[0 2],'VariableTypes',{'string','string'},'VariableNames',{'x','gofx'});`,
-`for i = 1:height(Tf)`,
-`    x = string(Tf.x{i});`,
-`    y = string(Tf.fx{i});`,
-`    j = find(strcmp(Tg.y, y), 1);`,
-`    if ~isempty(j)`,
-`        Tcomp = [Tcomp; {x, string(Tg.gy{j})}]; %#ok<AGROW>`,
-`    end`,
-`end`,
-`disp(Tcomp);`
-    ].join("\n");
-
-    if (codeEl) {
-        codeEl.textContent = matlab;
-        if (window.hljs) hljs.highlightElement(codeEl);
+    if (missingF.length || badF.length || badGIn.length || badGOut.length) {
+        out.innerHTML =
+            badge("No se puede componer (datos inconsistentes)", "bad") +
+            (missingF.length ? `<div class="alert-warn">f no está definida para: ${escapeHtml(missingF.join(", "))}</div>` : "") +
+            (badF.length ? `<div class="alert-bad">f(x) fuera de B: ${escapeHtml([...new Set(badF)].join(", "))}</div>` : "") +
+            (badGIn.length ? `<div class="alert-warn">g tiene entradas fuera de B: ${escapeHtml([...new Set(badGIn)].join(", "))}</div>` : "") +
+            (badGOut.length ? `<div class="alert-bad">g(y) fuera de C: ${escapeHtml([...new Set(badGOut)].join(", "))}</div>` : "");
+        setMatlab("compMatlab","compMatlabWrap","% Revisa que f: A->B y g: B->C.", true);
+        return;
     }
+
+    const compPairs = [];
+    const stepsRows = [];
+    for (const x of A) {
+        const y = f.map[x];
+        const z = g.map[y];
+        compPairs.push([x, z]);
+        stepsRows.push([x, y, z]);
+    }
+
+    const stepsTable = `<table class="mini-table"><thead><tr><th>x</th><th>f(x)</th><th>g(f(x))</th></tr></thead><tbody>${
+        stepsRows.map(r=>`<tr><td>${escapeHtml(r[0])}</td><td>${escapeHtml(r[1])}</td><td>${escapeHtml(r[2])}</td></tr>`).join("")
+    }</tbody></table>`;
+
+    out.innerHTML = badge("Compuesta g∘f calculada", "ok") +
+        `<div style="margin-top:12px">${stepsTable}</div>` +
+        `<div style="margin-top:12px">${pairsTable(compPairs,"x","(g∘f)(x)")}</div>`;
+
+    const matlab =
+`% FUNCIÓN COMPUESTA h = g ∘ f
+A = {${A.map(x=>`'${x}'`).join(", ")}};
+B = {${B.map(x=>`'${x}'`).join(", ")}};
+C = {${C.map(x=>`'${x}'`).join(", ")}};
+
+% f: A->B
+Xf = {${A.map(x=>`'${x}'`).join(", ")}};
+Yf = {${A.map(x=>`'${f.map[x]}'`).join(", ")}};
+
+% g: B->C  (definida en los valores que usa f)
+Xg = {${B.map(x=>`'${x}'`).join(", ")}};
+% Ajusta Yg según tu mapeo
+% Ejemplo (rellena según tu entrada):
+% Yg = {...};
+
+% Para usar en MATLAB con maps:
+fMap = containers.Map(Xf, Yf);
+
+% gMap (ejemplo): define gMap con tus pares
+% gMap = containers.Map(Xg, Yg);
+
+% Calcular h(x) = g(f(x))
+% h = cell(size(A));
+% for i=1:numel(A)
+%   y = fMap(A{i});
+%   h{i} = gMap(y);
+% end`;
+    setMatlab("compMatlab","compMatlabWrap", matlab, true);
 }
 
-/* =========================
-   FUNCIÓN DISCRETA (PLOT)
-========================= */
+// --------- DISCRETA ----------
 function plotDiscrete() {
-    const xRaw = document.getElementById("discX")?.value;
-    const yRaw = document.getElementById("discY")?.value;
-    const resEl = document.getElementById("discResult");
-    const codeEl = document.getElementById("discMatlab");
+    try{ awardXp(70, "Gráfica discreta"); }catch(e){}
+    let xs = parseList(document.getElementById("discX")?.value).map(Number);
+    let ys = parseList(document.getElementById("discY")?.value).map(Number);
+    const out = document.getElementById("discResult");
     const canvas = document.getElementById("discCanvas");
 
-    const xs = parseCSV(xRaw).map(Number);
-    const ys = parseCSV(yRaw).map(Number);
+    if (!out) return;
 
     if (xs.length === 0 || ys.length === 0) {
-        setResult(resEl, "⚠️ Ingresa x y f(x).", false);
+        out.innerHTML = `<div class="alert-warn">⚠️ Ingresa listas X e Y.</div>`;
         return;
     }
-    if (xs.some(n => Number.isNaN(n)) || ys.some(n => Number.isNaN(n))) {
-        setResult(resEl, "❌ Usa solo números (ej: 0,1,2).", false);
-        return;
-    }
-    if (xs.length !== ys.length) {
-        setResult(resEl, "❌ x y f(x) deben tener la misma cantidad de valores.", false);
+    if (xs.length !== ys.length || xs.some(Number.isNaN) || ys.some(Number.isNaN)) {
+        out.innerHTML = `<div class="alert-bad">❌ X e Y deben tener la misma cantidad de números (y ser numéricos).</div>`;
         return;
     }
 
-    // tabla
-    let tableHtml = `<strong>Tabla:</strong><br>`;
-    tableHtml += xs.map((x, i) => `x=${x} → f(x)=${ys[i]}`).join("<br>");
-    setResult(resEl, tableHtml, true);
+    // opciones
+    const plotType = document.getElementById("discPlotType")?.value || "stem";
+    const useGrid = !!document.getElementById("discGrid")?.checked;
+    const sortX = !!document.getElementById("discSortX")?.checked;
 
-    // dibujar
+    if (sortX) {
+        const zipped = xs.map((x,i)=>({x, y: ys[i]})).sort((a,b)=>a.x-b.x);
+        xs = zipped.map(p=>p.x);
+        ys = zipped.map(p=>p.y);
+    }
+
+    const pairs = xs.map((x,i)=>[String(x), String(ys[i])]);
+    out.innerHTML = badge("Datos cargados", "ok") + `<div style="margin-top:12px">${pairsTable(pairs,"x","f(x)")}</div>`;
+
     if (canvas && canvas.getContext) {
-        drawDiscretePlot(canvas, xs, ys);
+        drawDiscretePlot(canvas, xs, ys, { plotType, useGrid });
+        ensurePlotTooltip(canvas);
     }
 
-    // MATLAB
-    const matlab = [
-`x = [${xs.join(" ")}];`,
-`y = [${ys.join(" ")}];`,
-`stem(x, y, 'filled');`,
-`grid on;`,
-`xlabel('x'); ylabel('f(x)');`,
-`title('Función discreta');`
-    ].join("\n");
+    const matlab =
+`% FUNCIÓN DISCRETA (gráfica)
+x = [${xs.join(" ")}];
+y = [${ys.join(" ")}];
 
-    if (codeEl) {
-        codeEl.textContent = matlab;
-        if (window.hljs) hljs.highlightElement(codeEl);
-    }
+% stem / plot / scatter
+${plotType === "stem" ? "stem(x, y, 'filled');" : plotType === "line" ? "plot(x, y, '-o');" : "scatter(x, y, 'filled');"}
+grid ${useGrid ? "on" : "off"};
+xlabel('x'); ylabel('f(x)');
+title('Función discreta');`;
+    setMatlab("discMatlab","discMatlabWrap", matlab, true);
 }
 
-function drawDiscretePlot(canvas, xs, ys) {
+function drawDiscretePlot(canvas, xs, ys, opts={}) {
     const ctx = canvas.getContext("2d");
     const w = canvas.width, h = canvas.height;
-
     ctx.clearRect(0,0,w,h);
 
-    // Margen
-    const m = 45;
-    const plotW = w - 2*m;
-    const plotH = h - 2*m;
+    const plotType = opts.plotType || "stem";
+    const useGrid = !!opts.useGrid;
 
+    // margins
+    const mx = 48, my = 34;
+
+    // ranges
     const minX = Math.min(...xs), maxX = Math.max(...xs);
-    const minY = Math.min(...ys), maxY = Math.max(...ys);
+    const minY = Math.min(0, ...ys), maxY = Math.max(...ys);
 
-    // evitar división por cero
-    const dx = (maxX - minX) || 1;
-    const dy = (maxY - minY) || 1;
+    const xScale = (w - 2*mx) / (maxX - minX || 1);
+    const yScale = (h - 2*my) / (maxY - minY || 1);
 
-    const xToPx = x => m + ((x - minX) / dx) * plotW;
-    const yToPx = y => (h - m) - ((y - minY) / dy) * plotH;
+    const xToPx = x => mx + (x - minX) * xScale;
+    const yToPx = y => h - my - (y - minY) * yScale;
 
-    // fondo grid
-    ctx.globalAlpha = 0.8;
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    // grid
+    if (useGrid) {
+        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.lineWidth = 1;
+        const n = 6;
+        for (let i=1;i<n;i++){
+            const gx = mx + i*(w-2*mx)/n;
+            const gy = my + i*(h-2*my)/n;
+            ctx.beginPath(); ctx.moveTo(gx,my); ctx.lineTo(gx,h-my); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(mx,gy); ctx.lineTo(w-mx,gy); ctx.stroke();
+        }
+    }
+
+    // axes
+    ctx.strokeStyle = "rgba(255,255,255,0.6)";
     ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(mx, my);
+    ctx.lineTo(mx, h-my);
+    ctx.lineTo(w-mx, h-my);
+    ctx.stroke();
 
-    const gridN = 10;
-    for (let i=0;i<=gridN;i++){
-        const gx = m + (i/gridN)*plotW;
-        const gy = m + (i/gridN)*plotH;
-        ctx.beginPath(); ctx.moveTo(gx, m); ctx.lineTo(gx, h-m); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(m, gy); ctx.lineTo(w-m, gy); ctx.stroke();
-    }
+    // ticks labels (simple)
+    ctx.fillStyle = "rgba(255,255,255,0.75)";
+    ctx.font = "12px Exo 2, sans-serif";
+    ctx.fillText(String(minX), mx, h-my+18);
+    ctx.fillText(String(maxX), w-mx-18, h-my+18);
+    ctx.fillText(String(maxY), 8, my+4);
+    ctx.fillText(String(minY), 8, h-my);
 
-    // ejes
-    ctx.globalAlpha = 1;
-    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    // points for tooltip
+    const points = xs.map((x,i)=>({
+        x, y: ys[i],
+        px: xToPx(x),
+        py: yToPx(ys[i]),
+        p0: yToPx(0)
+    }));
+    canvas.__points = points;
+
+    // draw
+    ctx.strokeStyle = "rgba(255, 215, 0, 0.9)";
+    ctx.fillStyle = "rgba(255, 215, 0, 0.9)";
     ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(m, h-m); ctx.lineTo(w-m, h-m); ctx.stroke(); // x
-    ctx.beginPath(); ctx.moveTo(m, m); ctx.lineTo(m, h-m); ctx.stroke(); // y
 
-    // puntos y stems
-    ctx.strokeStyle = "rgba(255,255,255,0.55)";
-    ctx.lineWidth = 2;
-
-    for (let i=0;i<xs.length;i++){
-        const px = xToPx(xs[i]);
-        const py = yToPx(ys[i]);
-        const baseY = h - m;
-
-        // stem
+    if (plotType === "line") {
         ctx.beginPath();
-        ctx.moveTo(px, baseY);
-        ctx.lineTo(px, py);
+        points.forEach((p, i)=>{
+            if(i===0) ctx.moveTo(p.px, p.py);
+            else ctx.lineTo(p.px, p.py);
+        });
         ctx.stroke();
-
-        // punto
-        ctx.fillStyle = "rgba(255,255,255,0.9)";
-        ctx.beginPath();
-        ctx.arc(px, py, 5, 0, Math.PI*2);
-        ctx.fill();
     }
 
-    // etiquetas min/max
-    ctx.fillStyle = "rgba(255,255,255,0.65)";
-    ctx.font = "14px monospace";
-    ctx.fillText(`x: ${minX} … ${maxX}`, m, 20);
-    ctx.fillText(`y: ${minY} … ${maxY}`, m, 38);
+    points.forEach((p)=>{
+        if (plotType === "stem") {
+            ctx.beginPath();
+            ctx.moveTo(p.px, p.p0);
+            ctx.lineTo(p.px, p.py);
+            ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.arc(p.px, p.py, 4, 0, Math.PI*2);
+        ctx.fill();
+    });
 }
 
-/* =========================
-   RESEÑAS (LOCALSTORAGE)
-========================= */
-const REV_KEY = "mathbot_reviews_v1";
+// --------- RESEÑAS ----------
+const REV_KEY = "mc_reviews_v1";
 
 function loadReviews() {
     try {
         const raw = localStorage.getItem(REV_KEY);
         if (!raw) return [];
         const arr = JSON.parse(raw);
-        if (!Array.isArray(arr)) return [];
-        return arr;
-    } catch {
-        return [];
-    }
+        return Array.isArray(arr) ? arr : [];
+    } catch { return []; }
 }
 
 function saveReviews(arr) {
-    localStorage.setItem(REV_KEY, JSON.stringify(arr));
+    try { localStorage.setItem(REV_KEY, JSON.stringify(arr)); } catch {}
+}
+
+function stars(n) {
+    const k = Math.max(0, Math.min(5, Number(n)||0));
+    return "★".repeat(k) + "☆".repeat(5-k);
 }
 
 function renderReviews() {
-    const listEl = document.getElementById("reviewsList");
-    if (!listEl) return;
+    const list = document.getElementById("reviewsList");
+    const avgEl = document.getElementById("avgRating");
+    if (!list) return;
 
-    const reviews = loadReviews();
-
-    if (reviews.length === 0) {
-        listEl.innerHTML = `<div class="review-card"><div class="review-text">Aún no hay reseñas. Sé el primero.</div></div>`;
+    // promedio
+    if (avgEl) {
+        if (!arr.length) { avgEl.textContent = "—"; }
+        else {
+            const avg = arr.reduce((s,r)=>s + Number(r.rating||0), 0) / arr.length;
+            avgEl.textContent = avg.toFixed(1) + " ★";
+        }
+    }
+    const arr = loadReviews();
+    if (arr.length === 0) {
+        list.innerHTML = `<div class="review-card"><div class="review-text">Aún no hay reseñas.</div></div>`;
         return;
     }
-
-    listEl.innerHTML = reviews
-        .slice()
-        .reverse()
-        .map(r => {
-            const safeName = (r.name || "Anónimo").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-            const safeText = (r.text || "").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-            const safeDate = (r.date || "");
-            const rating = Number(r.rating) || 0;
-
-            return `
-            <div class="review-card">
-                <div class="review-top">
-                    <div>
-                        <div class="review-name">${safeName}</div>
-                        <div class="review-date">${safeDate}</div>
-                    </div>
-                    <div class="review-stars">${stars(rating)}</div>
+    list.innerHTML = arr.slice().reverse().map(r => {
+        const name = escapeHtml(r.name || "Anónimo");
+        const text = escapeHtml(r.text || "");
+        const date = escapeHtml(r.date || "");
+        const rating = Number(r.rating)||0;
+        return `<div class="review-card">
+            <div class="review-top">
+                <div>
+                    <div class="review-name">${name}</div>
+                    <div class="review-date">${date}</div>
                 </div>
-                <div class="review-text">${safeText}</div>
-            </div>`;
-        })
-        .join("");
+                <div class="review-stars">${stars(rating)}</div>
+            </div>
+            <div class="review-text">${text}</div>
+        </div>`;
+    }).join("");
 }
 
 function addReview() {
-    const name = (document.getElementById("revName")?.value || "").trim();
-    const rating = Number(document.getElementById("revRating")?.value || "");
-    const text = (document.getElementById("revText")?.value || "").trim();
-    const msgEl = document.getElementById("revMsg");
+    const nameEl = document.getElementById("revName");
+    const ratingEl = document.getElementById("revRating");
+    const textEl = document.getElementById("revText");
+    const msg = document.getElementById("revMsg");
+
+    const name = (nameEl?.value || "").trim();
+    const rating = Number(ratingEl?.value || 5);
+    const text = (textEl?.value || "").trim();
 
     if (!text) {
-        setResult(msgEl, "⚠️ Escribe un comentario.", false);
-        return;
-    }
-    if (!(rating >= 1 && rating <= 5)) {
-        setResult(msgEl, "⚠️ La calificación debe ser de 1 a 5.", false);
+        if (msg) msg.textContent = "Escribe una reseña.";
         return;
     }
 
-    const now = new Date();
-    const date = now.toLocaleString();
-
-    const reviews = loadReviews();
-    reviews.push({ name: name || "Anónimo", rating, text, date });
-    saveReviews(reviews);
-
-    // limpiar
-    const nEl = document.getElementById("revName"); if (nEl) nEl.value = "";
-    const rEl = document.getElementById("revRating"); if (rEl) rEl.value = "";
-    const tEl = document.getElementById("revText"); if (tEl) tEl.value = "";
-
-    setResult(msgEl, "✅ Reseña guardada en este navegador.", true);
+    const arr = loadReviews();
+    arr.push({
+        name: name || "Anónimo",
+        rating: Math.max(1, Math.min(5, rating)),
+        text,
+        date: new Date().toLocaleString()
+    });
+    saveReviews(arr);
+    if (textEl) textEl.value = "";
+    if (msg) msg.textContent = "Reseña guardada ✅";
     renderReviews();
 }
 
 function clearReviews() {
-    localStorage.removeItem(REV_KEY);
+    try { localStorage.removeItem(REV_KEY); } catch {}
+    const msg = document.getElementById("revMsg");
+    if (msg) msg.textContent = "Reseñas eliminadas.";
     renderReviews();
-    const msgEl = document.getElementById("revMsg");
-    setResult(msgEl, "✅ Reseñas borradas.", true);
 }
 
-// Inicialización
-document.addEventListener("DOMContentLoaded", () => {
-    renderReviews();
-    const canvas = document.getElementById("discCanvas");
-    if (canvas && canvas.getContext) {
-        // plot vacío de referencia
-        drawDiscretePlot(canvas, [0,1], [0,1]);
-    }
+// Inicialización segura
+
+function toEmbedUrl(raw){
+  const u = (raw||"").trim();
+  if(!u) return "";
+  if(u.includes("/embed/")) return u;
+
+  // youtu.be/ID
+  let m = u.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/);
+  if(m) return `https://www.youtube.com/embed/${m[1]}`;
+
+  // watch?v=ID
+  m = u.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
+  if(m) return `https://www.youtube.com/embed/${m[1]}`;
+
+  return u;
+}
+
+function initVideoSection(){
+  const input = document.getElementById("videoInput");
+  const loadBtn = document.getElementById("videoLoadBtn");
+  const clearBtn = document.getElementById("videoClearBtn");
+  const wrap = document.getElementById("videoPreviewWrap");
+  const ph = document.getElementById("videoPlaceholder");
+  if(!input || !loadBtn || !wrap) return;
+
+  const removeIframe = ()=>wrap.querySelectorAll("iframe").forEach(x=>x.remove());
+
+  const showPlaceholder = ()=>{
+    removeIframe();
+    if(ph) ph.style.display = "flex";
+  };
+
+  const load = ()=>{
+    const src = toEmbedUrl(input.value);
+    if(!src){ showPlaceholder(); return; }
+
+    removeIframe();
+    const iframe = document.createElement("iframe");
+    iframe.className = "video-iframe";
+    iframe.src = src;
+    iframe.title = "Video explicativo";
+    iframe.frameBorder = "0";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+
+    if(ph) ph.style.display = "none";
+    wrap.appendChild(iframe);
+  };
+
+  loadBtn.addEventListener("click", load);
+  clearBtn?.addEventListener("click", ()=>{
+    input.value = "";
+    showPlaceholder();
+  });
+
+  input.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){ e.preventDefault(); load(); }
+  });
+
+  // always start blank
+  input.value = "";
+  showPlaceholder();
+}
+
+
+
+    // star picker
+    initStarPicker();
 });
+
+window.__MC_APP_LOADED__ = true;
+
+
+function ensurePlotTooltip(canvas) {
+    if (canvas.__tooltipBound) return;
+    canvas.__tooltipBound = true;
+    const tip = document.getElementById("plotTip");
+    if (!tip) return;
+
+    canvas.addEventListener("mousemove", (e) => {
+        const pts = canvas.__points || [];
+        if (!pts.length) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        // nearest point
+        let best = null, bestD = Infinity;
+        for (const p of pts) {
+            const d = (p.px - mx)*(p.px - mx) + (p.py - my)*(p.py - my);
+            if (d < bestD) { bestD = d; best = p; }
+        }
+        if (best && bestD < 250) {
+            tip.style.display = "block";
+            tip.innerHTML = `x = <strong>${escapeHtml(best.x)}</strong><br>f(x) = <strong>${escapeHtml(best.y)}</strong>`;
+            tip.style.left = (e.pageX + 12) + "px";
+            tip.style.top = (e.pageY + 12) + "px";
+        } else {
+            tip.style.display = "none";
+        }
+    });
+    canvas.addEventListener("mouseleave", () => {
+        const tip = document.getElementById("plotTip");
+        if (tip) tip.style.display = "none";
+    });
+}
+
+
+function initStarPicker() {
+    const picker = document.getElementById("starPicker");
+    const sel = document.getElementById("revRating");
+    if (!picker || !sel) return;
+
+    function paint(v) {
+        const stars = picker.querySelectorAll(".star");
+        stars.forEach(btn=>{
+            const n = Number(btn.dataset.v);
+            btn.classList.toggle("on", n <= v);
+        });
+    }
+
+    const v0 = Number(sel.value || 5);
+    paint(v0);
+
+    picker.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".star");
+        if (!btn) return;
+        const v = Number(btn.dataset.v);
+        sel.value = String(v);
+        paint(v);
+        showToast("Rating: " + v + "/5", "info", 1200);
+    });
+
+    sel.addEventListener("change", ()=>paint(Number(sel.value||5)));
+}
+
+
+/* ==========================================================
+   UI EXTRAS: progress bar + volver arriba (no rompe lógica)
+   ========================================================== */
+(function initUiExtras(){
+    const bar = document.getElementById("scrollProgress");
+    const topBtn = document.getElementById("toTopBtn");
+    function onScroll(){
+        const doc = document.documentElement;
+        const scrollTop = doc.scrollTop || document.body.scrollTop || 0;
+        const scrollHeight = (doc.scrollHeight || 0) - (doc.clientHeight || 0);
+        const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        if (bar) bar.style.width = Math.min(100, Math.max(0, pct)) + "%";
+        if (topBtn) topBtn.style.display = scrollTop > 420 ? "flex" : "none";
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    if (topBtn){
+        topBtn.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+})();
+
+
+/* ==========================================================
+   FIX: estabilidad de altura en móvil (evita saltos de tamaño)
+   ========================================================== */
+(function setAppHeight(){
+    const root = document.documentElement;
+    function apply(){
+        // iOS/Android: innerHeight cambia con la barra del navegador al hacer scroll.
+        // Congelamos altura real en px para mantener layout consistente.
+        root.style.setProperty('--app-height', window.innerHeight + 'px');
+    }
+    apply();
+    window.addEventListener('resize', apply);
+    window.addEventListener('orientationchange', apply);
+})();
+
+
+/* ==========================================================
+   MODO MISIÓN / PROGRESO (localStorage)
+   ========================================================== */
+const MISSIONS = [
+  { id: "prod-cartesiano", label: "Producto cartesiano" },
+  { id: "funciones", label: "Funciones" },
+  { id: "ejercicios", label: "Ejemplos / Hojas" },
+  { id: "clasificacion", label: "Clasificación" },
+  { id: "inversa", label: "Función inversa" },
+  { id: "compuesta", label: "Función compuesta" },
+  { id: "discreta", label: "Función discreta" }
+];
+
+function loadMissions(){
+  try{
+    return JSON.parse(localStorage.getItem("mc_missions") || "{}") || {};
+  }catch(e){ return {}; }
+}
+function saveMissions(state){
+  localStorage.setItem("mc_missions", JSON.stringify(state || {}));
+}
+function getMissionState(){
+  return loadMissions();
+}
+function setMissionDone(id, done=true){
+  const st = loadMissions();
+  st[id] = !!done;
+  saveMissions(st);
+  renderMissions();
+  updateMiniMission(id);
+}
+function resetMissions(){
+  localStorage.removeItem("mc_missions");
+  renderMissions();
+  // actualizar mini barras
+  MISSIONS.forEach(m => updateMiniMission(m.id));
+  if (typeof showToast === "function") showToast("Progreso reiniciado");
+}
+
+function computeMissionStats(){
+  const st = loadMissions();
+  const total = MISSIONS.length;
+  const done = MISSIONS.filter(m => st[m.id]).length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  return { total, done, pct };
+}
+
+function renderMissions(){
+  const list = document.getElementById("missionList");
+  const fill = document.getElementById("missionBarFill");
+  const pctEl = document.getElementById("missionPct");
+  const xpEl = document.getElementById("xpValue");
+
+  if (!list) return;
+  const st = loadMissions();
+  list.innerHTML = "";
+
+  MISSIONS.forEach(m => {
+    
+    
+    if (["video","resenas"].includes(m.id)) return;
+if (["video","resenas"].includes(m.id)) return;
+const li = document.createElement("li");
+    li.className = "mission-item" + (st[m.id] ? " done" : "");
+    const left = document.createElement("div");
+    left.className = "left";
+    left.innerHTML = `<i class="fas ${st[m.id] ? "fa-circle-check" : "fa-circle"}"></i>
+                      <span class="label">${m.label}</span>`;
+    const state = document.createElement("span");
+    state.className = "state";
+    state.textContent = st[m.id] ? "Completada" : "Pendiente";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = st[m.id] ? "Desmarcar" : "Completar";
+    btn.addEventListener("click", () => setMissionDone(m.id, !st[m.id]));
+
+    li.appendChild(left);
+    li.appendChild(state);
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  const stats = computeMissionStats();
+  if (fill) fill.style.width = stats.pct + "%";
+  if (pctEl) pctEl.textContent = stats.pct + "%";
+  if (xpEl) xpEl.textContent = stats.done * 120; // XP simple (120 por misión)
+
+  // feedback visual en gold-primary según progreso
+}
+
+function ensureMiniMissions(){
+  // Inserta una mini barra al inicio de cada tab-content (solo una vez)
+  const st = loadMissions();
+  MISSIONS.forEach(m => {
+    const tab = document.getElementById(m.id);
+    if (!tab) return;
+    if (tab.querySelector(".mission-mini")) return;
+
+    const bar = document.createElement("div");
+    bar.className = "mission-mini";
+    bar.dataset.mission = m.id;
+    bar.innerHTML = `
+      <div class="mini-left">
+        <i class="fas fa-bullseye"></i>
+        <div class="mini-title">Misión: ${m.label}</div>
+      </div>
+      <button type="button" class="mini-btn ${st[m.id] ? "done" : ""}">
+        ${st[m.id] ? "Completada ✓" : "Marcar completada"}
+      </button>
+    `;
+    const btn = bar.querySelector("button");
+    btn.addEventListener("click", () => {
+      const now = !!loadMissions()[m.id];
+      setMissionDone(m.id, !now);
+      if (typeof showToast === "function") showToast(!now ? "Misión completada" : "Misión desmarcada");
+    });
+
+    tab.insertBefore(bar, tab.firstChild);
+  });
+}
+
+function updateMiniMission(id){
+  const st = loadMissions();
+  const tab = document.getElementById(id);
+  if (!tab) return;
+  const mini = tab.querySelector(".mission-mini");
+  if (!mini) return;
+  const btn = mini.querySelector("button");
+  if (!btn) return;
+  const done = !!st[id];
+  btn.classList.toggle("done", done);
+  btn.textContent = done ? "Completada ✓" : "Marcar completada";
+}
+
+
+function toEmbedUrl(raw){
+  const u = (raw||"").trim();
+  if(!u) return "";
+  if(u.includes("/embed/")) return u;
+
+  // youtu.be/ID
+  let m = u.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/);
+  if(m) return `https://www.youtube.com/embed/${m[1]}`;
+
+  // watch?v=ID
+  m = u.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
+  if(m) return `https://www.youtube.com/embed/${m[1]}`;
+
+  return u;
+}
+
+function initVideoSection(){
+  const input = document.getElementById("videoInput");
+  const loadBtn = document.getElementById("videoLoadBtn");
+  const clearBtn = document.getElementById("videoClearBtn");
+  const wrap = document.getElementById("videoPreviewWrap");
+  const ph = document.getElementById("videoPlaceholder");
+  if(!input || !loadBtn || !wrap) return;
+
+  const removeIframe = ()=>wrap.querySelectorAll("iframe").forEach(x=>x.remove());
+
+  const showPlaceholder = ()=>{
+    removeIframe();
+    if(ph) ph.style.display = "flex";
+  };
+
+  const load = ()=>{
+    const src = toEmbedUrl(input.value);
+    if(!src){ showPlaceholder(); return; }
+
+    removeIframe();
+    const iframe = document.createElement("iframe");
+    iframe.className = "video-iframe";
+    iframe.src = src;
+    iframe.title = "Video explicativo";
+    iframe.frameBorder = "0";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+
+    if(ph) ph.style.display = "none";
+    wrap.appendChild(iframe);
+  };
+
+  loadBtn.addEventListener("click", load);
+  clearBtn?.addEventListener("click", ()=>{
+    input.value = "";
+    showPlaceholder();
+  });
+
+  input.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){ e.preventDefault(); load(); }
+  });
+
+  // always start blank
+  input.value = "";
+  showPlaceholder();
+}
+
+
+
+
+
+/* ==========================================================
+   SIDEBAR DRAWER CONTROLS
+   ========================================================== */
+(function initSidebarDrawer(){
+    const btn = document.getElementById("sidebarToggle");
+    const backdrop = document.getElementById("sidebarBackdrop");
+    function close(){
+        document.body.classList.remove("sidebar-open");
+    }
+    function toggle(){
+        document.body.classList.toggle("sidebar-open");
+    }
+    if (btn) btn.addEventListener("click", toggle);
+    if (backdrop) backdrop.addEventListener("click", close);
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") close();
+    });
+    // cerrar drawer al tocar un link
+    document.addEventListener("click", (e) => {
+        const a = e.target && e.target.closest ? e.target.closest(".tab-link") : null;
+        if (a && window.matchMedia && window.matchMedia("(max-width: 1200px)").matches){
+            close();
+        }
+    });
+})();
+
+
+/* ==========================================================
+   MODO JUEGO: XP + LOGROS (simple, localStorage)
+   ========================================================== */
+const ACHIEVEMENTS = [
+  { id: "xp_300", xp: 300, title: "Aprendiz Lógico", desc: "Alcanza 300 XP" },
+  { id: "xp_700", xp: 700, title: "Explorador de Funciones", desc: "Alcanza 700 XP" },
+  { id: "xp_1200", xp: 1200, title: "Maestro del Dominio", desc: "Alcanza 1200 XP" }
+];
+
+function loadXp(){
+  return parseInt(localStorage.getItem("mc_xp") || "0", 10) || 0;
+}
+function saveXp(v){
+  localStorage.setItem("mc_xp", String(v));
+  const xpEl = document.getElementById("xpValue");
+  if (xpEl) xpEl.textContent = v;
+}
+// HUD
+updateLevelHud(v);
+
+function loadAch(){
+  try{ return JSON.parse(localStorage.getItem("mc_ach") || "{}") || {}; }catch(e){ return {}; }
+}
+function saveAch(st){ localStorage.setItem("mc_ach", JSON.stringify(st||{})); }
+
+function awardXp(amount, reason){
+  const xp = loadXp() + amount;
+  saveXp(xp);
+  if (typeof showToast === "function") showToast(`+${amount} XP${reason ? " · " + reason : ""}`);
+  checkAchievements(xp);
+}
+
+function checkAchievements(xp){
+  const st = loadAch();
+  let unlocked = 0;
+  ACHIEVEMENTS.forEach(a => {
+    if (!st[a.id] && xp >= a.xp){
+      st[a.id] = true;
+      unlocked++;
+      if (typeof showAchievementPopup === "function") showAchievementPopup(a.title, a.desc);
+      else if (typeof showToast === "function") showToast(`Logro desbloqueado: ${a.title}`);
+    }
+  });
+  if (unlocked) saveAch(st);
+}
+
+// Inicializar XP badge al cargar
+
+function toEmbedUrl(raw){
+  const u = (raw||"").trim();
+  if(!u) return "";
+  if(u.includes("/embed/")) return u;
+
+  // youtu.be/ID
+  let m = u.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/);
+  if(m) return `https://www.youtube.com/embed/${m[1]}`;
+
+  // watch?v=ID
+  m = u.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
+  if(m) return `https://www.youtube.com/embed/${m[1]}`;
+
+  return u;
+}
+
+function initVideoSection(){
+  const input = document.getElementById("videoInput");
+  const loadBtn = document.getElementById("videoLoadBtn");
+  const clearBtn = document.getElementById("videoClearBtn");
+  const wrap = document.getElementById("videoPreviewWrap");
+  const ph = document.getElementById("videoPlaceholder");
+  if(!input || !loadBtn || !wrap) return;
+
+  const removeIframe = ()=>wrap.querySelectorAll("iframe").forEach(x=>x.remove());
+
+  const showPlaceholder = ()=>{
+    removeIframe();
+    if(ph) ph.style.display = "flex";
+  };
+
+  const load = ()=>{
+    const src = toEmbedUrl(input.value);
+    if(!src){ showPlaceholder(); return; }
+
+    removeIframe();
+    const iframe = document.createElement("iframe");
+    iframe.className = "video-iframe";
+    iframe.src = src;
+    iframe.title = "Video explicativo";
+    iframe.frameBorder = "0";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+
+    if(ph) ph.style.display = "none";
+    wrap.appendChild(iframe);
+  };
+
+  loadBtn.addEventListener("click", load);
+  clearBtn?.addEventListener("click", ()=>{
+    input.value = "";
+    showPlaceholder();
+  });
+
+  input.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){ e.preventDefault(); load(); }
+  });
+
+  // always start blank
+  input.value = "";
+  showPlaceholder();
+}
+
+
+
+
+
+/* ==========================================================
+   LEVEL HUD (LV + barra de XP)
+   ========================================================== */
+function updateLevelHud(xp){
+  const levelSize = 500; // XP por nivel
+  const level = Math.floor((xp || 0) / levelSize) + 1;
+  const inLevel = (xp || 0) % levelSize;
+  const pct = Math.round((inLevel / levelSize) * 100);
+
+  const lvlEl = document.getElementById("levelValue");
+  const barEl = document.getElementById("xpBar");
+  if (lvlEl) lvlEl.textContent = level;
+  if (barEl) barEl.style.width = pct + "%";
+}
+
+
+/* ==========================================================
+   FX: glow que sigue el cursor (ligero)
+   ========================================================== */
+(function initCursorGlow(){
+  const root = document.documentElement;
+  function setPos(x,y){
+    root.style.setProperty('--mx', x + 'px');
+    root.style.setProperty('--my', y + 'px');
+  }
+  window.addEventListener('mousemove', (e)=>{ setPos(e.clientX, e.clientY); }, { passive:true });
+  window.addEventListener('touchmove', (e)=>{
+    const t = e.touches && e.touches[0];
+    if (t) setPos(t.clientX, t.clientY);
+  }, { passive:true });
+  setPos(window.innerWidth * 0.5, window.innerHeight * 0.25);
+})();
+
+
+function cleanupNonGameTabs(){
+  ["video","resenas"].forEach(id=>{
+    const tab = document.getElementById(id);
+    if(!tab) return;
+    const mini = tab.querySelector(".mission-mini");
+    if(mini) mini.remove();
+  });
+}
+document.addEventListener("DOMContentLoaded", cleanupNonGameTabs);
+
+
+/* =========================
+   FIX: pestaña por defecto (siempre visible)
+   ========================= */
+(function initDefaultTab_final(){
+  function run(){
+    try{
+      const activeTab = document.querySelector(".tab-content.active") || document.getElementById("inicio") || document.querySelector(".tab-content");
+      const id = activeTab && activeTab.id ? activeTab.id : "inicio";
+      // Mostrar siempre la pestaña inicial con openTab para sincronizar estilos/colores
+      if (typeof openTab === "function"){
+        openTab(null, id);
+      } else if (activeTab){
+        activeTab.style.display = "block";
+      }
+    }catch(e){
+      const t = document.getElementById("inicio");
+      if (t){ t.style.display="block"; }
+    }
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+})();
+
+function activateLinkForTab(tabName){
+  const links = document.querySelectorAll('.tab-link');
+  links.forEach(a=>{
+    if ((a.getAttribute("onclick")||"").includes("'" + tabName + "'")){
+      a.classList.add("active");
+      const newColor = sectionColors[tabName] || '#FFD700';
+      a.style.borderColor = newColor;
+      a.style.color = newColor;
+    }
+  });
+}
+
+
+/* =========================
+   UX: títulos por pestaña
+   ========================= */
+const TAB_TITLES = {
+  "inicio": "Inicio",
+  "prod-cartesiano": "Producto Cartesiano",
+  "funciones": "Funciones",
+  "ejercicios": "Ejemplos / Hojas",
+  "clasificacion": "Clasificación",
+  "inversa": "Función Inversa",
+  "compuesta": "Función Compuesta",
+  "discreta": "Función Discreta",
+  "video": "Video Explicativo",
+  "resenas": "Reseñas"
+};
+function setCurrentSection(tabName){
+  const pill = document.getElementById("currentSection");
+  if (!pill) return;
+  pill.textContent = TAB_TITLES[tabName] || tabName;
+}
+
+
+/* =========================
+   Sidebar: buscador de secciones
+   ========================= */
+()();
+
+
+/* =========================
+   Persistencia: última pestaña
+   ========================= */
+(function initLastTab(){
+  function run(){
+    let last = null;
+    try{ last = localStorage.getItem("mc_last_tab"); }catch(e){}
+    if (!last) last = "inicio";
+    // Si el tab existe, ábrelo
+    const tab = document.getElementById(last);
+    if (tab && typeof openTab === "function"){
+      openTab(null, last);
+    } else if (typeof openTab === "function"){
+      openTab(null, "inicio");
+    }
+    try{ setCurrentSection(last); }catch(e){}
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+})();
+
+
+/* ==========================================================
+   STREAK SYSTEM + Sound + Achievement UI
+   ========================================================== */
+function todayStr(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function ydayStr(){
+  const d = new Date();
+  d.setDate(d.getDate()-1);
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function loadStreak(){
+  try{ return JSON.parse(localStorage.getItem("mc_streak") || "{}") || {}; }catch(e){ return {}; }
+}
+function saveStreak(st){ localStorage.setItem("mc_streak", JSON.stringify(st||{})); }
+function updateStreak(){
+  const st = loadStreak();
+  const t = todayStr();
+  const y = ydayStr();
+  if (!st.last){
+    st.last = t; st.count = 1;
+  } else if (st.last === t){
+    // nada
+  } else if (st.last === y){
+    st.last = t; st.count = (st.count||0) + 1;
+  } else {
+    st.last = t; st.count = 1;
+  }
+  saveStreak(st);
+  const el = document.getElementById("streakValue");
+  if (el) el.textContent = st.count || 1;
+  return st.count || 1;
+}
+
+function loadSound(){
+  try{ return localStorage.getItem("mc_sound") === "on"; }catch(e){ return false; }
+}
+function saveSound(on){
+  try{ localStorage.setItem("mc_sound", on ? "on" : "off"); }catch(e){}
+}
+function setSoundBtn(on){
+  const btn = document.getElementById("soundBtn");
+  if (!btn) return;
+  btn.title = "Sonido: " + (on ? "on" : "off");
+  btn.innerHTML = on ? '<i class="fas fa-volume-high"></i>' : '<i class="fas fa-volume-mute"></i>';
+}
+function playDing(){
+  if (!loadSound()) return;
+  // beep simple con WebAudio (ligero)
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = 880;
+    g.gain.value = 0.0001;
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
+    o.stop(ctx.currentTime + 0.20);
+    setTimeout(()=>ctx.close(), 250);
+  }catch(e){}
+}
+
+function showAchievementPopup(title, desc){
+  const box = document.getElementById("achPopup");
+  if (!box) return;
+  const el = document.createElement("div");
+  el.className = "ach-pop";
+  el.innerHTML = `<div class="row">
+      <span class="badge"><i class="fas fa-trophy"></i> Logro</span>
+      <div>
+        <div class="name">${title}</div>
+        <div class="desc">${desc || ""}</div>
+      </div>
+    </div>`;
+  box.appendChild(el);
+  playDing();
+  setTimeout(()=>{ try{ el.remove(); }catch(e){} }, 3200);
+}
+
+function renderAchievements(){
+  const grid = document.getElementById("achGrid");
+  if (!grid) return;
+  const st = loadAch();
+  const xp = loadXp();
+  grid.innerHTML = "";
+  ACHIEVEMENTS.forEach(a=>{
+    const unlocked = !!st[a.id] || xp >= a.xp;
+    const item = document.createElement("div");
+    item.className = "ach-item " + (unlocked ? "unlocked" : "locked");
+    item.innerHTML = `
+      <div class="left">
+        <div class="icon"><i class="fas ${unlocked ? "fa-trophy" : "fa-lock"}"></i></div>
+        <div class="meta">
+          <div class="title">${a.title}</div>
+          <div class="desc">${a.desc}</div>
+        </div>
+      </div>
+      <div class="badge">${unlocked ? "Desbloqueado" : (a.xp + " XP")}</div>
+    `;
+    grid.appendChild(item);
+  });
+}
+
+function openAchModal(){
+  const modal = document.getElementById("achModal");
+  if (!modal) return;
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden","false");
+  renderAchievements();
+}
+function closeAchModal(){
+  const modal = document.getElementById("achModal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden","true");
+}
+(function initAchModal(){
+  function run(){
+    const btn = document.getElementById("achBtn");
+    if (btn) btn.addEventListener("click", openAchModal);
+    const modal = document.getElementById("achModal");
+    if (!modal) return;
+    modal.addEventListener("click", (e)=>{
+      const t = e.target;
+      if (t && t.dataset && t.dataset.close) closeAchModal();
+    });
+    document.addEventListener("keydown",(e)=>{
+      if (e.key === "Escape") closeAchModal();
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+})();
+(function initSoundToggle(){
+  function run(){
+    const btn = document.getElementById("soundBtn");
+    if (!btn) return;
+    let on = loadSound();
+    setSoundBtn(on);
+    btn.addEventListener("click", ()=>{
+      on = !on;
+      saveSound(on);
+      setSoundBtn(on);
+      if (typeof showToast === "function") showToast("Sonido: " + (on ? "on" : "off"));
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+})();
+document.addEventListener("DOMContentLoaded", updateStreak);
+
+
+/* ==========================================================
+   PARTICLE SYSTEM (ligero)
+   ========================================================== */
+(function initParticles(){
+  function run(){
+    const canvas = document.getElementById("particlesCanvas");
+    if (!canvas) return;
+
+    // respeta reduce-motion
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = canvas.getContext("2d");
+    let w=0,h=0,raf=0;
+    const count = Math.min(70, Math.floor((window.innerWidth*window.innerHeight)/22000));
+    const parts = [];
+
+    function resize(){
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    function rnd(a,b){ return a + Math.random()*(b-a); }
+    function make(){
+      return {
+        x: rnd(0,w), y:rnd(0,h),
+        vx: rnd(-0.25,0.25), vy:rnd(-0.18,0.18),
+        r: rnd(1.0,2.4),
+        a: rnd(0.08,0.22)
+      };
+    }
+    function reset(){
+      parts.length=0;
+      for (let i=0;i<count;i++) parts.push(make());
+    }
+
+    function step(){
+      ctx.clearRect(0,0,w,h);
+      // dots
+      for (const p of parts){
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < -20) p.x = w+20;
+        if (p.x > w+20) p.x = -20;
+        if (p.y < -20) p.y = h+20;
+        if (p.y > h+20) p.y = -20;
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(255,215,0,${p.a})`;
+        ctx.fill();
+      }
+      // links
+      for (let i=0;i<parts.length;i++){
+        for (let j=i+1;j<parts.length;j++){
+          const a=parts[i], b=parts[j];
+          const dx=a.x-b.x, dy=a.y-b.y;
+          const d2=dx*dx+dy*dy;
+          if (d2 < 140*140){
+            const alpha = 0.10 * (1 - d2/(140*140));
+            ctx.strokeStyle = `rgba(0,255,200,${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
+      }
+      raf = requestAnimationFrame(step);
+    }
+
+    resize(); reset(); step();
+    window.addEventListener("resize", ()=>{ resize(); reset(); }, { passive:true });
+
+    // pausa si no visible
+    document.addEventListener("visibilitychange", ()=>{
+      if (document.hidden){
+        cancelAnimationFrame(raf);
+      }else{
+        step();
+      }
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+})();
+
+
+/* ==========================================================
+   PRACTICE MODE: generator + checker + export
+   ========================================================== */
+function loadPractice(){
+  try{ return JSON.parse(localStorage.getItem("mc_practice") || "[]") || []; }catch(e){ return []; }
+}
+function savePractice(arr){
+  localStorage.setItem("mc_practice", JSON.stringify(arr||[]));
+}
+function renderPracticeHistory(){
+  const box = document.getElementById("practiceHistory");
+  if (!box) return;
+  const arr = loadPractice();
+  if (!arr.length){
+    box.innerHTML = '<div class="soft">Aún no hay intentos.</div>';
+    return;
+  }
+  box.innerHTML = "";
+  arr.slice().reverse().slice(0,30).forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "hist-item " + (item.correct ? "ok" : "bad");
+    div.innerHTML = `<div class="q">${item.topicLabel}: ${item.prompt}</div>
+      <div class="tag">${item.correct ? "✔" : "✘"} ${item.userAnswer}</div>`;
+    box.appendChild(div);
+  });
+}
+
+function downloadText(filename, text){
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 50);
+}
+
+let currentPractice = null;
+
+function normAnswer(s){
+  return (s||"").trim().toLowerCase().replace(/\s+/g,"");
+}
+
+function genPractice(topic){
+  // Returns {prompt, answer, hint, topicLabel}
+  function rint(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+  const mapLabel = {
+    cartesiano: "Producto cartesiano",
+    composicion: "Función compuesta",
+    inversa: "Función inversa",
+    funcion: "¿Es función?",
+    discreta: "Función discreta"
+  };
+  const topicLabel = mapLabel[topic] || topic;
+
+  if (topic === "cartesiano"){
+    const a = rint(2,7), b=rint(2,7);
+    return {
+      topicLabel,
+      prompt: `Si |A|=${a} y |B|=${b}, ¿cuántos pares tiene A×B?`,
+      answer: String(a*b),
+      hint: `Recuerda: |A×B| = |A|·|B| = ${a}·${b}.`
+    };
+  }
+
+  if (topic === "composicion"){
+    const a=rint(1,5), b=rint(-6,6);
+    const c=rint(1,5), d=rint(-6,6);
+    const k=rint(-3,3);
+    // f(x)=ax+b, g(x)=cx+d
+    const gx = c*k + d;
+    const fog = a*gx + b;
+    return {
+      topicLabel,
+      prompt: `Sea f(x)=${a}x${b>=0?"+":""}${b} y g(x)=${c}x${d>=0?"+":""}${d}. Calcula (f∘g)(${k}).`,
+      answer: String(fog),
+      hint: `Primero g(${k})=${gx}, luego f(g(${k}))=${a}·${gx}${b>=0?"+":""}${b}.`
+    };
+  }
+
+  if (topic === "inversa"){
+    const a=rint(1,6);
+    const b=rint(-6,6);
+    const y=rint(-5,5);
+    // f(x)=ax+b. Inverse: x=(y-b)/a
+    const x = (y - b)/a;
+    // if not integer, keep fraction
+    const ans = Number.isInteger(x) ? String(x) : `${y - b}/${a}`;
+    return {
+      topicLabel,
+      prompt: `Sea f(x)=${a}x${b>=0?"+":""}${b}. Calcula f^{-1}(${y}).`,
+      answer: ans,
+      hint: `Resuelve y = ${a}x${b>=0?"+":""}${b} ⇒ x = (y - ${b})/${a}.`
+    };
+  }
+
+  if (topic === "discreta"){
+    const n = rint(4,7);
+    const vals = Array.from({length:n}, ()=>rint(-3,9));
+    const idx = rint(1,n);
+    return {
+      topicLabel,
+      prompt: `Si f(1..${n}) = [${vals.join(", ")}], ¿cuál es f(${idx})?`,
+      answer: String(vals[idx-1]),
+      hint: `Es el valor en la posición ${idx} de la lista.`
+    };
+  }
+
+  // ¿Es función? con pares (x,y)
+  const A = [1,2,3,4];
+  const pairs = [];
+  const dup = Math.random() < 0.45; // a veces no es función
+  const usedX = {};
+  for (const x of A){
+    const y1 = rint(1,5);
+    pairs.push([x,y1]);
+    usedX[x] = y1;
+  }
+  if (dup){
+    const x = rint(1,4);
+    let y2 = usedX[x];
+    while (y2 === usedX[x]) y2 = rint(1,5);
+    pairs.push([x,y2]); // viola unicidad
+  }
+  const isFunc = !dup;
+  return {
+    topicLabel,
+    prompt: `Relación R = { ${pairs.map(p=>`(${p[0]},${p[1]})`).join(", ")} }. ¿Es función? Responde "si" o "no".`,
+    answer: isFunc ? "si" : "no",
+    hint: `Es función si cada x tiene UNA sola salida. Busca x repetida con distinto y.`
+  };
+}
+
+(function initPractice(){
+  function run(){
+    const topicSel = document.getElementById("practiceTopic");
+    const genBtn = document.getElementById("genPracticeBtn");
+    const chkBtn = document.getElementById("checkPracticeBtn");
+    const hintBtn = document.getElementById("hintPracticeBtn");
+    const ansIn = document.getElementById("practiceAnswer");
+    const qBox = document.getElementById("practiceQuestion");
+    const fb = document.getElementById("practiceFeedback");
+    const csvBtn = document.getElementById("exportCsvBtn");
+    const jsonBtn = document.getElementById("exportJsonBtn");
+    const clearBtn = document.getElementById("clearPracticeBtn");
+
+    if (!topicSel || !genBtn || !chkBtn || !ansIn || !qBox || !fb) return;
+
+    renderPracticeHistory();
+
+    function setFeedback(text, ok=null){
+      fb.textContent = text || "";
+      fb.classList.remove("ok","bad");
+      if (ok === true) fb.classList.add("ok");
+      if (ok === false) fb.classList.add("bad");
+    }
+
+    function generate(){
+      const t = topicSel.value;
+      currentPractice = genPractice(t);
+      qBox.innerHTML = currentPractice.prompt;
+      ansIn.value = "";
+      ansIn.focus();
+      setFeedback("Escribe tu respuesta y presiona Verificar.", null);
+    }
+
+    function check(){
+      if (!currentPractice){
+        setFeedback("Primero genera un ejercicio.", false);
+        return;
+      }
+      const ua = ansIn.value.trim();
+      if (!ua){
+        setFeedback("Escribe una respuesta.", false);
+        return;
+      }
+      const ok = normAnswer(ua) === normAnswer(currentPractice.answer);
+      const arr = loadPractice();
+      arr.push({
+        ts: new Date().toISOString(),
+        topicLabel: currentPractice.topicLabel,
+        prompt: currentPractice.prompt,
+        userAnswer: ua,
+        correct: ok,
+        correctAnswer: currentPractice.answer
+      });
+      savePractice(arr);
+      renderPracticeHistory();
+
+      if (ok){
+        setFeedback("Correcto ✅  +50 XP", true);
+        // XP solo en modo práctica/cálculo (no video/reseñas)
+        if (typeof awardXp === "function") awardXp(50, "Práctica");
+      }else{
+        setFeedback(`Incorrecto ❌  Respuesta: ${currentPractice.answer}`, false);
+      }
+    }
+
+    function hint(){
+      if (!currentPractice){
+        setFeedback("Primero genera un ejercicio.", false);
+        return;
+      }
+      setFeedback("Pista: " + currentPractice.hint, null);
+    }
+
+    genBtn.addEventListener("click", generate);
+    chkBtn.addEventListener("click", check);
+    hintBtn.addEventListener("click", hint);
+
+    ansIn.addEventListener("keydown",(e)=>{
+      if (e.key === "Enter") check();
+    });
+
+    if (csvBtn){
+      csvBtn.addEventListener("click", ()=>{
+        const arr = loadPractice();
+        const header = ["timestamp","tema","pregunta","respuesta_usuario","correcto","respuesta_correcta"];
+        const rows = arr.map(it=>[
+          it.ts, it.topicLabel, it.prompt.replaceAll("\n"," "),
+          it.userAnswer, it.correct ? "1" : "0", it.correctAnswer
+        ].map(v=>`"${String(v).replaceAll('"','""')}"`).join(","));
+        downloadText("mc_practice.csv", header.join(",") + "\n" + rows.join("\n"));
+      });
+    }
+    if (jsonBtn){
+      jsonBtn.addEventListener("click", ()=>{
+        const arr = loadPractice();
+        downloadText("mc_practice.json", JSON.stringify(arr, null, 2));
+      });
+    }
+    if (clearBtn){
+      clearBtn.addEventListener("click", ()=>{
+        savePractice([]);
+        renderPracticeHistory();
+        setFeedback("Historial borrado.", null);
+        if (typeof showToast === "function") showToast("Historial de práctica borrado");
+      });
+    }
+
+    // autogenera una al entrar por primera vez
+    if (!currentPractice) generate();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+})();
+
+
+/* ==========================================================
+   FINAL POLISH: Tema + Pantalla completa (sin romper nada)
+   ========================================================== */
+(function initThemeAndFullscreen(){
+  function ready(fn){
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+  ready(function(){
+    // Theme toggle
+    const themeBtn = document.getElementById("themeBtn");
+    const THEME_KEY = "mc_theme";
+    function applyTheme(t){
+      document.body.classList.toggle("theme-cyber", t === "cyber");
+      if (themeBtn){
+        themeBtn.title = (t === "cyber") ? "Tema: Cyber" : "Tema: Dorado";
+        themeBtn.innerHTML = (t === "cyber") ? '<i class="fas fa-wand-magic-sparkles"></i>' : '<i class="fas fa-palette"></i>';
+      }
+    }
+    if (themeBtn){
+      let theme = "gold";
+      try{ theme = localStorage.getItem(THEME_KEY) || "gold"; }catch(e){}
+      applyTheme(theme);
+      themeBtn.addEventListener("click", function(){
+        theme = (theme === "cyber") ? "gold" : "cyber";
+        try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
+        applyTheme(theme);
+        try{ showToast(theme === "cyber" ? "Tema activado: Cyber" : "Tema activado: Dorado"); }catch(e){}
+      });
+    }
+
+    // Fullscreen toggle (solo si el navegador lo permite)
+    const fsBtn = document.getElementById("fsBtn");
+    function isFS(){ return !!document.fullscreenElement; }
+    function updateFSIcon(){
+      if (!fsBtn) return;
+      fsBtn.title = isFS() ? "Salir de pantalla completa" : "Pantalla completa";
+      fsBtn.innerHTML = isFS() ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+    }
+    if (fsBtn && document.documentElement.requestFullscreen){
+      updateFSIcon();
+      fsBtn.addEventListener("click", async function(){
+        try{
+          if (!isFS()) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        }catch(e){}
+        updateFSIcon();
+      });
+      document.addEventListener("fullscreenchange", updateFSIcon);
+    }else if (fsBtn){
+      fsBtn.style.display = "none";
+    }
+  });
+})();
