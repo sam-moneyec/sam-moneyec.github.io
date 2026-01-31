@@ -1887,7 +1887,6 @@ function setCurrentSection(tabName){
 /* =========================
    Sidebar: buscador de secciones
    ========================= */
-()();
 
 
 /* =========================
