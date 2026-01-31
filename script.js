@@ -1,50 +1,3 @@
-
-function openModal(id){
-  const m = document.getElementById(id);
-  if (!m) return;
-  m.classList.add("show");
-  m.setAttribute("aria-hidden","false");
-  // focus first close button if exists
-  const btn = m.querySelector('[data-close="'+id+'"], .icon-btn, button');
-  btn && btn.focus && btn.focus();
-}
-
-function closeModal(id){
-  const m = document.getElementById(id);
-  if (!m) return;
-  m.classList.remove("show");
-  m.setAttribute("aria-hidden","true");
-}
-
-function bindModalClose(){
-  // click delegation for any [data-close]
-  document.addEventListener("click",(e)=>{
-    const el = e.target.closest("[data-close]");
-    if (!el) return;
-    e.preventDefault();
-    const id = el.getAttribute("data-close");
-    // data-close="true" (o vacío) cierra el modal más cercano
-    if (id === "true" || id === "1" || id === "" || id === null){
-      const modal = el.closest(".modal");
-      if (modal && modal.id) { closeModal(modal.id); }
-      return;
-    }
-
-    if (id) closeModal(id);
-  }, true);
-
-  // Esc closes the topmost open modal
-  document.addEventListener("keydown",(e)=>{
-    if (e.key !== "Escape") return;
-    const open = Array.from(document.querySelectorAll(".modal.show"));
-    if (open.length){
-      const top = open[open.length-1];
-      closeModal(top.id);
-    }
-  }, true);
-}
-
-
 function validateLastTab(){
   try{
     const last = localStorage.getItem("mc_last_tab");
@@ -126,13 +79,72 @@ function updateProfilePanel(){
   set("profDone", doneCount);
 }
 
-function openProfile(){
-  updateProfilePanel();
-  const m = document.getElementById("profileModal");
+// =========================
+// Modal helpers (robusto)
+// =========================
+function openModal(id){
+  const m = document.getElementById(id);
   if (!m) return;
   m.classList.add("show");
   m.setAttribute("aria-hidden","false");
+  // focus first focusable element
+  try{
+    const focusable = m.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    focusable && focusable.focus && focusable.focus();
+  }catch(e){}
 }
+function closeModal(id){
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.remove("show");
+  m.setAttribute("aria-hidden","true");
+}
+
+// Cierre universal: cualquier elemento con [data-close] cierra su modal.
+// Soporta data-close="profileModal" o data-close="true" (cierra el modal contenedor).
+function initGlobalModalClose(){
+  if (window.__mcModalCloseBound) return;
+  window.__mcModalCloseBound = true;
+
+  document.addEventListener("click", (e)=>{
+    const el = e.target.closest("[data-close]");
+    if (!el) return;
+    const target = (el.getAttribute("data-close") || "").trim();
+    // Evitar que el click dispare otras cosas
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (target && target !== "true"){
+      closeModal(target);
+    }else{
+      // data-close="true" -> cerrar modal padre
+      const parentModal = el.closest(".modal");
+      if (parentModal && parentModal.id){
+        closeModal(parentModal.id);
+      }else if (parentModal){
+        parentModal.classList.remove("show");
+        parentModal.setAttribute("aria-hidden","true");
+      }
+    }
+  }, true);
+
+  // Click fuera (backdrop) ya está cubierto si tiene data-close.
+  // ESC: cierra el modal visible más reciente.
+  document.addEventListener("keydown", (e)=>{
+    if (e.key !== "Escape") return;
+    const shown = Array.from(document.querySelectorAll(".modal.show"));
+    if (shown.length){
+      const last = shown[shown.length - 1];
+      if (last && last.id) closeModal(last.id);
+    }
+  }, true);
+}
+
+function openProfile(){
+  updateProfilePanel();
+  openModal("profileModal");
+}
+
 
 function initQuickSearch(){
   const modal = document.getElementById("quickSearchModal");
@@ -216,19 +228,6 @@ function uiBeep(){
 
 
 // ===== Mission numbering (sidebar) =====
-
-function renumberLevelBadges(){
-  // Levels correspond to the main mission topics (exclude Inicio / Video / Reseñas)
-  const order = ["prod-cartesiano","funciones","clasificacion","inversa","compuesta","discreta"];
-  order.forEach((id, i)=>{
-    const tab = document.getElementById(id);
-    if (!tab) return;
-    const badge = tab.querySelector(".topic-header .badge");
-    if (!badge) return;
-    badge.textContent = "NIVEL " + (i+1);
-  });
-}
-
 function renumberMissionBadges(){
   const links = Array.from(document.querySelectorAll(".sidebar a.tab-link"));
   let n = 0;
@@ -249,22 +248,6 @@ function renumberMissionBadges(){
 }
 
 // ===== Player panel (mission panel) close/open =====
-
-function hardBindPanelClose(){
-  // Fallback: if something interferes with direct listeners, capture-phase delegation ensures close works
-  document.addEventListener("click", (e)=>{
-    const t = e.target;
-    const btn = t && (t.closest ? t.closest("#missionClose") : null);
-    if (btn){
-      const panel = document.getElementById("missionPanel");
-      if (panel){
-        panel.classList.add("is-hidden");
-        try{ localStorage.setItem("mc_panel_hidden","1"); }catch(_){}
-      }
-    }
-  }, true);
-}
-
 function initPlayerPanelClose(){
   const panel = document.getElementById("missionPanel");
   const closeBtn = document.getElementById("missionClose");
@@ -294,7 +277,46 @@ function initPlayerPanelClose(){
 }
 
 // ===== Practice Mode Engine =====
+
 let PRACTICE_STATE = null;
+let PRACTICE_HISTORY = loadPracticeHistory();
+
+function loadPracticeHistory(){
+  try{ return JSON.parse(localStorage.getItem("mc_practice_history")||"[]") || []; }catch(e){ return []; }
+}
+function savePracticeHistory(arr){
+  try{ localStorage.setItem("mc_practice_history", JSON.stringify(arr||[])); }catch(e){}
+}
+function pushPracticeHistory(entry){
+  let arr = loadPracticeHistory();
+  arr.unshift(entry);
+  arr = arr.slice(0, 50); // límite
+  savePracticeHistory(arr);
+  PRACTICE_HISTORY = arr;
+  renderPracticeHistory();
+}
+function renderPracticeHistory(){
+  const box = document.getElementById("practiceHistory");
+  if (!box) return;
+  const arr = loadPracticeHistory();
+  if (!arr.length){
+    box.innerHTML = `<div class="muted">Sin historial todavía. Genera un reto y evalúa tu respuesta.</div>`;
+    return;
+  }
+  box.innerHTML = arr.map((r, idx)=>{
+    const ok = r.ok ? "ok" : "bad";
+    const t = (r.topicLabel || r.topic || "").replace(/</g,"&lt;");
+    const when = r.when || "";
+    const xp = r.xp ? `+${r.xp} XP` : "";
+    return `<div class="ph-row ${ok}">
+      <div class="ph-left">
+        <div class="ph-title">${t} · Nivel ${r.level}</div>
+        <div class="ph-sub">${when} · ${r.ok ? "Correcto" : "Incorrecto"} ${xp}</div>
+      </div>
+      <button class="btn mini ph-open" data-ph-index="${idx}" title="Cargar este reto"><i class="fas fa-folder-open"></i></button>
+    </div>`;
+  }).join("");
+}
 
 function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
@@ -350,7 +372,7 @@ function makeCartesian(level){
   const matlab =
 `A = {${A.map(x=>`'${x}'`).join(", ")}};\nB = {${B.map(x=>`'${x}'`).join(", ")}};\nP = {};\nfor i=1:numel(A)\n  for j=1:numel(B)\n    P{end+1} = sprintf('(%s,%s)', A{i}, B{j});\n  end\nend\ndisp(['A×B = { ' strjoin(P, ', ') ' }']);\n`;
 
-  return {topic, level, prompt, matlab, type:"pairs", expected:pairs, payload:{A,B}};
+  return {topic:"prod-cartesiano", level, prompt, matlab, type:"pairs", expected:pairs, payload:{A,B}};
 }
 
 function makeClassification(level){
@@ -371,7 +393,7 @@ function makeClassification(level){
   const prompt = `Relación R = { ${pairs.map(p=>`(${p[0]},${p[1]})`).join(", ")} }.\n¿R es una función? Responde: si / no.`;
   const matlab =
 `R = {${pairs.map(p=>`'(${p[0]},${p[1]})'`).join(", ")}};\n% Verificar si es función: cada x aparece una sola vez\nxs = cellfun(@(s) extractBetween(s,'(',','), R);\nxs = string(xs);\nif numel(unique(xs)) == numel(xs)\n  disp('SI es función');\nelse\n  disp('NO es función');\nend\n`;
-  return {topic, level, prompt, matlab, type:"yn", expected: makeFunc ? "si" : "no", payload:{domain, cod, pairs}};
+  return {topic:"clasificacion", level, prompt, matlab, type:"yn", expected: makeFunc ? "si" : "no", payload:{domain, cod, pairs}};
 }
 
 function makeInverse(level){
@@ -386,7 +408,7 @@ function makeInverse(level){
   const prompt = `Sea f = { ${pairs.map(p=>`(${p[0]},${p[1]})`).join(", ")} }.\nCalcula f^{-1}(${q}). Responde SOLO el valor.`;
   const matlab =
 `pairs = {${pairs.map(p=>`'${p[0]}->${p[1]}'`).join(", ")}};\nq = '${q}';\n% Invertir buscando el par cuyo valor sea q\nfor k=1:numel(pairs)\n  parts = split(string(pairs{k}), '->');\n  if parts(2)==q\n    disp(['f^{-1}(' q ') = ' char(parts(1))]);\n  end\nend\n`;
-  return {topic, level, prompt, matlab, type:"scalar", expected:xsol, payload:{pairs,q}};
+  return {topic:"inversa", level, prompt, matlab, type:"scalar", expected:xsol, payload:{pairs,q}};
 }
 
 function makeComposite(level){
@@ -406,7 +428,7 @@ function makeComposite(level){
   const prompt = `Dados f y g:\n f = { ${f.map(p=>`(${p[0]},${p[1]})`).join(", ")} }\n g = { ${g.map(p=>`(${p[0]},${p[1]})`).join(", ")} }\nCalcula (g∘f)(${x0}). Responde SOLO el valor.`;
   const matlab =
 `% Mapas como listas de pares\nf = {${f.map(p=>`'${p[0]}->${p[1]}'`).join(", ")}};\ng = {${g.map(p=>`'${p[0]}->${p[1]}'`).join(", ")}};\nx0='${x0}';\n% calcular f(x0)\nfx='';\nfor k=1:numel(f)\n  parts=split(string(f{k}),'->');\n  if parts(1)==x0\n    fx=char(parts(2));\n  end\nend\n% calcular g(fx)\nres='';\nfor k=1:numel(g)\n  parts=split(string(g{k}),'->');\n  if parts(1)==string(fx)\n    res=char(parts(2));\n  end\nend\ndisp(['(g∘f)(' x0 ') = ' res]);\n`;
-  return {topic, level, prompt, matlab, type:"scalar", expected:gfx, payload:{A,B,C,f,g,x0}};
+  return {topic:"compuesta", level, prompt, matlab, type:"scalar", expected:gfx, payload:{A,B,C,f,g,x0}};
 }
 
 function makeDiscrete(level){
@@ -420,7 +442,7 @@ function makeDiscrete(level){
   const prompt = `X = [${xs.join(", ")}]\nY = [${ys.join(", ")}]\n¿Cuál es y cuando x = ${xq}? Responde SOLO el número.`;
   const matlab =
 `X=[${xs.join(" ")}];\nY=[${ys.join(" ")}];\nxq=${xq};\nidx=find(X==xq);\ndisp(['y(' num2str(xq) ') = ' num2str(Y(idx))]);\n`;
-  return {topic, level, prompt, matlab, type:"scalar", expected:String(yq), payload:{xs,ys,xq}};
+  return {topic:"discreta", level, prompt, matlab, type:"scalar", expected:String(yq), payload:{xs,ys,xq}};
 }
 
 function renderPractice(){
@@ -439,6 +461,8 @@ function renderPractice(){
     if (feedback){ feedback.innerHTML = ""; feedback.classList.remove("ok","bad"); }
     if (ans) ans.value = "";
     try{ hljs.highlightElement(codeEl); }catch(e){}
+    try{ renderChoices(); }catch(e){}
+    try{ renderPracticeHistory(); }catch(e){}
     return;
   }
 
@@ -448,6 +472,72 @@ function renderPractice(){
   if (ans) ans.value = "";
   codeEl.textContent = PRACTICE_STATE.matlab;
   try{ hljs.highlightElement(codeEl); }catch(e){}
+  try{ renderChoices(); }catch(e){}
+  try{ renderPracticeHistory(); }catch(e){}
+}
+
+
+function topicLabel(t){
+  switch(t){
+    case "prod-cartesiano": return "Producto cartesiano";
+    case "clasificacion": return "Clasificación";
+    case "inversa": return "Función inversa";
+    case "compuesta": return "Función compuesta";
+    case "discreta": return "Función discreta";
+    default: return t || "Práctica";
+  }
+}
+
+function buildChoicesFor(state){
+  if (!state) return [];
+  if (state.type === "yn"){
+    return ["Sí","No"];
+  }
+  if (state.type === "scalar"){
+    const correct = String(state.expected);
+    const choices = new Set([correct]);
+    const asNum = Number(correct);
+    if (!Number.isNaN(asNum) && correct.trim() !== ""){
+      const deltas = [1,2,3,-1,-2,-3];
+      for (const d of deltas){
+        if (choices.size>=4) break;
+        choices.add(String(asNum + d));
+      }
+    } else {
+      const pool = ["a","b","c","d","e","f","g","h","1","2","3","4"];
+      for (const p of pool){
+        if (choices.size>=4) break;
+        if (p !== correct) choices.add(p);
+      }
+    }
+    return shuffle(Array.from(choices)).slice(0,4);
+  }
+  if (state.type === "pairs" && Array.isArray(state.expected) && state.expected.length <= 6){
+    const correct = `{ ${state.expected.map(p=>`(${p[0]},${p[1]})`).join(", ")} }`;
+    const miss = `{ ${state.expected.slice(0, Math.max(1,state.expected.length-1)).map(p=>`(${p[0]},${p[1]})`).join(", ")} }`;
+    const fake = state.expected[0] ? `{ ${state.expected.map(p=>`(${p[0]},${p[1]})`).join(", ")}, (${state.expected[0][0]},z) }` : miss;
+    return shuffle([correct, miss, fake]).slice(0,3);
+  }
+  return [];
+}
+
+function renderChoices(){
+  const box = document.getElementById("practiceChoices");
+  if (!box) return;
+  box.innerHTML = "";
+  if (!PRACTICE_STATE) return;
+  const choices = buildChoicesFor(PRACTICE_STATE);
+  if (!choices.length) return;
+
+  box.innerHTML = choices.map(c=>`<button class="choice-chip" type="button">${String(c).replace(/</g,"&lt;")}</button>`).join("");
+  box.querySelectorAll(".choice-chip").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const val = btn.textContent || "";
+      const inp = document.getElementById("practiceAnswer");
+      if (inp) inp.value = val;
+      try{ uiBeep(); }catch(e){}
+    });
+  });
 }
 
 function practiceHint(){
@@ -490,10 +580,15 @@ function checkPractice(){
   if (ok){
     feedback.classList.add("ok");
     feedback.innerHTML = `✅ Correcto. +XP`;
-    try{ awardXp(60, "Práctica"); }catch(e){}
+    const gained = 60;
+    try{ awardXp(gained, "Práctica"); }catch(e){}
+    try{ updateStreak(); }catch(e){}
+    try{ pushPracticeHistory({topic:PRACTICE_STATE.topic, topicLabel: topicLabel(PRACTICE_STATE.topic), level:PRACTICE_STATE.level, ok:true, xp:gained, when: new Date().toLocaleString(), prompt:PRACTICE_STATE.prompt, expected:PRACTICE_STATE.expected, answer: ansRaw}); }catch(e){}
+    try{ burstConfetti(); }catch(e){}
   }else{
     feedback.classList.add("bad");
     feedback.innerHTML = `❌ Incorrecto. <b>Pista:</b> ${practiceHint()}`;
+    try{ pushPracticeHistory({topic:PRACTICE_STATE.topic, topicLabel: topicLabel(PRACTICE_STATE.topic), level:PRACTICE_STATE.level, ok:false, xp:0, when: new Date().toLocaleString(), prompt:PRACTICE_STATE.prompt, expected:PRACTICE_STATE.expected, answer: ansRaw}); }catch(e){}
   }
 }
 
@@ -584,7 +679,48 @@ function downloadPracticeMatlab(){
   a.remove();
 }
 
+
+function exportPracticeCSV(){
+  const arr = loadPracticeHistory();
+  const rows = [["fecha","tema","nivel","resultado","xp","respuesta","esperado","enunciado"]];
+  arr.forEach(r=>{
+    rows.push([
+      r.when||"",
+      topicLabel(r.topic||""),
+      String(r.level||""),
+      r.ok ? "correcto" : "incorrecto",
+      String(r.xp||0),
+      String(r.answer||"").replace(/\n/g," "),
+      (typeof r.expected === "object" ? JSON.stringify(r.expected) : String(r.expected||"")),
+      String(r.prompt||"").replace(/\n/g," ")
+    ]);
+  });
+  const csv = rows.map(row=>row.map(cell=>{
+    const s = String(cell).replace(/"/g,'""');
+    return `"${s}"`;
+  }).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "historial_practica.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+function exportPracticeJSON(){
+  const arr = loadPracticeHistory();
+  const blob = new Blob([JSON.stringify(arr, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "historial_practica.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
 function initPracticeMode(){
+  if (window.__mcPracticeBound) { try{ renderPractice(); }catch(e){}; return; }
+  window.__mcPracticeBound = true;
   const topicSel = document.getElementById("practiceTopic");
   const levelSel = document.getElementById("practiceLevel");
 
@@ -595,6 +731,10 @@ function initPracticeMode(){
   const btnReset = document.getElementById("practiceReset");
   const btnCopy = document.getElementById("practiceCopy");
   const btnDown = document.getElementById("practiceDownload");
+  const btnHint = document.getElementById("practiceHintBtn");
+  const btnCsv = document.getElementById("practiceExportCSV");
+  const btnJson = document.getElementById("practiceExportJSON");
+  const btnClear = document.getElementById("practiceClearHistory");
 
   if (!btnNew) return;
 
@@ -603,6 +743,7 @@ function initPracticeMode(){
     const lvl = Number(levelSel?.value || 1);
     PRACTICE_STATE = makePractice(topic, lvl);
     renderPractice();
+    try{ showToast("Reto generado"); }catch(e){}
   });
 
   btnCheck && btnCheck.addEventListener("click", checkPractice);
@@ -615,18 +756,84 @@ function initPracticeMode(){
   btnCopy && btnCopy.addEventListener("click", copyPracticeMatlab);
   btnDown && btnDown.addEventListener("click", downloadPracticeMatlab);
 
+
+  btnHint && btnHint.addEventListener("click", ()=>{
+    const fb = document.getElementById("practiceFeedback");
+    if (!fb) return;
+    fb.classList.remove("ok","bad");
+    fb.classList.add("ok");
+    fb.innerHTML = `💡 Pista: <b>${practiceHint()}</b>`;
+    try{ uiBeep(); }catch(e){}
+  });
+
+  btnCsv && btnCsv.addEventListener("click", exportPracticeCSV);
+  btnJson && btnJson.addEventListener("click", exportPracticeJSON);
+  btnClear && btnClear.addEventListener("click", ()=>{
+    savePracticeHistory([]);
+    PRACTICE_HISTORY = [];
+    renderPracticeHistory();
+    try{ showToast("Historial limpio"); }catch(e){}
+  });
+
+  // Abrir un reto anterior desde el historial
+  document.addEventListener("click", (e)=>{
+    const b = e.target.closest && e.target.closest(".ph-open");
+    if (!b) return;
+    const idx = Number(b.getAttribute("data-ph-index"));
+    const arr = loadPracticeHistory();
+    const r = arr[idx];
+    if (!r) return;
+    // reconstruir estado básico
+    const topic = r.topic || "prod-cartesiano";
+    const lvl = Number(r.level || 1);
+    PRACTICE_STATE = makePractice(topic, lvl);
+    // reescribir para mostrar el mismo enunciado si existe
+    if (r.prompt) PRACTICE_STATE.prompt = r.prompt;
+    if (r.expected !== undefined) PRACTICE_STATE.expected = r.expected;
+    renderPractice();
+    const inp = document.getElementById("practiceAnswer");
+    if (inp) inp.value = r.answer || "";
+    try{ showToast("Reto cargado"); }catch(e){}
+  }, true);
+
+  // Enter para evaluar
+  const ansInput = document.getElementById("practiceAnswer");
+  ansInput && ansInput.addEventListener("keydown", (ev)=>{
+    if (ev.key === "Enter"){
+      ev.preventDefault();
+      checkPractice();
+    }
+  });
+
   renderPractice();
 }
 
+
+function initPracticeEntryButtons(){
+  const btn = document.getElementById("openPracticeFromEj");
+  const tipBtn = document.getElementById("practiceQuickTipBtn");
+  const tip = document.getElementById("practiceQuickTip");
+  btn && btn.addEventListener("click", ()=>{
+    openTab(new Event("click"), "practica");
+    try{ showToast("Modo Práctica"); }catch(e){}
+  });
+  tipBtn && tipBtn.addEventListener("click", ()=>{
+    if (!tip) return;
+    const on = tip.style.display !== "none";
+    tip.style.display = on ? "none" : "block";
+    try{ uiBeep(); }catch(e){}
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
   try{ validateLastTab(); }catch(e){}
 
+  try{ initGlobalModalClose(); }catch(e){}
+
   try{ bindTabLinksHard(); }catch(e){}
   try{ renumberMissionBadges(); }catch(e){}
-  try{ renumberLevelBadges(); }catch(e){}
   try{ initPlayerPanelClose(); }catch(e){}
-  try{ hardBindPanelClose(); }catch(e){}
   try{ initPracticeMode(); }catch(e){}
+  try{ initPracticeEntryButtons(); }catch(e){}
 
   try{ updateStreak(); }catch(e){}
   try{ saveXp(loadXp()); }catch(e){} // render XP in HUD
@@ -2187,10 +2394,9 @@ function saveXp(v){
   localStorage.setItem("mc_xp", String(v));
   const xpEl = document.getElementById("xpValue");
   if (xpEl) xpEl.textContent = v;
+  try{ updateLevelHud(v); }catch(e){}
+  try{ updateProfilePanel(); }catch(e){}
 }
-// HUD
-updateLevelHud(v);
-
 function loadAch(){
   try{ return JSON.parse(localStorage.getItem("mc_ach") || "{}") || {}; }catch(e){ return {}; }
 }
@@ -2488,6 +2694,24 @@ function playDing(){
   }catch(e){}
 }
 
+
+function burstConfetti(){
+  const root = document.body;
+  const wrap = document.createElement("div");
+  wrap.className = "confetti-wrap";
+  const n = 26;
+  for (let i=0;i<n;i++){
+    const p = document.createElement("span");
+    p.className = "confetti";
+    p.style.left = Math.round(Math.random()*100) + "vw";
+    p.style.animationDelay = (Math.random()*0.25) + "s";
+    p.style.opacity = (0.7 + Math.random()*0.3).toFixed(2);
+    wrap.appendChild(p);
+  }
+  root.appendChild(wrap);
+  setTimeout(()=>{ try{ wrap.remove(); }catch(e){} }, 1300);
+  try{ if (loadSound && loadSound()) playDing(); }catch(e){}
+}
 function showAchievementPopup(title, desc){
   const box = document.getElementById("achPopup");
   if (!box) return;
@@ -2527,36 +2751,6 @@ function renderAchievements(){
     `;
     grid.appendChild(item);
   });
-
-  // Resumen (si existe en el HTML)
-  try{
-    const xpNowEl = document.getElementById("achXpNow");
-    const nextTitleEl = document.getElementById("achNextTitle");
-    const nextXpEl = document.getElementById("achNextXp");
-    const unlockedEl = document.getElementById("achUnlockedCount");
-    const totalEl = document.getElementById("achTotalCount");
-    const fillEl = document.getElementById("achProgressFill");
-    const maxEl = document.getElementById("achProgressMax");
-
-    const xpNow = (PROGRESS && typeof PROGRESS.xp === "number") ? PROGRESS.xp : (parseInt(localStorage.getItem("xp")||"0",10) || 0);
-    const sorted = ACHIEVEMENTS.slice().sort((a,b)=>a.xp-b.xp);
-    const unlockedCount = sorted.filter(a=>xpNow>=a.xp).length;
-    const next = sorted.find(a=>xpNow < a.xp) || sorted[sorted.length-1];
-    const max = next ? next.xp : xpNow;
-
-    if (xpNowEl) xpNowEl.textContent = xpNow;
-    if (totalEl) totalEl.textContent = sorted.length;
-    if (unlockedEl) unlockedEl.textContent = unlockedCount;
-
-    if (nextTitleEl) nextTitleEl.textContent = next ? next.title : "—";
-    if (nextXpEl) nextXpEl.textContent = next ? next.xp : xpNow;
-    if (maxEl) maxEl.textContent = max;
-
-    if (fillEl){
-      const frac = max > 0 ? Math.min(1, Math.max(0, xpNow / max)) : 0;
-      fillEl.style.width = (frac*100).toFixed(1) + "%";
-    }
-  }catch(e){}
 }
 
 function openAchModal(){
@@ -2580,8 +2774,7 @@ function closeAchModal(){
     if (!modal) return;
     modal.addEventListener("click", (e)=>{
       const t = e.target;
-      const closer = e.target.closest('[data-close]');
-    if (closer) closeAchModal();
+      if (t && t.dataset && t.dataset.close) closeAchModal();
     });
     document.addEventListener("keydown",(e)=>{
       if (e.key === "Escape") closeAchModal();
@@ -2830,16 +3023,16 @@ function genPractice(topic){
 
 (function initPractice(){
   function run(){
-    const topicSel = document.getElementById("practiceCardTopic");
-    const genBtn = document.getElementById("practiceCardGenBtn");
-    const chkBtn = document.getElementById("practiceCardCheckBtn");
-    const hintBtn = document.getElementById("practiceCardHintBtn");
-    const ansIn = document.getElementById("practiceCardAnswer");
-    const qBox = document.getElementById("practiceCardQuestion");
-    const fb = document.getElementById("practiceCardFeedback");
-    const csvBtn = document.getElementById("practiceCardExportCsv");
-    const jsonBtn = document.getElementById("practiceCardExportJson");
-    const clearBtn = document.getElementById("practiceCardClear");
+    const topicSel = document.getElementById("practiceTopic");
+    const genBtn = document.getElementById("genPracticeBtn");
+    const chkBtn = document.getElementById("checkPracticeBtn");
+    const hintBtn = document.getElementById("hintPracticeBtn");
+    const ansIn = document.getElementById("practiceAnswer");
+    const qBox = document.getElementById("practiceQuestion");
+    const fb = document.getElementById("practiceFeedback");
+    const csvBtn = document.getElementById("exportCsvBtn");
+    const jsonBtn = document.getElementById("exportJsonBtn");
+    const clearBtn = document.getElementById("clearPracticeBtn");
 
     if (!topicSel || !genBtn || !chkBtn || !ansIn || !qBox || !fb) return;
 
