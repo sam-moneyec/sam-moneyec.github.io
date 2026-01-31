@@ -1,3 +1,4 @@
+
 function validateLastTab(){
   try{
     const last = localStorage.getItem("mc_last_tab");
@@ -85,7 +86,8 @@ function updateProfilePanel(){
 function openModal(id){
   const m = document.getElementById(id);
   if (!m) return;
-  m.classList.add("show");
+  // Support both legacy `.show` and current `.open`
+  m.classList.add("open","show");
   m.setAttribute("aria-hidden","false");
   // focus first focusable element
   try{
@@ -96,10 +98,9 @@ function openModal(id){
 function closeModal(id){
   const m = document.getElementById(id);
   if (!m) return;
-  m.classList.remove("show");
+  m.classList.remove("open","show");
   m.setAttribute("aria-hidden","true");
 }
-
 // Cierre universal: cualquier elemento con [data-close] cierra su modal.
 // Soporta data-close="profileModal" o data-close="true" (cierra el modal contenedor).
 function initGlobalModalClose(){
@@ -132,7 +133,7 @@ function initGlobalModalClose(){
   // ESC: cierra el modal visible más reciente.
   document.addEventListener("keydown", (e)=>{
     if (e.key !== "Escape") return;
-    const shown = Array.from(document.querySelectorAll(".modal.show"));
+    const shown = Array.from(document.querySelectorAll(".modal.open, .modal.show"));
     if (shown.length){
       const last = shown[shown.length - 1];
       if (last && last.id) closeModal(last.id);
