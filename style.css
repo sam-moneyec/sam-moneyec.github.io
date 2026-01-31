@@ -2663,3 +2663,12 @@ body{
   }
 }
 
+
+/* ===== HARD FIX: sidebar clickability ===== */
+.sidebar{ pointer-events: auto !important; }
+.sidebar *{ pointer-events: auto !important; }
+.main-content{ pointer-events: auto; }
+@media (min-width: 1201px){
+  .sidebar-backdrop{ display:none !important; }
+  body::before{ display:none !important; }
+}
