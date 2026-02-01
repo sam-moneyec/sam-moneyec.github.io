@@ -3194,6 +3194,91 @@ function genPractice(topic){
     const btnCopyMatlab = $("#exCopyMatlabBtn");
     const preMatlab = $("#exMatlabCode");
 
+    // --- Mini reto (XP) dentro del banco de ejemplos ---
+    const exQuizPrompt = $("#exQuizPrompt");
+    const exQuizAnswer = $("#exQuizAnswer");
+    const exQuizNew = $("#exQuizNew");
+    const exQuizCheck = $("#exQuizCheck");
+    const exQuizReveal = $("#exQuizReveal");
+    const exQuizFeedback = $("#exQuizFeedback");
+
+    const exQuizMap = {
+      pc: { q: "Si A={1,2,3} y B={a,b}, ¿cuántos pares ordenados hay en A×B?", type: "num", a: 6, hint: "|A|·|B|" },
+      cl: { q: "Para f(x)=2x+1 en R→R, ¿la función es inyectiva, sobreyectiva o biyectiva?", type: "text", a: ["biyectiva","inyectiva y sobreyectiva","inyectiva,sobreyectiva"], hint: "Piensa en funciones lineales con pendiente ≠ 0." },
+      inv: { q: "Si f(x)=x^3, ¿cuánto vale f^{-1}(8)?", type: "num", a: 2, hint: "La inversa de x^3 es la raíz cúbica." },
+      comp: { q: "Sea f(x)=2x+1 y g(x)=x^2. Calcula (g∘f)(2).", type: "num", a: 25, hint: "Primero f(2), luego g(…)." },
+      disc: { q: "Si a_n = 2n + 1, ¿cuánto vale a_4?", type: "num", a: 9, hint: "Sustituye n=4." },
+    };
+
+    let currentExQuiz = null;
+
+    const normTxt = (s) => (s || "")
+      .toString()
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .replace(/\s+/g, " ");
+
+    function renderExQuizIdle(){
+      if(!exQuizPrompt) return;
+      exQuizPrompt.innerHTML = 'Selecciona un ejemplo y presiona <b>Reto</b>. Ganas XP solo si respondes bien.';
+      if(exQuizFeedback) exQuizFeedback.textContent = "—";
+      if(exQuizAnswer) exQuizAnswer.value = "";
+      currentExQuiz = null;
+    }
+
+    function startExQuiz(){
+      if(!exQuizPrompt) return;
+      const chosen = (sel?.value || "").trim();
+      if(!chosen || !exQuizMap[chosen]){
+        exQuizPrompt.textContent = "Selecciona un ejemplo primero (arriba) y luego presiona Reto.";
+        return;
+      }
+      const cfg = exQuizMap[chosen];
+      currentExQuiz = { id: chosen, ...cfg, key: `exQuiz|${chosen}|v1` };
+      exQuizPrompt.textContent = cfg.q;
+      if(exQuizFeedback) exQuizFeedback.textContent = "Tip: " + cfg.hint;
+      if(exQuizAnswer) exQuizAnswer.focus();
+    }
+
+    function checkExQuiz(reveal=false){
+      if(!currentExQuiz){
+        startExQuiz();
+        return;
+      }
+      const raw = (exQuizAnswer?.value || "").trim();
+      if(!raw){
+        if(exQuizFeedback) exQuizFeedback.textContent = "Escribe una respuesta para validar (no se otorga XP si está vacío).";
+        return;
+      }
+      const cfg = currentExQuiz;
+      let ok = false;
+
+      if(cfg.type === "num"){
+        const v = Number(raw.replace(",", "."));
+        if(Number.isFinite(v)){
+          ok = Math.abs(v - cfg.a) <= 1e-6;
+        }
+      } else {
+        const a = normTxt(raw);
+        const expected = (cfg.a || []).map(normTxt);
+        ok = expected.includes(a) || (a.includes("inyectiva") && a.includes("sobreyectiva"));
+      }
+
+      if(ok){
+        awardXp(60, cfg.key);
+        if(exQuizFeedback) exQuizFeedback.textContent = "✅ Correcto: +60 XP";
+      } else {
+        if(exQuizFeedback) exQuizFeedback.textContent = "❌ Incorrecto. Presiona “Ver solución” si quieres comprobar.";
+      }
+
+      if(reveal){
+        const sol = cfg.type === "num" ? String(cfg.a) : String((cfg.a || [])[0] || "");
+        safeToast("Solución: " + sol);
+      }
+    }
+
     const sheetTopic = $("#sheetTopic");
     const sheetCount = $("#sheetCount");
     const sheetDiff = $("#sheetDifficulty");
@@ -3336,6 +3421,13 @@ stem(x,y); grid on;`
       preMatlab.textContent = ex.matlab || "";
     }
     sel.addEventListener("change", ()=>{ revealOn=false; renderExample(); });
+
+    // inicializa mini-reto (XP) de ejemplos
+    renderExQuizIdle();
+    if(exQuizNew) exQuizNew.addEventListener("click", startExQuiz);
+    if(exQuizCheck) exQuizCheck.addEventListener("click", ()=>checkExQuiz(false));
+    if(exQuizReveal) exQuizReveal.addEventListener("click", ()=>{ checkExQuiz(true); });
+    if(exQuizAnswer) exQuizAnswer.addEventListener("keydown", (e)=>{ if(e.key==="Enter") checkExQuiz(false); });
     renderExample();
 
     btnReveal.addEventListener("click", ()=>{
@@ -3566,7 +3658,7 @@ stem(x,y); grid on;`
           const bonus = (parseInt(e.diff||1,10)-1)*10;
           const amount = base + bonus;
           const key = `sheet:${e.topicId}:${e.prompt}`; // evita doble XP por el mismo ejercicio
-          window.awardXp?.(amount, `Hoja (${e.topicId})`, key);
+          awardXp(amount, `Hoja (${e.topicId})`, key);
         }catch(err){}
         safeToast("Correcto.", "success");
       }else{
@@ -3790,6 +3882,131 @@ xlabel('x'); ylabel('f(x)'); title('f(x)');`;
     });
 
     expr.addEventListener("keydown", (ev)=>{ if(ev.key==="Enter"){ ev.preventDefault(); doPlot(); } });
+
+    // --- Reto XP: evalúa f(x0) ---
+    const qPrompt = $("#fxQuizPrompt");
+    const qAns = $("#fxQuizAnswer");
+    const qNew = $("#fxQuizNew");
+    const qCheck = $("#fxQuizCheck");
+    const qReveal = $("#fxQuizReveal");
+    const qFeedback = $("#fxQuizFeedback");
+    const qMatlab = $("#fxQuizMatlab");
+    const qCopy = $("#fxQuizCopy");
+
+    let fxQuizState = null;
+
+    const fmt3 = (n)=> (Number.isFinite(n) ? (Math.round(n*1000)/1000).toFixed(3) : "NaN");
+
+    function fxQuizIdle(){
+      if(!qPrompt) return;
+      qPrompt.innerHTML = 'Presiona <b>Nuevo reto</b> para generar una pregunta (se usa tu f(x) actual).';
+      if(qFeedback) qFeedback.textContent = "—";
+      if(qAns) qAns.value = "";
+      if(qMatlab) qMatlab.textContent = '% Presiona "Nuevo reto" para generar el código MATLAB.';
+      fxQuizState = null;
+    }
+
+    function fxQuizMake(){
+      if(!qPrompt) return;
+      let expr = (exprIn?.value || "").trim();
+      if(!expr){
+        expr = "sin(x)+x^2";
+        if(exprIn) exprIn.value = expr;
+      }
+      const f = buildFx(expr);
+      if(!f){
+        qPrompt.textContent = "Tu expresión no es válida. Corrígela y vuelve a generar el reto.";
+        return;
+      }
+
+      const a = Number((aIn?.value || "-5").toString().replace(",", "."));
+      const b = Number((bIn?.value || "5").toString().replace(",", "."));
+      const lo = Number.isFinite(a) ? a : -5;
+      const hi = Number.isFinite(b) ? b : 5;
+
+      // Genera x0 dentro del rango (si es muy pequeño, usa [-5,5])
+      const L = (hi - lo);
+      const minLo = (Number.isFinite(L) && Math.abs(L) > 1e-6) ? lo : -5;
+      const maxHi = (Number.isFinite(L) && Math.abs(L) > 1e-6) ? hi : 5;
+
+      let x0 = 0, y0 = NaN, tries = 0;
+      while(tries < 10){
+        x0 = minLo + Math.random() * (maxHi - minLo);
+        // redondea x0 a 2 decimales para que sea “jugable”
+        x0 = Math.round(x0*100)/100;
+        y0 = f(x0);
+        if(Number.isFinite(y0)) break;
+        tries++;
+      }
+      if(!Number.isFinite(y0)){
+        qPrompt.textContent = "No pude generar un reto estable (tu f(x) da NaN/∞ en el rango). Cambia el rango o la función.";
+        return;
+      }
+
+      const key = `fxQuiz|${expr}|${x0}`;
+      fxQuizState = { expr, x0, y0, key };
+
+      qPrompt.textContent = `Para f(x) = ${expr}, calcula f(${x0}). (redondea a 3 decimales)`;
+      if(qFeedback) qFeedback.textContent = "Tip: si te da un número largo, redondea a 3 decimales.";
+      if(qAns) qAns.focus();
+
+      if(qMatlab){
+        qMatlab.textContent =
+`% Reto: evalúa f(${x0})
+f = @(x) (${expr});
+x0 = ${x0};
+y = f(x0)
+
+% y esperado (aprox): ${fmt3(y0)}
+`;
+      }
+    }
+
+    function fxQuizValidate(reveal=false){
+      if(!fxQuizState){
+        fxQuizMake();
+        return;
+      }
+      const raw = (qAns?.value || "").trim();
+      if(!raw){
+        if(qFeedback) qFeedback.textContent = "Escribe tu respuesta antes de validar (si está vacío no ganas XP).";
+        return;
+      }
+      const v = Number(raw.replace(",", "."));
+      if(!Number.isFinite(v)){
+        if(qFeedback) qFeedback.textContent = "Respuesta inválida. Ingresa un número (ej: 3.14).";
+        return;
+      }
+      const y = fxQuizState.y0;
+
+      // tolerancia: admite error por redondeo a 3 decimales
+      const tol = Math.max(0.02, Math.abs(y)*0.01);
+      const ok = Math.abs(v - y) <= tol || Math.abs(v - Number(fmt3(y))) <= 0.001;
+
+      if(ok){
+        awardXp(80, fxQuizState.key);
+        if(qFeedback) qFeedback.textContent = `✅ Correcto: f(${fxQuizState.x0}) ≈ ${fmt3(y)}  (+80 XP)`;
+      }else{
+        if(qFeedback) qFeedback.textContent = `❌ Incorrecto. Intenta de nuevo o usa “Ver solución”.`;
+      }
+
+      if(reveal){
+        safeToast(`Solución: f(${fxQuizState.x0}) ≈ ${fmt3(y)}`);
+      }
+    }
+
+    if(qPrompt){
+      fxQuizIdle();
+      qNew?.addEventListener("click", fxQuizMake);
+      qCheck?.addEventListener("click", ()=>fxQuizValidate(false));
+      qReveal?.addEventListener("click", ()=>fxQuizValidate(true));
+      qAns?.addEventListener("keydown", (e)=>{ if(e.key==="Enter") fxQuizValidate(false); });
+      qCopy?.addEventListener("click", ()=>{
+        copyToClipboard(qMatlab?.textContent || "");
+        safeToast("Código MATLAB copiado");
+      });
+    }
+
     // first render hint
     evalBox.textContent = "Define f(x) y presiona Graficar.";
   }
