@@ -3145,3 +3145,657 @@ function genPractice(topic){
     }
   });
 })();
+
+/* =========================================================
+   EXTRA (FINAL): Ejemplos / Hojas + Laboratorio Funciones
+   - No rompe nada existente: solo añade features nuevas.
+   ========================================================= */
+(function(){
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  function safeToast(msg, type="info"){
+    try{ (window.showToast||window.toast||function(m){console.log(m)})(msg, type); }
+    catch(e){ console.log(msg); }
+  }
+
+  function copyToClipboard(text){
+    return navigator.clipboard?.writeText(text).then(()=>true).catch(()=>false);
+  }
+
+  function normalizeAnswer(s){
+    return String(s ?? "")
+      .trim()
+      .replace(/\s+/g," ")
+      .replace(/,/g,".")
+      .toLowerCase();
+  }
+
+  function downloadText(filename, text, mime="text/plain"){
+    const blob = new Blob([text], {type: mime});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 500);
+  }
+
+  // === 1) Banco de Ejemplos ===
+  function initEjemplosHojas(){
+    const tab = $("#ejercicios");
+    if(!tab) return;
+
+    const sel = $("#exTopicSelect");
+    const box = $("#exExampleBox");
+    const btnLoad = $("#exLoadBtn");
+    const btnReveal = $("#exRevealBtn");
+    const btnCopyMatlab = $("#exCopyMatlabBtn");
+    const preMatlab = $("#exMatlabCode");
+
+    const sheetTopic = $("#sheetTopic");
+    const sheetCount = $("#sheetCount");
+    const sheetDiff = $("#sheetDifficulty");
+    const btnSheetGen = $("#sheetGenBtn");
+    const btnSheetKey = $("#sheetToggleKeyBtn");
+    const btnSheetPrint = $("#sheetPrintBtn");
+    const btnSheetJson = $("#sheetDownloadJsonBtn");
+    const sheetPreview = $("#sheetPreview");
+
+    const prompt = $("#sheetCurrentPrompt");
+    const ans = $("#sheetAnswer");
+    const btnPrev = $("#sheetPrevBtn");
+    const btnNext = $("#sheetNextBtn");
+    const btnHint = $("#sheetHintBtn");
+    const hintBox = $("#sheetHintBox");
+    const btnCheck = $("#sheetCheckBtn");
+    const btnShowSol = $("#sheetShowSolutionBtn");
+    const btnLoadSection = $("#sheetLoadSectionBtn");
+    const feedback = $("#sheetFeedback");
+    const btnCopySheetMatlab = $("#sheetCopyMatlabBtn");
+    const preSheetMatlab = $("#sheetMatlabCode");
+
+    if(!sel || !box || !btnLoad) return;
+
+    const examples = [
+      {
+        id:"pc",
+        label:"Producto cartesiano (A×B)",
+        tab:"prod-cartesiano",
+        title:"Producto cartesiano",
+        body:`A = {1,2,3}\nB = {a,b}\nCalcula A×B y observa que el orden importa.`,
+        fill: ()=>{
+          const A=$("#setA"), B=$("#setB");
+          if(A) A.value="1,2,3";
+          if(B) B.value="a,b";
+          try{ window.calcCartesian?.(); }catch(e){}
+        },
+        matlab:
+`A = [1 2 3];
+B = ["a" "b"];
+P = strings(numel(A)*numel(B), 2);
+k = 1;
+for i=1:numel(A)
+  for j=1:numel(B)
+    P(k,:) = [string(A(i)) B(j)];
+    k = k + 1;
+  end
+end
+disp(P);`
+      },
+      {
+        id:"cl",
+        label:"Clasificación (inyectiva/sobreyectiva)",
+        tab:"clasificacion",
+        title:"Clasificación de función",
+        body:`Dominio: {1,2,3}\nCodominio: {a,b,c}\nMapeo: 1->a, 2->b, 3->c\nResultado esperado: BIYECTIVA.`,
+        fill: ()=>{
+          const d=$("#classDomain"), c=$("#classCodomain"), m=$("#classMap");
+          if(d) d.value="1,2,3";
+          if(c) c.value="a,b,c";
+          if(m) m.value="1->a,2->b,3->c";
+          try{ window.classifyFunction?.(); }catch(e){}
+        },
+        matlab:
+`dom = [1 2 3];
+cod = ["a" "b" "c"];
+map = containers.Map(dom, cod);
+% Inyectiva y sobreyectiva -> biyectiva (en este ejemplo)`
+      },
+      {
+        id:"inv",
+        label:"Función inversa (de pares)",
+        tab:"inversa",
+        title:"Inversa de una función (pares)",
+        body:`Dominio: {1,2,3}\nCodominio: {a,b,c}\nMapeo: 1->a, 2->b, 3->c\nInversa: a->1, b->2, c->3`,
+        fill: ()=>{
+          const d=$("#invDomain"), c=$("#invCodomain"), m=$("#invMap");
+          if(d) d.value="1,2,3";
+          if(c) c.value="a,b,c";
+          if(m) m.value="1->a,2->b,3->c";
+          try{ window.invertFunction?.(); }catch(e){}
+        },
+        matlab:
+`pairs = [1 "a"; 2 "b"; 3 "c"];
+invPairs = [pairs(:,2) pairs(:,1)];
+disp(invPairs);`
+      },
+      {
+        id:"comp",
+        label:"Función compuesta (g∘f)",
+        tab:"compuesta",
+        title:"Composición de funciones",
+        body:`Dom: {1,2,3}\nIntermedio: {a,b,c}\nCod: {x,y,z}\nf: 1->a, 2->b, 3->c\ng: a->x, b->y, c->z\n(g∘f): 1->x, 2->y, 3->z`,
+        fill: ()=>{
+          const d=$("#compDomain"), mid=$("#compMid"), c=$("#compCodomain");
+          const f=$("#compMapF"), g=$("#compMapG");
+          if(d) d.value="1,2,3";
+          if(mid) mid.value="a,b,c";
+          if(c) c.value="x,y,z";
+          if(f) f.value="1->a,2->b,3->c";
+          if(g) g.value="a->x,b->y,c->z";
+          try{ window.composeFunctions?.(); }catch(e){}
+        },
+        matlab:
+`% f: 1->a,2->b,3->c ; g: a->x,b->y,c->z
+% comp: 1->x,2->y,3->z`
+      },
+      {
+        id:"disc",
+        label:"Función discreta (puntos)",
+        tab:"discreta",
+        title:"Función discreta",
+        body:`x = 1,2,3,4\nf(x)= 2,4,6,8\nGrafica puntos (relación lineal discreta).`,
+        fill: ()=>{
+          const x=$("#discX"), y=$("#discY");
+          if(x) x.value="1,2,3,4";
+          if(y) y.value="2,4,6,8";
+          try{ window.plotDiscrete?.(); }catch(e){}
+        },
+        matlab:
+`x = [1 2 3 4];
+y = [2 4 6 8];
+stem(x,y); grid on;`
+      }
+    ];
+
+    // Populate selects (topic list)
+    const topicOptions = examples.map(e=>({value:e.id, label:e.label}));
+    sel.innerHTML = topicOptions.map(o=>`<option value="${o.value}">${o.label}</option>`).join("");
+    sheetTopic.innerHTML = topicOptions.map(o=>`<option value="${o.value}">${o.label}</option>`).join("");
+
+    let revealOn = false;
+    function renderExample(){
+      const ex = examples.find(e=>e.id===sel.value) || examples[0];
+      box.innerHTML = `
+        <div class="ex-title">${ex.title}</div>
+        <div class="ex-body"><pre style="margin:0; white-space:pre-wrap;">${ex.body}</pre></div>
+      `;
+      preMatlab.style.display = revealOn ? "block":"none";
+      preMatlab.textContent = ex.matlab || "";
+    }
+    sel.addEventListener("change", ()=>{ revealOn=false; renderExample(); });
+    renderExample();
+
+    btnReveal.addEventListener("click", ()=>{
+      revealOn = !revealOn;
+      const ex = examples.find(e=>e.id===sel.value) || examples[0];
+      preMatlab.style.display = revealOn ? "block":"none";
+      preMatlab.textContent = ex.matlab || "";
+      safeToast(revealOn ? "Mostrando solución/MATLAB." : "Ocultado.", "info");
+    });
+
+    btnCopyMatlab.addEventListener("click", async ()=>{
+      const ex = examples.find(e=>e.id===sel.value) || examples[0];
+      const ok = await copyToClipboard(ex.matlab || "");
+      safeToast(ok ? "MATLAB copiado." : "No se pudo copiar.", ok ? "success":"warning");
+    });
+
+    btnLoad.addEventListener("click", ()=>{
+      const ex = examples.find(e=>e.id===sel.value) || examples[0];
+      try{
+        window.openTab?.(ex.tab);
+        // esperar un frame para que el tab sea visible
+        requestAnimationFrame(()=>{ try{ ex.fill?.(); safeToast("Ejemplo cargado en la sección.", "success"); }catch(e){} });
+      }catch(e){
+        safeToast("No se pudo cargar el ejemplo.", "warning");
+      }
+    });
+
+    // === 2) Generador de hojas + validador ===
+    const Sheet = {
+      list: [],
+      idx: 0,
+      showKey: false,
+      lastHint: "",
+      lastMatlab: "",
+      current(){
+        return this.list[this.idx] || null;
+      },
+      setIndex(i){
+        if(!this.list.length) { this.idx=0; return; }
+        this.idx = Math.max(0, Math.min(this.list.length-1, i));
+      }
+    };
+
+    function makeExercise(topicId, diff=1, n=0){
+      // exercises are intentionally simple but validatable
+      const rnd = (a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+      const ex = { topicId, diff, n, prompt:"", answer:"", hint:"", matlab:"", load: null };
+      if(topicId==="pc"){
+        const a1=rnd(1,4), a2=rnd(5,9);
+        const b1=["a","b","c"][rnd(0,2)], b2=["x","y","z"][rnd(0,2)];
+        ex.prompt = `A={${a1},${a2}}  B={${b1},${b2}}. Escribe |A×B| (cardinalidad).`;
+        ex.answer = "4";
+        ex.hint = "Si |A|=2 y |B|=2, entonces |A×B| = 2·2.";
+        ex.matlab = `A=[${a1} ${a2}]; B=["${b1}" "${b2}"]; disp(numel(A)*numel(B));`;
+        ex.load = ()=>{ $("#setA").value=`${a1},${a2}`; $("#setB").value=`${b1},${b2}`; window.calcCartesian?.(); };
+      }else if(topicId==="cl"){
+        // bijection check
+        const dom=[1,2,3], cod=["a","b","c"];
+        ex.prompt = `Dominio {1,2,3}, Codominio {a,b,c}. Mapeo: 1->a,2->b,3->c. ¿Clasificación? (inyectiva/sobreyectiva/biyectiva)`;
+        ex.answer = "biyectiva";
+        ex.hint = "Cada elemento del codominio tiene preimagen y no se repiten imágenes.";
+        ex.matlab = `% f(1)=a f(2)=b f(3)=c -> biyectiva`;
+        ex.load = ()=>{ $("#classDomain").value="1,2,3"; $("#classCodomain").value="a,b,c"; $("#classMap").value="1->a,2->b,3->c"; window.classifyFunction?.(); };
+      }else if(topicId==="inv"){
+        ex.prompt = `Si f: {1,2,3}->{a,b,c} con 1->a,2->b,3->c. Escribe un par de la inversa f^-1.`;
+        ex.answer = "a->1";
+        ex.hint = "Intercambia (x,y) por (y,x). Responde en formato a->1.";
+        ex.matlab = `pairs=[1 "a"; 2 "b"; 3 "c"]; disp([pairs(:,2) pairs(:,1)]);`;
+        ex.load = ()=>{ $("#invDomain").value="1,2,3"; $("#invCodomain").value="a,b,c"; $("#invMap").value="1->a,2->b,3->c"; window.invertFunction?.(); };
+      }else if(topicId==="comp"){
+        ex.prompt = `Si f: 1->a,2->b y g: a->x,b->y. ¿(g∘f)(2)?`;
+        ex.answer = "y";
+        ex.hint = "Primero aplica f(2)=b, luego g(b)=y.";
+        ex.matlab = `% f(2)=b; g(b)=y;`;
+        ex.load = ()=>{ $("#compDomain").value="1,2"; $("#compMid").value="a,b"; $("#compCodomain").value="x,y"; $("#compMapF").value="1->a,2->b"; $("#compMapG").value="a->x,b->y"; window.composeFunctions?.(); };
+      }else if(topicId==="disc"){
+        const k = rnd(2,5);
+        ex.prompt = `Para x=[1,2,3], y=[${k},${2*k},${3*k}]. ¿Cuál es y cuando x=3?`;
+        ex.answer = String(3*k);
+        ex.hint = "Observa el patrón lineal: y = k·x.";
+        ex.matlab = `x=[1 2 3]; y=[${k} ${2*k} ${3*k}]; disp(y(3));`;
+        ex.load = ()=>{ $("#discX").value="1,2,3"; $("#discY").value=`${k},${2*k},${3*k}`; window.plotDiscrete?.(); };
+      }else{
+        ex.prompt = "Ejercicio no disponible.";
+        ex.answer = "";
+        ex.hint = "";
+        ex.matlab = "";
+      }
+      return ex;
+    }
+
+    function renderSheet(){
+      if(!Sheet.list.length){
+        sheetPreview.innerHTML = `<div class="muted">Aún no hay hoja. Presiona <strong>Generar hoja</strong>.</div>`;
+        prompt.textContent = "Sin ejercicio activo.";
+        feedback.textContent = "";
+        hintBox.style.display = "none";
+        preSheetMatlab.style.display = "none";
+        return;
+      }
+      const title = `Hoja — ${$("#sheetTopic option:checked")?.textContent || "Tema"} | Dificultad ${sheetDiff.value}`;
+      const li = Sheet.list.map((e,i)=>{
+        const key = Sheet.showKey ? ` <span class="muted">[Resp: ${e.answer}]</span>` : "";
+        return `<li><strong>${i+1}.</strong> ${e.prompt}${key}</li>`;
+      }).join("");
+      sheetPreview.innerHTML = `<div class="sheet-title">${title}</div><ol>${li}</ol>`;
+      renderCurrentExercise();
+    }
+
+    function renderCurrentExercise(){
+      const e = Sheet.current();
+      if(!e){
+        prompt.textContent = "Sin ejercicio activo.";
+        return;
+      }
+      prompt.innerHTML = `<strong>Ejercicio ${Sheet.idx+1}/${Sheet.list.length}</strong><br>${e.prompt}`;
+      feedback.textContent = "";
+      ans.value = "";
+      hintBox.style.display = "none";
+      hintBox.textContent = "";
+      preSheetMatlab.style.display = "none";
+      preSheetMatlab.textContent = e.matlab || "";
+      Sheet.lastHint = e.hint || "";
+      Sheet.lastMatlab = e.matlab || "";
+    }
+
+    btnSheetGen.addEventListener("click", ()=>{
+      const tid = sheetTopic.value;
+      const cnt = Math.max(3, Math.min(20, parseInt(sheetCount.value||"8",10)));
+      const diff = parseInt(sheetDiff.value||"1",10);
+      Sheet.list = Array.from({length: cnt}, (_,i)=>makeExercise(tid, diff, i));
+      Sheet.idx = 0;
+      Sheet.showKey = false;
+      btnSheetKey.textContent = "Mostrar clave";
+      renderSheet();
+      safeToast("Hoja generada.", "success");
+    });
+
+    btnSheetKey.addEventListener("click", ()=>{
+      Sheet.showKey = !Sheet.showKey;
+      btnSheetKey.textContent = Sheet.showKey ? "Ocultar clave" : "Mostrar clave";
+      renderSheet();
+    });
+
+    btnSheetPrint.addEventListener("click", ()=>{
+      if(!Sheet.list.length){ safeToast("Primero genera una hoja.", "warning"); return; }
+      window.print();
+    });
+
+    btnSheetJson.addEventListener("click", ()=>{
+      if(!Sheet.list.length){ safeToast("Primero genera una hoja.", "warning"); return; }
+      const payload = {
+        generatedAt: new Date().toISOString(),
+        topic: sheetTopic.value,
+        difficulty: sheetDiff.value,
+        exercises: Sheet.list.map(e=>({prompt:e.prompt, answer:e.answer, hint:e.hint, matlab:e.matlab}))
+      };
+      downloadText("hoja_ejercicios.json", JSON.stringify(payload, null, 2), "application/json");
+      safeToast("JSON descargado.", "success");
+    });
+
+    btnPrev.addEventListener("click", ()=>{
+      if(!Sheet.list.length) return;
+      Sheet.setIndex(Sheet.idx-1);
+      renderCurrentExercise();
+    });
+    btnNext.addEventListener("click", ()=>{
+      if(!Sheet.list.length) return;
+      Sheet.setIndex(Sheet.idx+1);
+      renderCurrentExercise();
+    });
+
+    btnHint.addEventListener("click", ()=>{
+      if(!Sheet.list.length) return;
+      hintBox.style.display = "block";
+      hintBox.textContent = Sheet.lastHint || "Sin pista para este ejercicio.";
+    });
+
+    btnShowSol.addEventListener("click", ()=>{
+      if(!Sheet.list.length) return;
+      preSheetMatlab.style.display = preSheetMatlab.style.display==="none" ? "block" : "none";
+      safeToast(preSheetMatlab.style.display==="none" ? "Solución oculta." : "Mostrando MATLAB/solución.", "info");
+    });
+
+    btnCopySheetMatlab.addEventListener("click", async ()=>{
+      if(!Sheet.list.length) return;
+      const ok = await copyToClipboard(Sheet.lastMatlab || "");
+      safeToast(ok ? "MATLAB copiado." : "No se pudo copiar.", ok ? "success":"warning");
+    });
+
+    btnLoadSection.addEventListener("click", ()=>{
+      const e = Sheet.current();
+      if(!e?.load){ safeToast("No hay carga disponible.", "warning"); return; }
+      // open correct tab by topic
+      const ex = examples.find(x=>x.id===e.topicId);
+      if(!ex) return;
+      window.openTab?.(ex.tab);
+      requestAnimationFrame(()=>{ try{ e.load(); safeToast("Ejercicio cargado en su sección.", "success"); }catch(err){} });
+    });
+
+    function checkAnswer(){
+      const e = Sheet.current();
+      if(!e) return;
+      const user = normalizeAnswer(ans.value);
+      if(!user){
+        feedback.textContent = "Respuesta vacía: no se asigna XP.";
+        feedback.style.borderColor = "rgba(255,255,255,.12)";
+        safeToast("No hay respuesta.", "warning");
+        return;
+      }
+      const target = normalizeAnswer(e.answer);
+
+      let ok = false;
+      // allow some flexible responses
+      if(e.topicId==="inv"){
+        ok = (user===target) || (user==="b->2") || (user==="c->3"); // any valid inverse pair
+      }else if(e.topicId==="cl"){
+        ok = ["biyectiva","inyectiva y sobreyectiva","bijectiva"].includes(user);
+      }else{
+        ok = user === target;
+      }
+
+      if(ok){
+        feedback.textContent = "✅ Correcto. XP asignada.";
+        feedback.style.borderColor = "rgba(0,255,170,.35)";
+        try{
+          const base = 25;
+          const bonus = (parseInt(e.diff||1,10)-1)*10;
+          const amount = base + bonus;
+          const key = `sheet:${e.topicId}:${e.prompt}`; // evita doble XP por el mismo ejercicio
+          window.awardXp?.(amount, `Hoja (${e.topicId})`, key);
+        }catch(err){}
+        safeToast("Correcto.", "success");
+      }else{
+        feedback.textContent = "❌ Incorrecto. No se asigna XP.";
+        feedback.style.borderColor = "rgba(255,80,80,.35)";
+        safeToast("Incorrecto.", "warning");
+      }
+    }
+
+    btnCheck.addEventListener("click", checkAnswer);
+    ans.addEventListener("keydown", (ev)=>{ if(ev.key==="Enter"){ ev.preventDefault(); checkAnswer(); } });
+
+    // initial sheet state
+    renderSheet();
+  }
+
+  // === 3) Laboratorio de funciones f(x) ===
+  function initFxLab(){
+    const root = $("#funciones");
+    if(!root) return;
+    const expr = $("#fxExpr");
+    const xmin = $("#fxMin");
+    const xmax = $("#fxMax");
+    const npts = $("#fxN");
+    const x0 = $("#fxX0");
+    const btnPlot = $("#fxPlotBtn");
+    const btnTable = $("#fxTableBtn");
+    const btnDer = $("#fxDerBtn");
+    const btnCopy = $("#fxCopyMatlabBtn");
+    const canvas = $("#fxCanvas");
+    const evalBox = $("#fxEvalBox");
+    const tableBox = $("#fxTableBox");
+    const matlabPre = $("#fxMatlabCode");
+
+    if(!expr || !canvas || !btnPlot) return;
+
+    function sanitizeExpression(raw){
+      let s = String(raw||"").trim();
+      // replace common math names to JS Math
+      s = s.replace(/\^/g,"**");
+      // allow only safe chars
+      if(!/^[0-9xX+\-*/().,\s^_a-zA-Z]*$/.test(s)) return null;
+      // normalize function names (sin -> Math.sin via with(Math))
+      return s;
+    }
+
+    function buildFx(raw){
+      const s = sanitizeExpression(raw);
+      if(!s) return null;
+      try{
+        // with(Math) enables sin(), cos(), etc.
+        // eslint-disable-next-line no-new-func
+        const fn = new Function("x", "with(Math){ return ("+s+"); }");
+        // quick test
+        fn(0);
+        return fn;
+      }catch(e){
+        return null;
+      }
+    }
+
+    function getRange(){
+      const a = parseFloat(xmin.value||"-5");
+      const b = parseFloat(xmax.value||"5");
+      const n = Math.max(20, Math.min(400, parseInt(npts.value||"120",10)));
+      return {a: Math.min(a,b), b: Math.max(a,b), n};
+    }
+
+    function samplePoints(f, a, b, n){
+      const xs=[], ys=[];
+      for(let i=0;i<n;i++){
+        const t = i/(n-1);
+        const x = a + (b-a)*t;
+        let y = NaN;
+        try{ y = f(x); }catch(e){ y = NaN; }
+        if(!Number.isFinite(y)) y = NaN;
+        xs.push(x); ys.push(y);
+      }
+      return {xs, ys};
+    }
+
+    function drawPlot(xs, ys){
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+
+      // background grid
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = "rgba(255,255,255,.07)";
+      ctx.lineWidth = 1;
+      const step = 40;
+      for(let x=0;x<=W;x+=step){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+      for(let y=0;y<=H;y+=step){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+      // compute y-range ignoring NaNs
+      const finiteYs = ys.filter(v=>Number.isFinite(v));
+      let ymin = -1, ymax = 1;
+      if(finiteYs.length){
+        ymin = Math.min(...finiteYs);
+        ymax = Math.max(...finiteYs);
+        if(ymin===ymax){ ymin-=1; ymax+=1; }
+        const pad = (ymax-ymin)*0.08;
+        ymin -= pad; ymax += pad;
+      }
+
+      const x0 = xs[0], x1 = xs[xs.length-1];
+      const sx = x => (x - x0) / (x1 - x0) * (W-40) + 20;
+      const sy = y => H - ((y - ymin) / (ymax - ymin) * (H-40) + 20);
+
+      // axes (x=0,y=0 if within)
+      ctx.strokeStyle = "rgba(255,255,255,.18)";
+      ctx.lineWidth = 1.5;
+
+      if(0>=x0 && 0<=x1){
+        const X = sx(0);
+        ctx.beginPath(); ctx.moveTo(X,20); ctx.lineTo(X,H-20); ctx.stroke();
+      }
+      if(0>=ymin && 0<=ymax){
+        const Y = sy(0);
+        ctx.beginPath(); ctx.moveTo(20,Y); ctx.lineTo(W-20,Y); ctx.stroke();
+      }
+
+      // plot line
+      ctx.strokeStyle = "rgba(0,255,255,.9)";
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      let started=false;
+      for(let i=0;i<xs.length;i++){
+        const y = ys[i];
+        if(!Number.isFinite(y)){ started=false; continue; }
+        const X = sx(xs[i]);
+        const Y = sy(y);
+        if(!started){ ctx.moveTo(X,Y); started=true; }
+        else{ ctx.lineTo(X,Y); }
+      }
+      ctx.stroke();
+
+      // labels
+      ctx.fillStyle = "rgba(255,255,255,.75)";
+      ctx.font = "12px Orbitron, sans-serif";
+      ctx.fillText(`x∈[${x0.toFixed(2)}, ${x1.toFixed(2)}]`, 22, 16);
+      ctx.fillText(`y∈[${ymin.toFixed(2)}, ${ymax.toFixed(2)}]`, 22, H-8);
+    }
+
+    function updateMatlab(raw, a,b){
+      const s = String(raw||"").trim().replace(/\^/g,".^");
+      // MATLAB uses element-wise ops for vectors
+      const body = s
+        .replace(/\bpi\b/gi,"pi")
+        .replace(/\bexp\b/gi,"exp")
+        .replace(/\blog\b/gi,"log")
+        .replace(/\bsqrt\b/gi,"sqrt")
+        .replace(/\bsin\b/gi,"sin")
+        .replace(/\bcos\b/gi,"cos")
+        .replace(/\btan\b/gi,"tan")
+        .replace(/\babs\b/gi,"abs")
+        .replace(/\*/g,".*")
+        .replace(/\//g,"./");
+      const code =
+`f = @(x) ${body};
+x = linspace(${a}, ${b}, 400);
+y = f(x);
+plot(x,y,'LineWidth',2); grid on;
+xlabel('x'); ylabel('f(x)'); title('f(x)');`;
+      matlabPre.textContent = code;
+      matlabPre.style.display = "block";
+    }
+
+    function doPlot(){
+      const fn = buildFx(expr.value);
+      if(!fn){ safeToast("Expresión inválida.", "warning"); return; }
+      const {a,b,n} = getRange();
+      const {xs,ys} = samplePoints(fn,a,b,n);
+      drawPlot(xs,ys);
+
+      // evaluate at x0
+      const x = parseFloat(x0.value||"0");
+      let y = NaN;
+      try{ y = fn(x); }catch(e){}
+      if(!Number.isFinite(y)) evalBox.textContent = `f(${x}) = indefinido`;
+      else evalBox.textContent = `f(${x}) = ${(+y).toFixed(6)}`;
+      updateMatlab(expr.value, a, b);
+      safeToast("Gráfico actualizado.", "success");
+    }
+
+    function doTable(){
+      const fn = buildFx(expr.value);
+      if(!fn){ safeToast("Expresión inválida.", "warning"); return; }
+      const {a,b} = getRange();
+      const xs = [];
+      for(let i=0;i<9;i++){
+        xs.push(a + (b-a)*(i/8));
+      }
+      const rows = xs.map(x=>{
+        let y=NaN;
+        try{ y=fn(x); }catch(e){}
+        const ys = Number.isFinite(y) ? (+y).toFixed(6) : "indef.";
+        return `<tr><td>${x.toFixed(3)}</td><td>${ys}</td></tr>`;
+      }).join("");
+      tableBox.innerHTML = `<table class="tiny-table"><thead><tr><th>x</th><th>f(x)</th></tr></thead><tbody>${rows}</tbody></table>`;
+      safeToast("Tabla generada.", "info");
+    }
+
+    function doDerivative(){
+      const fn = buildFx(expr.value);
+      if(!fn){ safeToast("Expresión inválida.", "warning"); return; }
+      const x = parseFloat(x0.value||"0");
+      const h = 1e-4;
+      let d = NaN;
+      try{ d = (fn(x+h)-fn(x-h))/(2*h); }catch(e){}
+      if(!Number.isFinite(d)) safeToast("No se pudo derivar (indef.).", "warning");
+      else safeToast(`f'(${x}) ≈ ${d.toFixed(6)}`, "success");
+    }
+
+    btnPlot.addEventListener("click", doPlot);
+    btnTable.addEventListener("click", doTable);
+    btnDer.addEventListener("click", doDerivative);
+    btnCopy.addEventListener("click", async ()=>{
+      const ok = await copyToClipboard(matlabPre.textContent || "");
+      safeToast(ok ? "MATLAB copiado." : "No se pudo copiar.", ok ? "success":"warning");
+    });
+
+    expr.addEventListener("keydown", (ev)=>{ if(ev.key==="Enter"){ ev.preventDefault(); doPlot(); } });
+    // first render hint
+    evalBox.textContent = "Define f(x) y presiona Graficar.";
+  }
+
+  document.addEventListener("DOMContentLoaded", ()=>{
+    try{ initEjemplosHojas(); }catch(e){ console.warn(e); }
+    try{ initFxLab(); }catch(e){ console.warn(e); }
+  });
+})();
