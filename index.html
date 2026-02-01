@@ -292,6 +292,44 @@ end</code></pre>
     </div>
   </div>
 </div>
+
+    <div class="card">
+      <h2 class="urban-title">RETO XP: evalúa f(x)</h2>
+      <div class="definition-text">
+        <p>Genera un reto basado en la función que escribas arriba y gana XP <b>solo</b> si respondes correctamente (si lo dejas vacío o está mal, no ganas nada).</p>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div id="fxQuizPrompt" class="prompt-box">Presiona <b>Nuevo reto</b> para generar una pregunta (se usa tu f(x) actual).</div>
+
+          <div class="fx-grid" style="margin-top:12px;">
+            <div>
+              <label class="mini-label">Tu respuesta (número)</label>
+              <input id="fxQuizAnswer" class="mini-input" placeholder="Ej: 2.718" />
+              <div class="mini-hint">Tip: redondea a 3 decimales. Se valida con tolerancia.</div>
+            </div>
+
+            <div class="fx-actions">
+              <button id="fxQuizNew" class="mini-btn">Nuevo reto</button>
+              <button id="fxQuizCheck" class="mini-btn">Validar</button>
+              <button id="fxQuizReveal" class="mini-btn">Ver solución</button>
+            </div>
+          </div>
+
+          <div id="fxQuizFeedback" class="muted" style="margin-top:10px;">—</div>
+        </div>
+
+        <div class="code-panel">
+          <div class="code-head">
+            <span class="muted">MATLAB generado</span>
+            <button id="fxQuizCopy" class="mini-btn">Copiar</button>
+          </div>
+          <pre id="fxQuizMatlab" class="matlab-pre code language-matlab giant-code">% Presiona &quot;Nuevo reto&quot; para generar el código MATLAB.</pre>
+        </div>
+      </div>
+    </div>
+
 </div>
 <div class="tab-content" id="ejercicios">
 <div class="topic-header">
@@ -322,6 +360,26 @@ end</code></pre>
     </div>
 
     <pre id="exMatlabCode" class="code-block" style="display:none;"></pre>
+          <div style="height:14px;"></div>
+          <h3 class="urban-subtitle">Mini reto (XP)</h3>
+          <div id="exQuizPrompt" class="prompt-box">Selecciona un ejemplo y presiona <b>Reto</b>. Ganas XP solo si respondes bien.</div>
+
+          <div class="fx-grid" style="margin-top:12px;">
+            <div>
+              <label class="mini-label">Tu respuesta</label>
+              <input id="exQuizAnswer" class="mini-input" placeholder="Escribe aquí..." />
+              <div class="mini-hint">No se otorga XP si está vacío o es incorrecto.</div>
+            </div>
+
+            <div class="fx-actions">
+              <button id="exQuizNew" class="mini-btn">Reto</button>
+              <button id="exQuizCheck" class="mini-btn">Validar</button>
+              <button id="exQuizReveal" class="mini-btn">Ver solución</button>
+            </div>
+          </div>
+
+          <div id="exQuizFeedback" class="muted" style="margin-top:10px;">—</div>
+
   </div>
 
   <div class="card">
