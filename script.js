@@ -1,4 +1,3 @@
-
 function validateLastTab(){
   try{
     const last = localStorage.getItem("mc_last_tab");
