@@ -1437,8 +1437,8 @@ width: 100%;
     padding: 10px 12px;
     border-radius: 14px;
     border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(10px);
+    /* Fondo sólido para evitar que se vea contenido “difuminado” por detrás */
+    background: rgba(5,5,6,0.96);
 }
 .sidebar-search i{
     color: var(--gold-primary);
@@ -3120,3 +3120,8 @@ body{
   color: rgba(255,255,255,.95);
   opacity: .9;
 }
+
+
+/* --- FIX: Sidebar sin bleed/blur --- */
+.sidebar{ background: var(--bg-obsidian) !important; }
+.sidebar .sidebar-search{ backdrop-filter: none !important; }
