@@ -3267,3 +3267,174 @@ body{
   .university-info h2{ font-size: 0.78rem !important; }
   .university-info .motto{ font-size: 0.72rem !important; }
 }
+
+
+/* ==========================================================
+   MOBILE RESPONSIVE PATCH (v11)
+   - Drawer sidebar + stacked header
+   - Reduce huge paddings/fonts
+   - Collapse grids to 1 column
+   - Prevent iOS zoom on inputs
+========================================================== */
+
+@media (max-width: 920px){
+  /* Use app-style scrolling (main-content) so nothing "desaparece" */
+  html, body{
+    height: var(--app-height) !important;
+    overflow: hidden !important;
+  }
+
+  /* Sidebar as drawer */
+  .sidebar{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: var(--app-height) !important;
+    width: min(86vw, 360px) !important;
+    max-width: 360px !important;
+    transform: translateX(-105%) !important;
+    z-index: 6200 !important;
+    border-radius: 0 16px 16px 0 !important;
+  }
+  body.sidebar-open .sidebar{ transform: translateX(0) !important; }
+
+  .sidebar-backdrop{
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0,0,0,.65) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: 6100 !important;
+    transition: opacity .18s ease !important;
+  }
+  body.sidebar-open .sidebar-backdrop{
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Main takes full width */
+  .main-content{
+    margin-left: 0 !important;
+    width: 100% !important;
+    height: var(--app-height) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Header: grid stack */
+  .top-header{
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5000 !important;
+    display: grid !important;
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-areas:
+      "pill menu spacer panel"
+      "logo logo logo logo"
+      "xp   xp   xp   xp";
+    gap: 10px !important;
+    align-items: center !important;
+    padding: calc(10px + env(safe-area-inset-top)) 12px 10px !important;
+    border-radius: 0 !important;
+  }
+
+  .section-pill{ grid-area: pill; justify-self: start; font-size: .85rem !important; padding: 8px 10px !important; }
+  .sidebar-toggle{ grid-area: menu; width: 44px !important; height: 44px !important; border-radius: 14px !important; display: inline-flex !important; }
+  .panel-btn{ grid-area: panel; width: 44px !important; height: 44px !important; border-radius: 14px !important; }
+  .logo-area{ grid-area: logo; width: 100% !important; min-width: 0 !important; gap: 12px !important; padding: 0 2px !important; }
+  .logo-area img{ width: 56px !important; height: 56px !important; }
+  .university-info{ min-width: 0 !important; }
+  .university-info h1{
+    font-size: 1.15rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+  }
+  .university-info h2{
+    font-size: .95rem !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+  }
+  .motto{
+    font-size: .92rem !important;
+    margin-top: 6px !important;
+    opacity: .9 !important;
+  }
+
+  /* XP HUD becomes full width row */
+  .xp-badge{
+    grid-area: xp;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 10px 12px !important;
+  }
+  .xp-row{ gap: 10px !important; }
+  .xp-actions{ flex-wrap: wrap !important; gap: 8px !important; justify-content: flex-start !important; }
+  .hud-btn{ width: 44px !important; height: 44px !important; border-radius: 14px !important; }
+
+  /* Global content padding */
+  .content-body-full{ padding: 14px 12px 44px !important; }
+
+  /* Reduce huge hero paddings + stack */
+  .welcome-section{ padding: 22px 12px !important; border-radius: 18px !important; }
+  .bot-card{ flex-direction: column !important; gap: 18px !important; padding: 18px !important; }
+  .bot-figure{ width: 100% !important; min-width: 0 !important; justify-content: center !important; }
+  .bot-figure img{ max-width: 240px !important; width: 100% !important; height: auto !important; }
+  .mega-title{ font-size: clamp(2.0rem, 9vw, 3.2rem) !important; letter-spacing: .02em !important; }
+  .welcome-card{ padding: 16px !important; }
+
+  /* Collapse grids */
+  .grid-2, .card-grid, .fx-grid, .practice-grid, .two-col{
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+
+  /* Forms: no overflow + no iOS zoom */
+  .form-row{ flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
+  input, select, textarea{
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 16px !important; /* evita zoom en iOS */
+  }
+
+  /* Buttons: touch friendly */
+  button, .btn, .pill-btn, .action-btn{
+    min-height: 44px !important;
+  }
+
+  /* Big cards/borders: ensure fit */
+  .section-card, .topic-card, .result-panel, .card, .panel, .module-card{
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Modals: fit screen */
+  .modal-card{
+    width: min(96vw, 760px) !important;
+    max-width: 96vw !important;
+    margin: 10px auto !important;
+  }
+  .modal-body{
+    max-height: min(78vh, calc(var(--app-height) - 140px)) !important;
+    overflow: auto !important;
+  }
+
+  /* Floating WhatsApp: smaller */
+  .whatsapp-btn{
+    width: 56px !important;
+    height: 56px !important;
+    right: 14px !important;
+    bottom: 14px !important;
+  }
+}
+
+@media (max-width: 520px){
+  /* Even more compact titles */
+  .university-info h1{ font-size: 1.05rem !important; }
+  .university-info h2{ font-size: .90rem !important; }
+  .logo-area img{ width: 50px !important; height: 50px !important; }
+  .mega-title{ font-size: clamp(1.75rem, 10vw, 2.8rem) !important; }
+  .section-pill{ font-size: .82rem !important; }
+}
+
