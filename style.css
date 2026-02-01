@@ -3125,3 +3125,145 @@ body{
 /* --- FIX: Sidebar sin bleed/blur --- */
 .sidebar{ background: var(--bg-obsidian) !important; }
 .sidebar .sidebar-search{ backdrop-filter: none !important; }
+
+/* ==========================================================
+   MOBILE RESPONSIVE PACK (v1)
+   - Ajustes para que la interfaz sea usable en pantallas pequeñas
+   - No cambia la lógica; solo layout/escala/stacking
+   ========================================================== */
+
+@media (max-width: 900px){
+  /* Evita zoom raro en iOS */
+  html{ -webkit-text-size-adjust: 100%; }
+
+  /* Header más compacto */
+  .top-header{
+    padding: calc(12px + env(safe-area-inset-top)) 14px 10px !important;
+    gap: 10px !important;
+  }
+  .logo-area{ gap: 12px !important; }
+  .logo-area img{ height: 46px !important; }
+  .university-info h1{ font-size: 1.02rem !important; line-height: 1.05 !important; }
+  .university-info h2{ font-size: 0.85rem !important; line-height: 1.1 !important; }
+  .university-info .motto{
+    font-size: 0.78rem !important;
+    margin-top: 4px !important;
+    opacity: 0.88 !important;
+  }
+  .xp-badge{ max-width: 260px !important; }
+
+  /* Padding general */
+  .content-body-full{ padding: 14px 12px 22px !important; }
+
+  /* Bienvenida / card principal */
+  .welcome-section{
+    padding: 46px 14px !important;
+    margin-bottom: 26px !important;
+    border-width: 2px !important;
+    border-radius: 18px !important;
+  }
+  .bot-card{
+    padding: 18px !important;
+    gap: 16px !important;
+    border-width: 2px !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    align-items: center !important;
+  }
+  .bot-text{ max-width: 100% !important; }
+  .bot-image{
+    width: min(240px, 72vw) !important;
+    height: auto !important;
+  }
+  .mega-title{
+    font-size: clamp(1.65rem, 7.4vw, 2.35rem) !important;
+    line-height: 1.05 !important;
+  }
+  .subtext{ font-size: 0.98rem !important; }
+
+  /* Grids a 1 columna */
+  .grid-2,
+  .practice-grid,
+  .ach-grid{
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .fx-grid{
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Diagramas: de fila a columna */
+  .diagram-container{
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin: 18px 0 !important;
+  }
+  .diagram-box{
+    min-height: 220px !important;
+  }
+
+  /* Badges de nivel */
+  .level-badge{
+    right: 12px !important;
+    top: 12px !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+  }
+
+  /* Modales/paneles: sin recortes */
+  .modal-card{
+    width: calc(100vw - 16px) !important;
+    max-width: 760px !important;
+    margin: 8px auto !important;
+    max-height: calc(var(--app-height) - 16px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .modal-body{
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Inputs/botones más “tap-friendly” */
+  input, select, textarea, button{
+    font-size: 16px; /* evita zoom iOS en inputs */
+  }
+}
+
+@media (max-width: 520px){
+  /* Sidebar drawer más estrecho */
+  :root{ --sidebar-width: min(86vw, 330px); }
+
+  /* Controles HUD más compactos */
+  .hud-btn,
+  .panel-btn,
+  .sidebar-toggle{
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Reduce títulos gigantes en secciones */
+  .topic-header{ padding: 16px 14px !important; }
+  .topic-header h2{
+    font-size: clamp(1.15rem, 7vw, 1.75rem) !important;
+  }
+  .topic-header p{ font-size: 0.95rem !important; }
+
+  /* Tablas/plots */
+  .plot-canvas{ max-width: 100% !important; }
+
+  /* Botones grandes */
+  .big-btn{
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 380px){
+  .xp-badge{ max-width: 210px !important; }
+  .university-info h1{ font-size: 0.95rem !important; }
+  .university-info h2{ font-size: 0.78rem !important; }
+  .university-info .motto{ font-size: 0.72rem !important; }
+}
