@@ -237,42 +237,169 @@ end</code></pre>
 <div class="set-oval"><h4>Codominio</h4></div>
 </div>
 </div>
+<div class="card">
+  <h1 class="urban-title">LABORATORIO DE FUNCIÓN f(x)</h1>
+  <div class="definition-text">
+    <p>Define una función, evalúala, genera una tabla y grafícala. Incluye el código MATLAB equivalente.</p>
+  </div>
+
+  <div class="fx-form">
+    <div>
+      <label class="mini-label">f(x)</label>
+      <input id="fxExpr" class="mini-input" placeholder="Ej: sin(x) + x^2 - 3" />
+      <div class="mini-hint">Usa: + - * / ^ ( )  y funciones: sin, cos, tan, exp, log, sqrt, abs.</div>
+    </div>
+
+    <div class="fx-grid">
+      <div>
+        <label class="mini-label">Dominio</label>
+        <div class="fx-inline">
+          <input id="fxMin" class="mini-input" type="number" step="0.5" value="-5"/>
+          <span class="muted">a</span>
+          <input id="fxMax" class="mini-input" type="number" step="0.5" value="5"/>
+        </div>
+      </div>
+      <div>
+        <label class="mini-label">Puntos</label>
+        <input id="fxN" class="mini-input" type="number" min="20" max="400" value="120"/>
+      </div>
+      <div>
+        <label class="mini-label">Evaluar en x</label>
+        <input id="fxX0" class="mini-input" type="number" step="0.5" value="2"/>
+      </div>
+    </div>
+
+    <div class="mini-actions">
+      <button id="fxPlotBtn" class="run-btn" type="button">Graficar</button>
+      <button id="fxTableBtn" class="btn" type="button">Tabla</button>
+      <button id="fxDerBtn" class="btn" type="button">Derivada (aprox)</button>
+      <button id="fxCopyMatlabBtn" class="btn" type="button">Copiar MATLAB</button>
+    </div>
+  </div>
+
+  <div class="fx-output grid-2">
+    <div class="card-inner">
+      <h3 class="section-mini-title">Gráfico</h3>
+      <canvas id="fxCanvas" width="640" height="360" class="fx-canvas"></canvas>
+      <div id="fxEvalBox" class="result-display" style="margin-top:14px;">Esperando función…</div>
+    </div>
+
+    <div class="card-inner">
+      <h3 class="section-mini-title">Tabla (muestra)</h3>
+      <div id="fxTableBox" class="table-box muted">Genera una tabla para ver valores.</div>
+      <h3 class="section-mini-title" style="margin-top:18px;">MATLAB</h3>
+      <pre id="fxMatlabCode" class="code-block" style="display:none;"></pre>
+    </div>
+  </div>
+</div>
 </div>
 <div class="tab-content" id="ejercicios">
-<div class="topic-header"><h2>VALIDACIÓN VISUAL</h2><span class="badge">Slide 8</span></div>
-<div class="card">
-<h1 class="urban-title">ANÁLISIS DE ERRORES</h1>
-<div style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap; background: rgba(255,0,0,0.1); border: 3px solid red; padding: 30px; border-radius: 20px;">
-<div style="flex: 1; min-width: 250px; text-align: center;">
-<img alt="Error Función" src="img/image_1.png" style="max-width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(255,0,0,0.5); border: 2px solid red;"/>
-</div>
-<div style="flex: 1.5;">
-<h2 style="color: red; font-size: 2rem;"><i class="fas fa-times-circle"></i> VIOLACIÓN DE UNICIDAD</h2>
-<p style="font-size: 1.3rem; margin-top: 15px;">El elemento <strong>2</strong> tiene dos salidas. ¡FATAL ERROR!</p>
-</div>
-</div>
+<div class="topic-header">
+  <h2>EJEMPLOS / HOJAS</h2>
+  <span class="badge">NIVEL 3</span>
 </div>
 
-<div class="card" id="practiceCard">
-<div class="topic-header"><h2>MODO PRÁCTICA</h2><span class="badge">INTERACTIVO</span></div>
-<p class="soft">Ahora el modo práctica vive en su propia misión. Genera retos, gana XP y carga los datos en cada módulo.</p>
-<div class="row">
-<button class="btn primary" id="openPracticeFromEj"><i class="fas fa-gamepad"></i> Ir a Modo Práctica</button>
-<button class="btn" id="practiceQuickTipBtn"><i class="fas fa-lightbulb"></i> Ver tip</button>
-</div>
-<div class="callout" id="practiceQuickTip" style="display:none; margin-top:14px;">
-        Tip: en <b>Modo Práctica</b> usa <b>Cargar en sección</b> para ver la solución en el módulo real y su código MATLAB.
+<div class="grid-2">
+  <div class="card">
+    <h1 class="urban-title">BANCO DE EJEMPLOS</h1>
+    <div class="definition-text">
+      <p>Selecciona un tema y carga un ejemplo completo en su sección (se rellenan campos y se ejecuta el cálculo/grafico).</p>
+    </div>
+
+    <div class="mini-form">
+      <label class="mini-label">Tema</label>
+      <select id="exTopicSelect" class="mini-select"></select>
+      <button id="exLoadBtn" class="search-btn" type="button">Cargar en sección</button>
+    </div>
+
+    <div id="exExampleBox" class="example-box">
+      <div class="muted">Elige un tema para ver el ejemplo.</div>
+    </div>
+
+    <div class="mini-actions">
+      <button id="exRevealBtn" class="btn" type="button">Ver solución</button>
+      <button id="exCopyMatlabBtn" class="btn" type="button">Copiar MATLAB</button>
+    </div>
+
+    <pre id="exMatlabCode" class="code-block" style="display:none;"></pre>
+  </div>
+
+  <div class="card">
+    <h1 class="urban-title">GENERADOR DE HOJAS</h1>
+    <div class="definition-text">
+      <p>Genera una hoja imprimible con ejercicios. Puedes mostrar/ocultar la clave y descargar la hoja en JSON.</p>
+    </div>
+
+    <div class="sheet-form">
+      <div>
+        <label class="mini-label">Tema</label>
+        <select id="sheetTopic" class="mini-select"></select>
       </div>
+      <div>
+        <label class="mini-label">Cantidad</label>
+        <input id="sheetCount" type="number" min="3" max="20" value="8" class="mini-input"/>
+      </div>
+      <div>
+        <label class="mini-label">Dificultad</label>
+        <select id="sheetDifficulty" class="mini-select">
+          <option value="1">Nivel 1 (rápido)</option>
+          <option value="2">Nivel 2</option>
+          <option value="3">Nivel 3</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mini-actions">
+      <button id="sheetGenBtn" class="run-btn" type="button">Generar hoja</button>
+      <button id="sheetToggleKeyBtn" class="btn" type="button">Mostrar clave</button>
+      <button id="sheetPrintBtn" class="btn" type="button">Imprimir</button>
+      <button id="sheetDownloadJsonBtn" class="btn" type="button">Descargar JSON</button>
+    </div>
+
+    <div id="sheetPreview" class="sheet-preview">
+      <div class="muted">Aún no hay hoja. Presiona <strong>Generar hoja</strong>.</div>
+    </div>
+  </div>
 </div>
 
+<div class="card">
+  <h1 class="urban-title">VALIDADOR RÁPIDO</h1>
+  <div class="definition-text">
+    <p>Resuelve el ejercicio actual de tu hoja y valida. Solo ganas XP si la respuesta es correcta (estilo videojuego).</p>
+  </div>
+
+  <div class="sheet-solver">
+    <div class="solver-left">
+      <div id="sheetCurrentPrompt" class="prompt-box">Sin ejercicio activo.</div>
+      <div class="mini-actions">
+        <button id="sheetPrevBtn" class="btn" type="button">Anterior</button>
+        <button id="sheetNextBtn" class="btn" type="button">Siguiente</button>
+        <button id="sheetHintBtn" class="btn" type="button">Pista</button>
+      </div>
+      <div id="sheetHintBox" class="hint-box" style="display:none;"></div>
+    </div>
+
+    <div class="solver-right">
+      <label class="mini-label">Tu respuesta</label>
+      <input id="sheetAnswer" class="mini-input" placeholder="Escribe tu respuesta..." />
+      <div class="mini-actions">
+        <button id="sheetCheckBtn" class="search-btn" type="button">Validar</button>
+        <button id="sheetShowSolutionBtn" class="btn" type="button">Ver solución</button>
+        <button id="sheetLoadSectionBtn" class="btn" type="button">Cargar en sección</button>
+      </div>
+      <div id="sheetFeedback" class="feedback-box"></div>
+      <div class="mini-actions">
+        <button id="sheetCopyMatlabBtn" class="btn" type="button">Copiar MATLAB</button>
+      </div>
+      <pre id="sheetMatlabCode" class="code-block" style="display:none;"></pre>
+    </div>
+  </div>
 </div>
-<!-- ============================= -->
-<!-- SECCIÓN: CLASIFICACIÓN -->
-<!-- ============================= -->
+</div>
 <div class="tab-content" id="clasificacion" style="display:none;">
 <div class="topic-header">
 <h2>CLASIFICACIÓN DE FUNCIONES</h2>
-<span class="badge">NIVEL 2</span>
+<span class="badge">NIVEL 4</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Analizador (Web) + Script (MATLAB)</h1>
@@ -322,7 +449,7 @@ a, 2-&gt;b, 3-&gt;c)"&gt;
 <div class="tab-content" id="inversa" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN INVERSA</h2>
-<span class="badge">NIVEL 2</span>
+<span class="badge">NIVEL 5</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Calculadora de Inversa (si es biyectiva)</h1>
@@ -372,7 +499,7 @@ a,2-&gt;b,3-&gt;c)"&gt;
 <div class="tab-content" id="compuesta" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN COMPUESTA</h2>
-<span class="badge">NIVEL 3</span>
+<span class="badge">NIVEL 6</span>
 </div>
 <div class="card">
 <h1 class="urban-title">g ∘ f (A→B→C)</h1>
@@ -434,7 +561,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <div class="tab-content" id="discreta" style="display:none;">
 <div class="topic-header">
 <h2>FUNCIÓN DISCRETA</h2>
-<span class="badge">NIVEL 2</span>
+<span class="badge">NIVEL 7</span>
 </div>
 <div class="card">
 <h1 class="urban-title">Tabla + Gráfico tipo Stem</h1>
@@ -567,7 +694,7 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <div class="card">
 <h1 class="urban-title">Carga tu video</h1>
 <p class="muted">
-      Pega un enlace (YouTube / youtu.be / embed). No hay ningún video cargado por defecto.
+      Pega un enlace (YouTube / youtu.be / embed). Se carga un video por defecto. Puedes reemplazarlo pegando otro enlace y presionando Cargar.
     </p>
 <div class="video-controls">
 <input id="videoInput" placeholder="https://www.youtube.com/watch?v=..." type="text"/>
@@ -589,6 +716,115 @@ C (ej: a-&gt;X,b-&gt;Y,c-&gt;Z)"&gt;
 <!-- SECCIÓN: RESEÑAS -->
 <!-- ============================= -->
 <div class="tab-content" id="resenas" style="display:none;">
+<div class="topic-header">
+<h2>RESEÑAS</h2>
+<span class="badge">COMUNIDAD</span>
+</div>
+<div class="card">
+<h1 class="urban-title">Deja tu reseña</h1>
+<div class="review-form">
+<input id="revName" placeholder="Nombre (opcional)" type="text"/>
+<div class="review-summary"><div class="avg" id="avgRating">—</div><div class="avg-sub">Promedio</div></div>
+<div aria-label="Calificación" class="star-picker" id="starPicker">
+<button class="star" data-v="1" type="button">★</button>
+<button class="star" data-v="2" type="button">★</button>
+<button class="star" data-v="3" type="button">★</button>
+<button class="star" data-v="4" type="button">★</button>
+<button class="star" data-v="5" type="button">★</button>
+</div>
+<select id="revRating">
+<option value="5">★★★★★ (5)</option>
+<option value="4">★★★★☆ (4)</option>
+<option value="3">★★★☆☆ (3)</option>
+<option value="2">★★☆☆☆ (2)</option>
+<option value="1">★☆☆☆☆ (1)</option>
+</select>
+<textarea id="revText" placeholder="Escribe tu reseña..."></textarea>
+<div class="review-actions">
+<button class="run-btn" onclick="addReview()">PUBLICAR</button>
+<button class="sub-btn" onclick="clearReviews()">BORRAR TODO</button>
+</div>
+<div class="review-msg" id="revMsg"></div>
+</div>
+<div class="reviews-list" id="reviewsList"></div>
+</div>
+</div>
+</main>
+<a class="whatsapp-btn" href="https://wa.me/593987662461" target="_blank" title="Chatear en WhatsApp">
+<i class="fab fa-whatsapp"></i>
+</a>
+<button aria-label="Volver arriba" class="to-top" id="toTopBtn" title="Volver arriba">
+<i class="fas fa-chevron-up"></i>
+</button>
+<script src="script.js?v=mc32"></script>
+<div aria-atomic="true" aria-live="polite" class="toast" id="toast"></div>
+<div class="plot-tip" id="plotTip" style="display:none;"></div>
+<!-- Achievements Modal -->
+<div aria-hidden="true" class="modal" id="achModal">
+<div class="modal-backdrop" data-close="true"></div>
+<div aria-labelledby="achTitle" aria-modal="true" class="modal-card" role="dialog">
+<div class="modal-head">
+<h3 id="achTitle"><i class="fas fa-trophy"></i> Logros</h3>
+<button aria-label="Cerrar" class="modal-close" data-close="true" type="button"><i class="fas fa-xmark"></i></button>
+</div>
+<div class="modal-body">
+<div class="ach-grid" id="achGrid"></div>
+</div>
+</div>
+</div>
+<!-- Achievement Popup -->
+<div aria-atomic="true" aria-live="polite" class="ach-popup" id="achPopup"></div>
+<div aria-hidden="true" class="modal" id="profileModal">
+<div class="modal-backdrop" data-close="profileModal"></div>
+<div aria-labelledby="profileTitle" aria-modal="true" class="modal-card" role="dialog">
+<div class="modal-head">
+<div class="modal-title" id="profileTitle"><i class="fas fa-user-astronaut"></i> Panel de jugador</div>
+<button class="icon-btn" data-close="profileModal" title="Cerrar" type="button"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-body">
+<div class="grid-2">
+<div class="card mini">
+<h3><i class="fas fa-star"></i> Progreso</h3>
+<div class="kv"><span>Nivel</span><b id="profLevel">1</b></div>
+<div class="kv"><span>XP</span><b id="profXp">0</b></div>
+<div class="kv"><span>Racha</span><b id="profStreak">1</b></div>
+<div class="kv"><span>Secciones completas</span><b id="profDone">0</b></div>
+</div>
+<div class="card mini">
+<h3><i class="fas fa-keyboard"></i> Atajos</h3>
+<ul class="shortcuts">
+<li><code>/</code> Buscar</li>
+<li><code>Enter</code> Abrir primer resultado</li>
+<li><code>Esc</code> Cerrar / limpiar</li>
+<li><code>Ctrl</code>+<code>K</code> Búsqueda rápida</li>
+</ul>
+</div>
+</div>
+<div class="callout warn">
+<b>Reiniciar progreso</b>: borra XP, racha y completados (no elimina el código).
+      </div>
+<div class="row">
+<button class="btn danger" id="resetProgressBtn"><i class="fas fa-trash"></i> Reiniciar progreso</button>
+<button class="btn" data-close="profileModal">Cerrar</button>
+</div>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="modal" id="quickSearchModal">
+<div class="modal-backdrop" data-close="quickSearchModal"></div>
+<div aria-labelledby="qsTitle" aria-modal="true" class="modal-card" role="dialog">
+<div class="modal-head">
+<div class="modal-title" id="qsTitle"><i class="fas fa-magnifying-glass"></i> Búsqueda rápida</div>
+<button class="icon-btn" data-close="quickSearchModal" title="Cerrar" type="button"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-body">
+<input autocomplete="off" class="qs-input" id="qsInput" placeholder="Escribe para buscar secciones..." type="text"/>
+<div class="qs-results" id="qsResults"></div>
+</div>
+</div>
+</div>
+</body>
+</html>
 <div class="topic-header">
 <h2>RESEÑAS</h2>
 <span class="badge">COMUNIDAD</span>
